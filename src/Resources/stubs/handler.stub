@@ -1,0 +1,44 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {HANDLER_NAMESPACE};
+{COMPONENT_USES}
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+class {HANDLER_NAME} implements RequestHandlerInterface
+{
+    use ResponseTrait;
+{HANDLER_PROPERTIES}
+{HANDLER_ANNOTATIONS}
+    public function __construct({HANDLER_ARGUMENTS}
+    ) {{HANDLER_PROPERTY_ASSIGNMENTS}
+    }
+
+    public function delete(ServerRequestInterface $request): ResponseInterface
+    {
+        return $this->infoResponse(__METHOD__);
+    }
+
+    public function get(ServerRequestInterface $request): ResponseInterface
+    {
+        return $this->infoResponse(__METHOD__);
+    }
+
+    public function patch(ServerRequestInterface $request): ResponseInterface
+    {
+        return $this->infoResponse(__METHOD__);
+    }
+
+    public function post(ServerRequestInterface $request): ResponseInterface
+    {
+        return $this->infoResponse(__METHOD__);
+    }
+
+    public function put(ServerRequestInterface $request): ResponseInterface
+    {
+        return $this->infoResponse(__METHOD__);
+    }
+}

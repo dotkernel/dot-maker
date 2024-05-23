@@ -1,0 +1,14 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {SERVICE_NAMESPACE};
+{COMPONENT_USES}
+
+class {SERVICE_NAME} implements {INTERFACE_NAME}
+{{SERVICE_PROPERTIES}
+{SERVICE_ANNOTATIONS}
+    public function __construct({SERVICE_ARGUMENTS}
+    ) {{SERVICE_PROPERTY_ASSIGNMENTS}
+    }
+}

@@ -1,0 +1,20 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {REPOSITORY_NAMESPACE};
+{COMPONENT_USES}
+use Doctrine\ORM\EntityRepository;
+use Dot\AnnotatedServices\Annotation\Entity;
+
+/**
+ * @Entity(name="{ENTITY_FQCN}")
+ */
+class {REPOSITORY_NAME} extends EntityRepository
+{
+    public function delete{ENTITY_NAME}({ENTITY_NAME} {ENTITY_VARIABLE}): void
+    {
+        $this->getEntityManager()->remove({ENTITY_VARIABLE});
+        $this->getEntityManager()->flush();
+    }
+}

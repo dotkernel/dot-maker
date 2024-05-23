@@ -1,0 +1,35 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {COMMAND_NAMESPACE};
+{COMPONENT_USES}
+use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class {COMMAND_NAME} extends Command
+{
+    protected static $defaultName = '{COMMAND_DEFAULT_NAME}';{COMMAND_PROPERTIES}
+{COMMAND_ANNOTATIONS}
+    public function __construct({COMMAND_ARGUMENTS}
+    ) {
+        parent::__construct(self::$defaultName);{COMMAND_PROPERTY_ASSIGNMENTS}
+    }
+
+    protected function configure(): void
+    {
+        $this
+            ->setName(self::$defaultName)
+            ->setDescription('Default description for {COMMAND_NAME} command.');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $output->writeln(
+            sprintf('Hello from %s command.', self::$defaultName)
+        );
+
+        return Command::SUCCESS;
+    }
+}

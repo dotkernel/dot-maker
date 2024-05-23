@@ -1,0 +1,57 @@
+{
+    "name": "dotkernel/dot-maker",
+    "type": "library",
+    "description": "DotKernel maker package that allows creating application components using the CLI.",
+    "license": "MIT",
+    "homepage": "https://github.com/dotkernel/dot-maker",
+    "keywords": [
+        "cli",
+        "component",
+        "creator",
+        "maker"
+    ],
+    "authors": [
+        {
+            "name": "DotKernel Team",
+            "email": "team@dotkernel.com"
+        }
+    ],
+    "config": {
+        "sort-packages": true,
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "autoload": {
+        "psr-4": {
+            "Dot\\Maker\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DotTest\\Maker\\": "test/"
+        }
+    },
+    "require": {
+        "php": "~8.1.0 || ~8.2.0 || ~8.3.0",
+        "dotkernel/dot-cli": "^3.2",
+        "laminas/laminas-code": "^4.11"
+    },
+    "require-dev": {
+        "laminas/laminas-coding-standard": "^2.5",
+        "mikey179/vfsstream": "^1.6",
+        "phpunit/phpunit": "^10.2",
+        "vimeo/psalm": "^5.13"
+    },
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@test"
+        ],
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "test": "phpunit --colors=always",
+        "test-coverage": "phpunit --colors=always --coverage-clover clover.xml",
+        "static-analysis": "psalm --shepherd --stats"
+    }
+}

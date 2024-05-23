@@ -1,0 +1,27 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Api\App\Middleware;
+{COMPONENT_USES}
+use Psr\Http\Message\ResponseInterface;
+use Psr\Http\Message\ServerRequestInterface;
+use Psr\Http\Server\MiddlewareInterface;
+use Psr\Http\Server\RequestHandlerInterface;
+
+class {MIDDLEWARE_NAME} implements MiddlewareInterface
+{{MIDDLEWARE_PROPERTIES}
+{MIDDLEWARE_ANNOTATIONS}
+    public function __construct({MIDDLEWARE_ARGUMENTS}
+    ) {{MIDDLEWARE_PROPERTY_ASSIGNMENTS}
+    }
+
+    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
+    {
+        $response = $handler->handle($request);
+
+        // Implement {MIDDLEWARE_NAME} logic here...
+
+        return $response;
+    }
+}

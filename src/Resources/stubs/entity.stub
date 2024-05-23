@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {ENTITY_NAMESPACE};
+
+use Api\App\Entity\AbstractEntity;
+use Doctrine\ORM\Mapping as ORM;
+
+/**
+ * Class {ENTITY_NAME}
+ * @ORM\Entity(repositoryClass="{REPOSITORY_FQCN}")
+ * @ORM\Table(name="{ENTITY_TABLE_NAME}")
+ * @ORM\HasLifecycleCallbacks()
+ * @package {ENTITY_NAMESPACE}
+ */
+class {ENTITY_NAME} extends AbstractEntity
+{{ENTITY_PROPERTIES}
+    public function __construct({ENTITY_ARGUMENTS}
+    ) {
+        parent::__construct();{ENTITY_PROPERTY_ASSIGNMENTS}
+    }{ENTITY_ACCESSORS}
+
+    public function getArrayCopy(): array
+    {
+        return [
+            'uuid' => $this->getUuid()->toString(),{ENTITY_GET_ARRAY_COPY}
+            'created' => $this->getCreated(),
+            'updated' => $this->getUpdated(),
+        ];
+    }
+}

@@ -1,0 +1,21 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {FACTORY_NAMESPACE};
+{COMPONENT_USES}
+use Psr\Container\ContainerExceptionInterface;
+use Psr\Container\ContainerInterface;
+use Psr\Container\NotFoundExceptionInterface;
+
+class {FACTORY_NAME}
+{
+    /**
+     * @throws ContainerExceptionInterface
+     * @throws NotFoundExceptionInterface
+     */
+    public function __invoke(ContainerInterface $container): {COMPONENT_NAME}
+    {
+        return new {COMPONENT_NAME}({COMPONENT_CONTAINER_GETS});
+    }
+}
