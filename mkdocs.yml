@@ -1,0 +1,17 @@
+docs_dir: docs/book
+site_dir: docs/html
+extra:
+  project: Packages
+  current_version: v1
+  versions:
+    - v1
+nav:
+  - Home: index.md
+  - v1:
+      - Overview: v1/overview.md
+      - Installation: v1/installation.md
+site_name: dot-maker
+site_description: "Dotkernel library for programmatically generating structured code files"
+repo_url: "https://github.com/dotkernel/dot-maker"
+plugins:
+  - search

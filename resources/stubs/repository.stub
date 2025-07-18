@@ -1,0 +1,10 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{REPOSITORY_NAMESPACE}};
+{{USES}}
+#[Entity(name: {{ENTITY_CLASS_STRING}})]
+class {{REPOSITORY_CLASS_NAME}} extends AbstractRepository
+{
+}

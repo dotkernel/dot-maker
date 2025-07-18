@@ -1,0 +1,24 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{ENTITY_NAMESPACE}};
+{{USES}}
+#[ORM\Entity(repositoryClass: {{REPOSITORY_CLASS_STRING}})]
+#[ORM\Table(name: '{{ENTITY_TABLE}}')]
+#[ORM\HasLifecycleCallbacks]
+class {{ENTITY_CLASS_NAME}} extends AbstractEntity
+{
+    use TimestampsTrait;
+
+    {{CONSTRUCTOR}}
+
+    public function getArrayCopy(): array
+    {
+        return [
+            'uuid'    => $this->uuid->toString(),
+            'created' => $this->created,
+            'updated' => $this->updated,
+        ];
+    }
+}

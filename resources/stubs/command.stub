@@ -1,0 +1,32 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{COMMAND_NAMESPACE}};
+{{USES}}
+#[AsCommand(
+    name: '{{COMMAND_DEFAULT_NAME}}',
+    description: 'Command description.',
+)]
+class {{COMMAND_CLASS_NAME}} extends Command
+{
+    /** @var string $defaultName */
+    protected static $defaultName = '{{COMMAND_DEFAULT_NAME}}';
+
+    {{CONSTRUCTOR}}
+
+    protected function configure(): void
+    {
+        $this
+            ->setName(self::$defaultName)
+            ->setDescription('Command description.');
+    }
+
+    protected function execute(InputInterface $input, OutputInterface $output): int
+    {
+        $io = new SymfonyStyle($input, $output);
+        $io->info('{{COMMAND_CLASS_NAME}} is ready for action!');
+
+        return Command::SUCCESS;
+    }
+}
