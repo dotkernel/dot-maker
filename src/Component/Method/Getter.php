@@ -21,8 +21,7 @@ class Getter extends Method
         $nullable = $this->nullable ? '?' : '';
 
         return <<<GTR
-
-    {$this->visibility->value} function $this->name(): $nullable{$this->returnType}
+{$this->visibility->value} function $this->name(): $nullable{$this->returnType}
     {
         return \$this->{$this->target->name};
     }

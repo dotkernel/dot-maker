@@ -160,7 +160,7 @@ BODY;
         return $this->stub->render('handler/api/get-collection.stub', [
             'HANDLER_CLASS_NAME' => $handler->getClassName(),
             'HANDLER_NAMESPACE'  => $handler->getNamespace(),
-            'METHODS'            => implode(PHP_EOL . PHP_EOL, $methods),
+            'METHODS'            => implode(PHP_EOL . PHP_EOL . '    ', $methods),
             'USES'               => $handler->getImport()->render(),
         ]);
     }

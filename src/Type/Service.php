@@ -138,7 +138,7 @@ class Service extends AbstractType implements FileInterface
             'SERVICE_CLASS_NAME'     => $service->getClassName(),
             'SERVICE_NAMESPACE'      => $service->getNamespace(),
             'SERVICE_INTERFACE_NAME' => $serviceInterface->getClassName(),
-            'METHODS'                => implode(PHP_EOL . PHP_EOL, $methods),
+            'METHODS'                => implode(PHP_EOL . PHP_EOL . '    ', $methods),
             'USES'                   => $service->getImport()->render(),
         ]);
     }
