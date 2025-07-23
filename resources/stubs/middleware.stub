@@ -6,12 +6,5 @@ namespace {{MIDDLEWARE_NAMESPACE}};
 {{USES}}
 class {{MIDDLEWARE_CLASS_NAME}} implements MiddlewareInterface
 {
-    {{CONSTRUCTOR}}
-
-    public function process(ServerRequestInterface $request, RequestHandlerInterface $handler): ResponseInterface
-    {
-        // add logic here
-
-        return $handler->handle($request);
-    }
+    {{METHODS}}
 }

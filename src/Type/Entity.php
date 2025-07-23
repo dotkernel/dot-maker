@@ -6,6 +6,8 @@ namespace Dot\Maker\Type;
 
 use Dot\Maker\Component;
 use Dot\Maker\Component\Import;
+use Dot\Maker\Component\Method;
+use Dot\Maker\Component\Method\Constructor;
 use Dot\Maker\ContextInterface;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Input;
@@ -16,6 +18,8 @@ use function preg_split;
 use function sprintf;
 use function strtolower;
 use function ucfirst;
+
+use const PHP_EOL;
 
 class Entity extends AbstractType implements FileInterface
 {
@@ -52,11 +56,7 @@ class Entity extends AbstractType implements FileInterface
                     ->useClass($repository->getComponent()->getFqcn())
                     ->useClass($this->getAbstractEntityFqcn())
                     ->useClass($this->getTimestampsTraitFqcn())
-                    ->useClass(Import::DOCTRINE_ORM_MAPPING, 'ORM')
-                ->getConstructor()
-                    ->addBodyLine('parent::__construct();')
-                    ->addBodyLine('', 0)
-                    ->addBodyLine('$this->created();');
+                    ->useClass(Import::DOCTRINE_ORM_MAPPING, 'ORM');
 
             $content = $this->render($entity->getComponent(), $repository->getComponent());
             if (! $entity->create($content)) {
@@ -96,11 +96,7 @@ class Entity extends AbstractType implements FileInterface
                 ->useClass($repository->getComponent()->getFqcn())
                 ->useClass($this->getAbstractEntityFqcn())
                 ->useClass($this->getTimestampsTraitFqcn())
-                ->useClass(Import::DOCTRINE_ORM_MAPPING, 'ORM')
-            ->getConstructor()
-                ->addBodyLine('parent::__construct();')
-                ->addBodyLine('', 0)
-                ->addBodyLine('$this->created();');
+                ->useClass(Import::DOCTRINE_ORM_MAPPING, 'ORM');
 
         $content = $this->render($entity->getComponent(), $repository->getComponent());
         if (! $entity->create($content)) {
@@ -113,12 +109,30 @@ class Entity extends AbstractType implements FileInterface
 
     public function render(Component $entity, Component $repository): string
     {
+        $methods = [];
+
+        $methods[] = (new Constructor())->setBody(<<<BODY
+        parent::__construct();
+
+        \$this->created();
+BODY);
+
+        $methods[] = (new Method('getArrayCopy'))
+            ->setReturnType('array')
+            ->setBody(<<<BODY
+        return [
+            'uuid'    => \$this->uuid->toString(),
+            'created' => \$this->created,
+            'updated' => \$this->updated,
+        ];
+BODY);
+
         return $this->stub->render('entity.stub', [
-            'CONSTRUCTOR'             => $entity->getConstructor()->render(),
             'ENTITY_CLASS_NAME'       => $entity->getClassName(),
             'ENTITY_NAMESPACE'        => $entity->getNamespace(),
             'ENTITY_TABLE'            => $this->getTableName($entity->getClassName()),
             'REPOSITORY_CLASS_STRING' => $repository->getClassString(),
+            'METHODS'                 => implode(PHP_EOL . PHP_EOL . '    ', $methods),
             'USES'                    => $entity->getImport()->render(),
         ]);
     }

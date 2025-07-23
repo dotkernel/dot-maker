@@ -7,8 +7,8 @@ namespace {{HANDLER_NAMESPACE}};
 class {{HANDLER_CLASS_NAME}} extends AbstractHandler
 {
     {{CONSTRUCTOR}}
-    {{RESOURCE_INJECTOR}}
-    public function handle(ServerRequestInterface $request): ResponseInterface
+
+    {{RESOURCE_INJECTOR}}public function handle(ServerRequestInterface $request): ResponseInterface
     {{{HANDLE_METHOD_BODY}}
         return $this->noContentResponse();
     }

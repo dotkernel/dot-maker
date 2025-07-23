@@ -1,0 +1,12 @@
+<?php
+
+declare(strict_types=1);
+
+namespace {{HANDLER_NAMESPACE}};
+{{USES}}
+class {{HANDLER_CLASS_NAME}} extends AbstractHandler
+{
+    {{CONSTRUCTOR}}
+
+    {{HANDLE_METHOD}}
+}

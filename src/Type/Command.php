@@ -6,9 +6,14 @@ namespace Dot\Maker\Type;
 
 use Dot\Maker\Component;
 use Dot\Maker\Component\Import;
+use Dot\Maker\Component\Inject;
+use Dot\Maker\Component\Method;
+use Dot\Maker\Component\Method\Constructor;
+use Dot\Maker\Component\Parameter;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
+use Dot\Maker\VisibilityEnum;
 
 use function array_shift;
 use function count;
@@ -18,6 +23,8 @@ use function preg_split;
 use function sprintf;
 use function strtolower;
 use function ucfirst;
+
+use const PHP_EOL;
 
 class Command extends AbstractType implements FileInterface
 {
@@ -53,9 +60,7 @@ class Command extends AbstractType implements FileInterface
                     ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_COMMAND_COMMAND)
                     ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_INPUT_INPUTINTERFACE)
                     ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_OUTPUT_OUTPUTINTERFACE)
-                    ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_STYLE_SYMFONYSTYLE)
-                ->getConstructor()
-                    ->addBodyLine('parent::__construct(self::$defaultName);');
+                    ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_STYLE_SYMFONYSTYLE);
 
             $content = $this->render($command->getComponent());
             if (! $command->create($content)) {
@@ -86,26 +91,24 @@ class Command extends AbstractType implements FileInterface
         $command
             ->ensureParentDirectoryExists()
             ->getComponent()
-                ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
                 ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_ATTRIBUTE_ASCOMMAND)
                 ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_COMMAND_COMMAND)
                 ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_INPUT_INPUTINTERFACE)
                 ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_OUTPUT_OUTPUTINTERFACE)
-                ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_STYLE_SYMFONYSTYLE)
-                ->getConstructor()
-                    ->addBodyLine('parent::__construct(self::$defaultName);');
+                ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_STYLE_SYMFONYSTYLE);
 
-        if ($this->module->hasServiceInterface()) {
-            $serviceInterface = $this->module->getServiceInterface();
+        $serviceInterface = $this->fileSystem->serviceInterface($name);
+        if ($serviceInterface->exists()) {
             $command
                 ->getComponent()
-                    ->useClass($serviceInterface->getComponent()->getFqcn())
-                ->getConstructor()
-                    ->addPromotedProperty($serviceInterface->getComponent())
-                    ->addInject($serviceInterface->getComponent()->getClassString());
+                    ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
+                    ->useClass($serviceInterface->getComponent()->getFqcn());
         }
 
-        $content = $this->render($command->getComponent());
+        $content = $this->render(
+            $command->getComponent(),
+            $serviceInterface->exists() ? $serviceInterface->getComponent() : null,
+        );
         if (! $command->create($content)) {
             Output::error(sprintf('Could not create Command "%s"', $command->getPath()), true);
         }
@@ -128,13 +131,48 @@ class Command extends AbstractType implements FileInterface
         return strtolower(sprintf('%s:%s', $module, implode('-', $parts)));
     }
 
-    public function render(Component $command): string
+    public function render(Component $command, ?Component $serviceInterface = null): string
     {
+        $methods = [];
+
+        $constructor = (new Constructor())->addBodyLine('parent::__construct(self::$defaultName);');
+        if ($serviceInterface !== null) {
+            $constructor->addInject(
+                (new Inject())->addArgument($serviceInterface->getClassString())
+            )
+            ->addPromotedPropertyFromComponent($serviceInterface);
+        }
+        $methods[] = $constructor;
+
+        $methods[] = (new Method('configure'))
+            ->setVisibility(VisibilityEnum::Protected)
+            ->setBody(<<<BODY
+        \$this
+            ->setName(self::\$defaultName)
+            ->setDescription('Command description.');
+BODY);
+
+        $methods[] = (new Method('execute'))
+            ->setVisibility(VisibilityEnum::Protected)
+            ->setReturnType('int')
+            ->addParameter(
+                new Parameter('input', 'InputInterface')
+            )
+            ->addParameter(
+                new Parameter('output', 'OutputInterface')
+            )
+            ->setBody(<<<BODY
+        \$io = new SymfonyStyle(\$input, \$output);
+        \$io->info('{$command->getClassName()} default output');
+
+        return Command::SUCCESS;
+BODY);
+
         return $this->stub->render('command.stub', [
             'COMMAND_CLASS_NAME'   => $command->getClassName(),
             'COMMAND_DEFAULT_NAME' => $this->getDefaultName($command->getClassName()),
             'COMMAND_NAMESPACE'    => $command->getNamespace(),
-            'CONSTRUCTOR'          => $command->getConstructor()->render(),
+            'METHODS'              => implode(PHP_EOL . PHP_EOL . '    ', $methods),
             'USES'                 => $command->getImport()->render(),
         ]);
     }

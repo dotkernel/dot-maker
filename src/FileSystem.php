@@ -347,6 +347,11 @@ class FileSystem
         );
     }
 
+    public function getModuleName(): string
+    {
+        return $this->moduleName;
+    }
+
     public function setModuleName(string $moduleName): void
     {
         $this->moduleName = $moduleName;

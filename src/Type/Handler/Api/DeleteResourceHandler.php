@@ -31,25 +31,25 @@ class DeleteResourceHandler extends AbstractType implements FileInterface
                 continue;
             }
 
-            $serviceInterface = $this->fileSystem->serviceInterface($name);
-            if ($serviceInterface->exists()) {
+            $handler = $this->fileSystem->apiDeleteResourceHandler($name);
+            if ($handler->exists()) {
                 Output::error(
                     sprintf(
                         'Handler "%s" already exists at %s',
-                        $serviceInterface->getComponent()->getClassName(),
-                        $serviceInterface->getPath()
+                        $handler->getComponent()->getClassName(),
+                        $handler->getPath()
                     )
                 );
                 continue;
             }
 
-            $serviceInterface->ensureParentDirectoryExists();
+            $handler->ensureParentDirectoryExists();
 
-            $content = $this->render($serviceInterface->getComponent());
-            if (! $serviceInterface->create($content)) {
-                Output::error(sprintf('Could not create Handler "%s"', $serviceInterface->getPath()), true);
+            $content = $this->render($handler->getComponent());
+            if (! $handler->create($content)) {
+                Output::error(sprintf('Could not create Handler "%s"', $handler->getPath()), true);
             }
-            Output::info(sprintf('Created Handler "%s"', $serviceInterface->getPath()));
+            Output::info(sprintf('Created Handler "%s"', $handler->getPath()));
 
             $this->initComponent(TypeEnum::Service)->create($name);
 
@@ -97,7 +97,7 @@ class DeleteResourceHandler extends AbstractType implements FileInterface
                     ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
                     ->useClass($serviceInterface->getComponent()->getFqcn())
                 ->getConstructor()
-                    ->addPromotedProperty($serviceInterface->getComponent())
+                    ->wPromotedProperty($serviceInterface->getComponent())
                     ->addInject($serviceInterface->getComponent()->getClassString());
         }
 

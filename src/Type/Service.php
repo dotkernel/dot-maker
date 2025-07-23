@@ -6,12 +6,19 @@ namespace Dot\Maker\Type;
 
 use Dot\Maker\Component;
 use Dot\Maker\Component\Import;
+use Dot\Maker\Component\Inject;
+use Dot\Maker\Component\Method\Constructor;
+use Dot\Maker\Component\PromotedProperty;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 
+use function array_unshift;
+use function implode;
 use function sprintf;
 use function ucfirst;
+
+use const PHP_EOL;
 
 class Service extends AbstractType implements FileInterface
 {
@@ -42,9 +49,21 @@ class Service extends AbstractType implements FileInterface
 
             $service->ensureParentDirectoryExists();
 
+            $repository = $this->fileSystem->repository($name);
+            if ($repository->exists()) {
+                $service
+                    ->getComponent()
+                    ->useClass($repository->getComponent()->getFqcn())
+                    ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT);
+            }
+
             $serviceInterface = $this->fileSystem->serviceInterface($name);
 
-            $content = $this->render($service->getComponent(), $serviceInterface->getComponent());
+            $content = $this->render(
+                $service->getComponent(),
+                $serviceInterface->getComponent(),
+                $repository->exists() ? $repository->getComponent() : null,
+            );
             if (! $service->create($content)) {
                 Output::error(sprintf('Could not create Service "%s"', $service->getPath()), true);
             }
@@ -76,26 +95,21 @@ class Service extends AbstractType implements FileInterface
 
         $service->ensureParentDirectoryExists();
 
-        if ($this->module->hasRepository()) {
-            $repository = $this->module->getRepository();
+        $repository = $this->fileSystem->repository($name);
+        if ($repository->exists()) {
             $service
                 ->getComponent()
                     ->useClass($repository->getComponent()->getFqcn())
                     ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT);
-            $service
-                ->getComponent()
-                    ->getConstructor()
-                        ->addPromotedProperty($repository->getComponent())
-                        ->addInject($repository->getComponent()->getClassString());
-            $service
-                ->getComponent()
-                    ->getAccessor()
-                        ->withComponentGetter($repository->getComponent());
         }
 
         $serviceInterface = $this->fileSystem->serviceInterface($name);
 
-        $content = $this->render($service->getComponent(), $serviceInterface->getComponent());
+        $content = $this->render(
+            $service->getComponent(),
+            $serviceInterface->getComponent(),
+            $repository->exists() ? $repository->getComponent() : null,
+        );
         if (! $service->create($content)) {
             Output::error(sprintf('Could not create Service "%s"', $service->getPath()), true);
         }
@@ -104,14 +118,27 @@ class Service extends AbstractType implements FileInterface
         return $service;
     }
 
-    public function render(Component $service, Component $serviceInterface): string
+    public function render(Component $service, Component $serviceInterface, ?Component $repository = null): string
     {
+        $methods = [];
+
+        $constructor = new Constructor();
+        if ($repository !== null) {
+            $promotedProperty = new PromotedProperty($repository->getPropertyName(true), $repository->getClassName());
+            $constructor
+                ->addInject(
+                    (new Inject())->addArgument($repository->getClassString())
+                )
+                ->addPromotedProperty($promotedProperty);
+            $methods[] = $promotedProperty->getGetter();
+        }
+        array_unshift($methods, $constructor);
+
         return $this->stub->render('service.stub', [
             'SERVICE_CLASS_NAME'     => $service->getClassName(),
             'SERVICE_NAMESPACE'      => $service->getNamespace(),
             'SERVICE_INTERFACE_NAME' => $serviceInterface->getClassName(),
-            'CONSTRUCTOR'            => $service->getConstructor()->render(),
-            'PROPERTY_ACCESSORS'     => $service->getAccessor()->renderGetters(),
+            'METHODS'                => implode(PHP_EOL . PHP_EOL, $methods),
             'USES'                   => $service->getImport()->render(),
         ]);
     }

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Dot\Maker;
 
-use Dot\Maker\Component\Accessor;
-use Dot\Maker\Component\Constructor;
 use Dot\Maker\Component\Import;
 
 use function lcfirst;
@@ -14,22 +12,13 @@ use function sprintf;
 
 class Component
 {
-    private Accessor $accessor;
-    private Constructor $constructor;
     private Import $import;
 
     public function __construct(
         private readonly string $namespace,
         private readonly string $className,
     ) {
-        $this->accessor    = new Accessor();
-        $this->constructor = new Constructor();
-        $this->import      = new Import();
-    }
-
-    public function getAccessor(): Accessor
-    {
-        return $this->accessor;
+        $this->import = new Import();
     }
 
     public function getClassName(): string
@@ -40,11 +29,6 @@ class Component
     public function getClassString(): string
     {
         return sprintf('%s::class', $this->className);
-    }
-
-    public function getConstructor(): Constructor
-    {
-        return $this->constructor;
     }
 
     public function getFqcn(): string

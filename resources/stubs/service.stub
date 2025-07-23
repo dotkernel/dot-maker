@@ -6,5 +6,5 @@ namespace {{SERVICE_NAMESPACE}};
 {{USES}}
 class {{SERVICE_CLASS_NAME}} implements {{SERVICE_INTERFACE_NAME}}
 {
-    {{CONSTRUCTOR}}{{PROPERTY_ACCESSORS}}
+    {{METHODS}}
 }

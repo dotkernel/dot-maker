@@ -36,8 +36,8 @@ class Accessor
         }
 
         return <<<ATTR
-
-    #[Resource(entity: {$component->getClassString()})]
+#[Resource(entity: {$component->getClassString()})]
+    
 ATTR;
     }
 
