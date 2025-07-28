@@ -12,10 +12,7 @@ use function sprintf;
 
 class Config
 {
-    private ?string $customStubDirectory = null;
-
     public function __construct(
-        private string $defaultStubDirectory,
         string $configPath,
     ) {
         if (! file_exists($configPath)) {
@@ -26,19 +23,5 @@ class Config
         if (! array_key_exists(Maker::class, $config)) {
             Output::error(sprintf('%s: key "Maker::class" not found', $configPath), true);
         }
-
-        if (array_key_exists('stub_directory', $config[Maker::class])) {
-            $this->customStubDirectory = $config[Maker::class]['stub_directory'];
-        }
-    }
-
-    public function getCustomStubDirectory(): ?string
-    {
-        return $this->customStubDirectory;
-    }
-
-    public function getDefaultStubDirectory(): string
-    {
-        return $this->defaultStubDirectory;
     }
 }

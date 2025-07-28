@@ -20,6 +20,7 @@ class Module extends AbstractType implements ModuleInterface
     private ?File $form             = null;
     private ?File $inputFilter      = null;
     private ?File $middleware       = null;
+    private ?File $openApi          = null;
     private ?File $repository       = null;
     private ?File $service          = null;
     private ?File $serviceInterface = null;
@@ -47,7 +48,9 @@ class Module extends AbstractType implements ModuleInterface
 
             $this->fileSystem->setModuleName($name);
 
-            $this->collection = $this->initComponent(TypeEnum::Collection)->create($module->getName());
+            if ($this->context->isApi()) {
+                $this->collection = $this->initComponent(TypeEnum::Collection)->create($module->getName());
+            }
 
             if (Input::confirm('Create entity?')) {
                 $this->entity = $this->initComponent(TypeEnum::Entity)->create($module->getName());
@@ -72,13 +75,16 @@ class Module extends AbstractType implements ModuleInterface
                 $this->command = $this->initComponent(TypeEnum::Command)->create($module->getName());
             }
 
-            if (Input::confirm('Create handler?')) {
-                $this->initComponent(TypeEnum::Handler)->create($module->getName());
-            }
+//            if (Input::confirm('Create handler?')) {
+//                $this->initComponent(TypeEnum::Handler)->create($module->getName());
+//            }
 
 //            if (Input::confirm('Create input filter?')) {
 //                $this->inputFilter = $this->initComponent(TypeEnum::InputFilter)->create($module->getName());
 //            }
+            if ($this->context->isApi()) {
+                $this->openApi = $this->initComponent(TypeEnum::OpenApi)->create('OpenAPI');
+            }
 
             break;
         }

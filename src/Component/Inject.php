@@ -8,6 +8,7 @@ use function array_map;
 use function count;
 use function implode;
 use function sprintf;
+use function str_repeat;
 
 use const PHP_EOL;
 
@@ -32,13 +33,13 @@ class Inject
         return $this;
     }
 
-    public function render(): string
+    public function render(int $spaces = 4): string
     {
         if (count($this->namedArguments) > 0) {
             return $this->renderWithNamedArguments();
         }
         if (count($this->positionalArguments) > 0) {
-            return $this->renderWithPositionalArguments();
+            return $this->renderWithPositionalArguments($spaces);
         }
 
         return sprintf('#[%s]', $this->name);
@@ -55,15 +56,15 @@ class Inject
         return sprintf('#[%s(%s)]', $this->name, implode(', ', $arguments));
     }
 
-    private function renderWithPositionalArguments(): string
+    private function renderWithPositionalArguments(int $spaces = 4): string
     {
         $arguments = array_map(
-            fn (string $argument): string => sprintf('%s        %s,', PHP_EOL, $argument),
+            fn (string $argument): string => sprintf('%s%s%s,', PHP_EOL, str_repeat(' ', $spaces + 4), $argument),
             $this->positionalArguments
         );
 
         $arguments[] = PHP_EOL;
 
-        return sprintf('#[%s(%s    )]', $this->name, implode('', $arguments));
+        return sprintf('#[%s(%s%s)]', $this->name, implode('', $arguments), str_repeat(' ', $spaces));
     }
 }

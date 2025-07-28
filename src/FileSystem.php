@@ -297,6 +297,15 @@ class FileSystem
         return new Directory($name, sprintf('%s/src', $this->rootDir));
     }
 
+    public function openApi(string $name = 'OpenAPI'): File
+    {
+        return new File(
+            new Directory('src', sprintf('%s/src/%s', $this->rootDir, $this->moduleName)),
+            sprintf('%s\\%s', $this->context->getRootNamespace(), $this->moduleName),
+            $name,
+        );
+    }
+
     public function repository(string $name): File
     {
         $name = preg_replace('/Repository$/', '', $name);

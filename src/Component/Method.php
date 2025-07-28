@@ -14,16 +14,17 @@ use function str_repeat;
 
 use const PHP_EOL;
 
-class Method
+class Method implements MethodInterface
 {
     protected VisibilityEnum $visibility = VisibilityEnum::Public;
-    protected string $body               = '';
-    protected string $returnType         = 'void';
-    protected bool $nullable             = false;
     /** @var ParameterInterface[] $parameters */
     protected array $parameters = [];
     /** @var Inject[] $injects */
-    protected array $injects = [];
+    protected array $injects     = [];
+    protected string $body       = '';
+    protected string $comment    = '';
+    protected string $returnType = 'void';
+    protected bool $nullable     = false;
 
     public function __construct(
         public readonly string $name,
@@ -49,72 +50,78 @@ class Method
         return $this;
     }
 
-    public function addParameter(Parameter $parameter): self
+    public function addParameter(ParameterInterface $parameter): self
     {
         $this->parameters[] = $parameter;
 
         return $this;
     }
 
+    public function getName(): string
+    {
+        return $this->name;
+    }
+
     public function render(): string
     {
-        $signature = $this->renderSignature();
-
         if (count($this->parameters) > 0) {
             if ($this->body !== '') {
-                $method = $this->renderWithParamsWithBody($signature);
+                $method = $this->renderWithParamsWithBody();
             } else {
-                $method = $this->renderWithParamsWithoutBody($signature);
+                $method = $this->renderWithParamsWithoutBody();
             }
         } else {
             if ($this->body !== '') {
-                $method = $this->renderWithoutParamsWithBody($signature);
+                $method = $this->renderWithoutParamsWithBody();
             } else {
-                $method = $this->renderWithoutParamsWithoutBody($signature);
+                $method = $this->renderWithoutParamsWithoutBody();
             }
         }
 
         $injects = $this->renderInjects();
         if ($injects !== '') {
-            return $injects . PHP_EOL . '    ' . $method;
+            $method = $injects . PHP_EOL . '    ' . $method;
+        }
+        if ($this->comment !== '') {
+            $method = $this->comment . PHP_EOL . '    ' . $method;
         }
 
         return $method;
     }
 
-    private function renderWithParamsWithBody(string $signature): string
+    public function renderWithParamsWithBody(): string
     {
         return <<<MTD
 {$this->visibility->value} function $this->name(
 {$this->renderParameters(8)}
-    )$signature {{$this->body}
+    ){$this->renderSignature()} {{$this->body}
     }
 MTD;
     }
 
-    private function renderWithParamsWithoutBody(string $signature): string
+    public function renderWithParamsWithoutBody(): string
     {
         return <<<MTD
 {$this->visibility->value} function $this->name(
 {$this->renderParameters(8)}
-    )$signature {
+    ){$this->renderSignature()} {
     }
 MTD;
     }
 
-    private function renderWithoutParamsWithBody(string $signature): string
+    public function renderWithoutParamsWithBody(): string
     {
         return <<<MTD
-{$this->visibility->value} function $this->name()$signature
+{$this->visibility->value} function $this->name(){$this->renderSignature()}
     {{$this->body}
     }
 MTD;
     }
 
-    private function renderWithoutParamsWithoutBody(string $signature): string
+    public function renderWithoutParamsWithoutBody(): string
     {
         return <<<MTD
-{$this->visibility->value} function $this->name()$signature
+{$this->visibility->value} function $this->name(){$this->renderSignature()}
     {
     }
 MTD;
@@ -131,14 +138,18 @@ MTD;
         return implode(PHP_EOL, $injects);
     }
 
-    protected function renderParameters(int $spaces = 0): string
+    public function renderParameters(int $spaces = 0): string
     {
         if (count($this->parameters) === 0) {
             return '';
         }
 
         return implode(PHP_EOL, array_map(
-            fn (Parameter $parameter) => sprintf('%s%s,', str_repeat(' ', $spaces), $parameter->render()),
+            fn (ParameterInterface $parameter): string => sprintf(
+                '%s%s,',
+                str_repeat(' ', $spaces),
+                $parameter->render()
+            ),
             $this->parameters
         ));
     }
@@ -163,6 +174,13 @@ MTD;
     public function setBody(string $body): self
     {
         $this->body = PHP_EOL . $body;
+
+        return $this;
+    }
+
+    public function setComment(string $comment): self
+    {
+        $this->comment = $comment;
 
         return $this;
     }

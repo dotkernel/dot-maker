@@ -8,6 +8,7 @@ use Dot\Maker\Component\Method\Getter;
 use Dot\Maker\Component\Method\Setter;
 
 use function sprintf;
+use function trim;
 use function ucfirst;
 
 class Parameter implements ParameterInterface
@@ -49,9 +50,9 @@ class Parameter implements ParameterInterface
         return $this->type;
     }
 
-    public function render(): string
+    public function render(int $spaces = 0): string
     {
-        $parameter = sprintf('%s $%s', $this->type, $this->name);
+        $parameter = trim(sprintf('%s $%s', $this->type, $this->name));
         if ($this->nullable) {
             $parameter = sprintf('?%s', $parameter);
         }
@@ -62,16 +63,16 @@ class Parameter implements ParameterInterface
         return $parameter;
     }
 
-    public function setNullable(bool $nullable): self
+    public function setDefault(string $default): self
     {
-        $this->nullable = $nullable;
+        $this->default = $default;
 
         return $this;
     }
 
-    public function setDefault(?string $default): self
+    public function setNullable(bool $nullable): self
     {
-        $this->default = $default;
+        $this->nullable = $nullable;
 
         return $this;
     }

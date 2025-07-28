@@ -1,9 +1,0 @@
-<?php
-
-declare(strict_types=1);
-
-namespace {{COLLECTION_NAMESPACE}};
-{{USES}}
-class {{COLLECTION_CLASS_NAME}} extends ResourceCollection
-{
-}

@@ -7,21 +7,18 @@ namespace Dot\Maker\Type;
 use Dot\Maker\Config;
 use Dot\Maker\ContextInterface;
 use Dot\Maker\FileSystem;
-use Dot\Maker\Stub;
 
 use function preg_match;
+use function sprintf;
 
 abstract class AbstractType implements TypeInterface
 {
-    protected Stub $stub;
-
     public function __construct(
         protected FileSystem $fileSystem,
         protected ContextInterface $context,
         protected Config $config,
         protected ?Module $module = null,
     ) {
-        $this->stub = new Stub($this->config->getDefaultStubDirectory(), $this->config->getCustomStubDirectory());
     }
 
     public function getConfig(): Config
@@ -74,5 +71,10 @@ abstract class AbstractType implements TypeInterface
         $this->module = $module;
 
         return $this;
+    }
+
+    public static function wrap(int|string $value): string
+    {
+        return sprintf('\'%s\'', $value);
     }
 }

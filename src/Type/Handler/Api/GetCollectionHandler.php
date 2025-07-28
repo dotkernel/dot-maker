@@ -15,7 +15,6 @@ use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\AbstractType;
 use Dot\Maker\Type\FileInterface;
-use Dot\Maker\Type\Handler;
 use Dot\Maker\Type\TypeEnum;
 
 use function implode;
@@ -134,7 +133,7 @@ class GetCollectionHandler extends AbstractType implements FileInterface
         }
 
         if ($collection !== null) {
-            $getter = sprintf('get%s', ucfirst(Handler::pluralize($this->fileSystem->getModuleName())));
+            $getter = sprintf('get%s', ucfirst(Component::pluralize($this->fileSystem->getModuleName())));
 
             // phpcs:disable Generic.Files.LineLength.TooLong
             $body = <<<BODY
@@ -157,7 +156,7 @@ BODY;
             ->setReturnType('ResponseInterface')
             ->setBody($body);
 
-        return $this->stub->render('handler/api/get-collection.stub', [
+        return $this->stub->render('api-handler.stub', [
             'HANDLER_CLASS_NAME' => $handler->getClassName(),
             'HANDLER_NAMESPACE'  => $handler->getNamespace(),
             'METHODS'            => implode(PHP_EOL . PHP_EOL . '    ', $methods),

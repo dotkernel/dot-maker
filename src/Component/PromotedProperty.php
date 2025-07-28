@@ -6,5 +6,5 @@ namespace Dot\Maker\Component;
 
 class PromotedProperty extends Property
 {
-    protected bool $isPromoted = true;
+    protected bool $promoted = true;
 }

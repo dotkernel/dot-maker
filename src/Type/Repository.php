@@ -5,11 +5,19 @@ declare(strict_types=1);
 namespace Dot\Maker\Type;
 
 use Dot\Maker\Component;
+use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
+use Dot\Maker\Component\Inject;
+use Dot\Maker\Component\Method;
+use Dot\Maker\Component\Parameter;
 use Dot\Maker\ContextInterface;
+use Dot\Maker\Exception\BadRequestException;
+use Dot\Maker\Exception\DuplicateFileException;
+use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
+use Throwable;
 
 use function sprintf;
 use function ucfirst;
@@ -24,86 +32,85 @@ class Repository extends AbstractType implements FileInterface
                 return;
             }
 
-            if (! $this->isValid($name)) {
-                Output::error(sprintf('Invalid Repository name: "%s"', $name));
-                continue;
+            try {
+                $this->create($name);
+                $this->initComponent(TypeEnum::Entity)->create($name);
+                break;
+            } catch (Throwable $exception) {
+                Output::error($exception->getMessage());
             }
-
-            $repository = $this->fileSystem->repository($name);
-            if ($repository->exists()) {
-                Output::error(
-                    sprintf(
-                        'Repository "%s" already exists at %s',
-                        $repository->getComponent()->getClassName(),
-                        $repository->getPath()
-                    )
-                );
-                continue;
-            }
-
-            $entity = $this->fileSystem->entity($name);
-
-            $repository
-                ->ensureParentDirectoryExists()
-                ->getComponent()
-                    ->useClass($this->getAbstractRepositoryFqcn())
-                    ->useClass($entity->getComponent()->getFqcn())
-                    ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_ENTITY);
-
-            if (! $repository->create($this->render($repository->getComponent(), $entity->getComponent()))) {
-                Output::error(sprintf('Could not create Repository "%s"', $repository->getPath()), true);
-            }
-            Output::info(sprintf('Created new Repository "%s"', $repository->getPath()));
-
-            $this->initComponent(TypeEnum::Entity)->create($name);
-
-            break;
         }
     }
 
-    public function create(string $name): ?File
+    /**
+     * @throws BadRequestException
+     * @throws DuplicateFileException
+     * @throws RuntimeException
+     */
+    public function create(string $name): File
     {
         if (! $this->isValid($name)) {
-            Output::error(sprintf('Invalid Repository name: "%s"', $name), true);
+            throw new BadRequestException(sprintf('Invalid Repository name: "%s"', $name));
         }
 
         $repository = $this->fileSystem->repository($name);
         if ($repository->exists()) {
-            Output::error(
-                sprintf(
-                    'Repository "%s" already exists at %s',
-                    $repository->getComponent()->getClassName(),
-                    $repository->getPath()
-                ),
-                true
-            );
+            throw DuplicateFileException::create($repository);
         }
 
-        $entity = $this->fileSystem->entity($name);
+        $repository->ensureParentDirectoryExists();
 
-        $repository
-            ->ensureParentDirectoryExists()
-            ->getComponent()
-                ->useClass($this->getAbstractRepositoryFqcn())
-                ->useClass($entity->getComponent()->getFqcn())
-                ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_ENTITY);
-
-        if (! $repository->create($this->render($repository->getComponent(), $entity->getComponent()))) {
-            Output::error(sprintf('Could not create Repository "%s"', $repository->getPath()), true);
+        $content = $this->render(
+            $repository->getComponent(),
+            $this->fileSystem->entity($name)->getComponent()
+        );
+        if (! $repository->create($content)) {
+            throw new RuntimeException(sprintf('Could not create Repository "%s"', $repository->getPath()));
         }
-        Output::info(sprintf('Created new Repository "%s"', $repository->getPath()));
+
+        Output::info(sprintf('Created Repository "%s"', $repository->getPath()));
 
         return $repository;
     }
 
     public function render(Component $repository, Component $entity): string
     {
-        return $this->stub->render('repository.stub', [
-            'ENTITY_CLASS_STRING'   => $entity->getClassString(),
-            'REPOSITORY_CLASS_NAME' => $repository->getClassName(),
-            'REPOSITORY_NAMESPACE'  => $repository->getNamespace(),
-            'USES'                  => $repository->getImport()->render(),
-        ]);
+        $class = (new ClassFile($repository->getNamespace(), $repository->getClassName()))
+            ->setExtends('AbstractRepository')
+            ->useClass($this->getAbstractRepositoryFqcn())
+            ->useClass($entity->getFqcn())
+            ->useClass(Import::DOCTRINE_ORM_QUERYBUILDER)
+            ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_ENTITY)
+            ->addInject(
+                (new Inject('Entity'))->addArgument($entity->getClassString(), 'name')
+            );
+
+        $getResources = (new Method($entity->getCollectionMethodName()))
+            ->addParameter(
+                new Parameter('params', 'array', false, '[]')
+            )
+            ->addParameter(
+                new Parameter('filters', 'array', false, '[]')
+            )
+            ->setReturnType('QueryBuilder')
+            ->setBody(<<<BODY
+        \$queryBuilder = \$this
+            ->getQueryBuilder()
+            ->select(['{$entity->getPropertyName()}'])
+            ->from({$entity->getClassString()}, '{$entity->getPropertyName()}');
+
+        \$queryBuilder
+            ->orderBy(\$params['sort'], \$params['dir'])
+            ->setFirstResult(\$params['offset'])
+            ->setMaxResults(\$params['limit'])
+            ->groupBy('{$entity->getPropertyName()}.uuid');
+        \$queryBuilder->getQuery()->useQueryCache(true);
+
+        return \$queryBuilder;
+BODY);
+        $class->addMethod($getResources);
+
+        return $class->render();
     }
 
     public function getAbstractRepositoryFqcn(): string

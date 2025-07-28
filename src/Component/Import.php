@@ -16,9 +16,13 @@ use const PHP_EOL;
 class Import
 {
     // phpcs:disable Generic.Files.LineLength.TooLong
+    public const DATETIMEIMMUTABLE                                = 'DateTimeImmutable';
     public const DOCTRINE_ORM_MAPPING                             = 'Doctrine\\ORM\\Mapping';
+    public const DOCTRINE_ORM_QUERYBUILDER                        = 'Doctrine\\ORM\\QueryBuilder';
     public const DOT_DEPENDENCYINJECTION_ATTRIBUTE_ENTITY         = 'Dot\\DependencyInjection\\Attribute\\Entity';
     public const DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT         = 'Dot\\DependencyInjection\\Attribute\\Inject';
+    public const FIG_HTTP_MESSAGE_STATUSCODEINTERFACE             = 'Fig\\Http\\Message\\StatusCodeInterface';
+    public const OPENAPI_ATTRIBUTES                               = 'OpenApi\\Attributes';
     public const PSR_HTTP_MESSAGE_RESPONSEINTERFACE               = 'Psr\\Http\\Message\\ResponseInterface';
     public const PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE          = 'Psr\\Http\\Message\\ServerRequestInterface';
     public const PSR_HTTP_SERVER_MIDDLEWAREINTERFACE              = 'Psr\\Http\\Server\\MiddlewareInterface';
@@ -27,6 +31,7 @@ class Import
     public const ROOT_APP_COLLECTION_RESOURCECOLLECTION           = '%s\\App\\Collection\\ResourceCollection';
     public const ROOT_APP_ENTITY_ABSTRACTENTITY                   = '%s\\App\\Entity\\AbstractEntity';
     public const ROOT_APP_ENTITY_TIMESTAMPSTRAIT                  = '%s\\App\\Entity\\TimestampsTrait';
+    public const ROOT_APP_HELPER_PAGINATOR                        = '%s\\App\\Helper\\Paginator';
     public const ROOT_APP_HANDLER_ABSTRACTHANDLER                 = '%s\\App\\Handler\\AbstractHandler';
     public const ROOT_APP_INPUTFILTER_ABSTRACTINPUTFILTER         = '%s\\App\\InputFilter\\AbstractInputFilter';
     public const ROOT_APP_REPOSITORY_ABSTRACTREPOSITORY           = '%s\\App\\Repository\\AbstractRepository';
@@ -69,10 +74,16 @@ class Import
     {
         $classUses = $this->renderClassUses();
 
-        $functionUses = array_map(fn (string $functionUse) => sprintf('use %s;', $functionUse), $this->functionUses);
+        $functionUses = array_map(
+            fn (string $functionUse) => sprintf('use function %s;', $functionUse),
+            $this->functionUses
+        );
         sort($functionUses);
 
-        $constantUses = array_map(fn (string $functionUse) => sprintf('use %s;', $functionUse), $this->constantUses);
+        $constantUses = array_map(
+            fn (string $constantUse) => sprintf('use const %s;', $constantUse),
+            $this->constantUses
+        );
         sort($constantUses);
 
         $uses = [];
@@ -102,6 +113,7 @@ class Import
     private function renderClassUses(): array
     {
         $classUses = [];
+
         foreach ($this->classUses as $use) {
             if ($use['alias'] !== null) {
                 $classUses[] = sprintf('use %s as %s;', $use['fqcn'], $use['alias']);
@@ -112,5 +124,10 @@ class Import
         sort($classUses);
 
         return $classUses;
+    }
+
+    public static function getResourceCollectionFqcn(string $rootNamespace): string
+    {
+        return sprintf(self::ROOT_APP_COLLECTION_RESOURCECOLLECTION, $rootNamespace);
     }
 }

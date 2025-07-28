@@ -16,5 +16,4 @@ if (file_exists($autoload)) {
 (new Maker(
     sprintf('%s/composer.json', getcwd()),
     sprintf('%s/config/autoload/maker.php', getcwd()),
-    sprintf('%s/resources/stubs', dirname(__DIR__)),
 ))($argv);

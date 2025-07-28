@@ -24,7 +24,6 @@ final readonly class Maker
     public function __construct(
         private string $composerPath,
         private string $configPath,
-        private string $stubDirectory,
     ) {
     }
 
@@ -45,7 +44,7 @@ final readonly class Maker
             Output::error(sprintf('unknown component: "%s"', $argument), true);
         }
 
-        $config     = new Config($this->stubDirectory, $this->configPath);
+        $config     = new Config($this->configPath);
         $context    = new Context($this->composerPath);
         $fileSystem = new FileSystem($context);
         $instance   = new ($component->getClass())($fileSystem, $context, $config);

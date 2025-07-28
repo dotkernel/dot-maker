@@ -6,9 +6,15 @@ namespace Dot\Maker;
 
 use Dot\Maker\Component\Import;
 
+use function in_array;
 use function lcfirst;
+use function preg_match;
 use function preg_replace;
 use function sprintf;
+use function strlen;
+use function strtolower;
+use function substr;
+use function ucfirst;
 
 class Component
 {
@@ -29,6 +35,16 @@ class Component
     public function getClassString(): string
     {
         return sprintf('%s::class', $this->className);
+    }
+
+    public function getCollectionMethodName(): string
+    {
+        return sprintf('get%s', self::pluralize($this->className));
+    }
+
+    public function getDeleteMethodName(): string
+    {
+        return sprintf('delete%s', ucfirst($this->className));
     }
 
     public function getFqcn(): string
@@ -69,6 +85,19 @@ class Component
     public function getVariable(bool $noInterface = true): string
     {
         return sprintf('$%s', $this->getPropertyName($noInterface));
+    }
+
+    public static function pluralize(string $name): string
+    {
+        $lastLetter = strtolower($name[strlen($name) - 1]);
+
+        if (in_array($lastLetter, ['s', 'x', 'z']) || preg_match('/(sh|ch)$/i', $name)) {
+            return $name . 'es';
+        } elseif (preg_match('/[^aeiou]y$/i', $name)) {
+            return substr($name, 0, -1) . 'ies';
+        } else {
+            return $name . 's';
+        }
     }
 
     public function useClass(string $name, ?string $alias = null): self

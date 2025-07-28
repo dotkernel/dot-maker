@@ -6,6 +6,10 @@ namespace Dot\Maker\Type\Handler\Api;
 
 use Dot\Maker\Component;
 use Dot\Maker\Component\Import;
+use Dot\Maker\Component\Inject;
+use Dot\Maker\Component\Method;
+use Dot\Maker\Component\Method\Constructor;
+use Dot\Maker\Component\Parameter;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
@@ -13,8 +17,11 @@ use Dot\Maker\Type\AbstractType;
 use Dot\Maker\Type\FileInterface;
 use Dot\Maker\Type\TypeEnum;
 
+use function implode;
 use function sprintf;
 use function ucfirst;
+
+use const PHP_EOL;
 
 class DeleteResourceHandler extends AbstractType implements FileInterface
 {
@@ -95,10 +102,7 @@ class DeleteResourceHandler extends AbstractType implements FileInterface
             $handler
                 ->getComponent()
                     ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
-                    ->useClass($serviceInterface->getComponent()->getFqcn())
-                ->getConstructor()
-                    ->wPromotedProperty($serviceInterface->getComponent())
-                    ->addInject($serviceInterface->getComponent()->getClassString());
+                    ->useClass($serviceInterface->getComponent()->getFqcn());
         }
 
         $content = $this->render(
@@ -116,23 +120,40 @@ class DeleteResourceHandler extends AbstractType implements FileInterface
 
     public function render(Component $handler, ?Component $serviceInterface = null, ?Component $entity = null): string
     {
-        $body = '';
-        if ($serviceInterface !== null && $entity !== null) {
-            $body = <<<BDY
+        $methods = [];
 
-        \$this->{$serviceInterface->getPropertyName(true)}->delete{$entity->getClassName()}(
-            \$request->getAttribute({$entity->getClassString()})
-        );
-
-BDY;
+        if ($serviceInterface !== null) {
+            $methods[] = (new Constructor())
+                ->addPromotedPropertyFromComponent($serviceInterface)
+                ->addInject(
+                    (new Inject())->addArgument($serviceInterface->getClassString())
+                );
         }
 
-        return $this->stub->render('handler/api/delete-resource.stub', [
-            'CONSTRUCTOR'        => $handler->getConstructor()->render(),
-            'HANDLE_METHOD_BODY' => $body,
+        $handle = (new Method('handle'))
+            ->addParameter(
+                new Parameter('request', 'ServerRequestInterface')
+            )
+            ->setReturnType('ResponseInterface');
+        if ($entity !== null) {
+            $handle
+                ->addInject(
+                    (new Inject('Resource'))->addArgument($entity->getClassString(), 'entity')
+                )
+                ->addBodyLine(
+                    sprintf('$this->%s->delete%s(', $serviceInterface->getPropertyName(true), $entity->getClassName())
+                )
+                ->addBodyLine(sprintf('$request->getAttribute(%s)', $entity->getClassString()), 12)
+                ->addBodyLine(');')
+                ->addBodyLine('', 0);
+        }
+        $handle->addBodyLine('return $this->noContentResponse();');
+        $methods[] = $handle;
+
+        return $this->stub->render('api-handler.stub', [
             'HANDLER_CLASS_NAME' => $handler->getClassName(),
             'HANDLER_NAMESPACE'  => $handler->getNamespace(),
-            'RESOURCE_INJECTOR'  => $handler->getAccessor()->renderResourceAttribute($entity),
+            'METHODS'            => implode(PHP_EOL . PHP_EOL . '    ', $methods),
             'USES'               => $handler->getImport()->render(),
         ]);
     }

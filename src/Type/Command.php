@@ -5,15 +5,21 @@ declare(strict_types=1);
 namespace Dot\Maker\Type;
 
 use Dot\Maker\Component;
+use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
 use Dot\Maker\Component\Method;
 use Dot\Maker\Component\Method\Constructor;
 use Dot\Maker\Component\Parameter;
+use Dot\Maker\Component\Property;
+use Dot\Maker\Exception\BadRequestException;
+use Dot\Maker\Exception\DuplicateFileException;
+use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\VisibilityEnum;
+use Throwable;
 
 use function array_shift;
 use function count;
@@ -23,8 +29,6 @@ use function preg_split;
 use function sprintf;
 use function strtolower;
 use function ucfirst;
-
-use const PHP_EOL;
 
 class Command extends AbstractType implements FileInterface
 {
@@ -36,123 +40,98 @@ class Command extends AbstractType implements FileInterface
                 return;
             }
 
-            if (! $this->isValid($name)) {
-                Output::error(sprintf('Invalid Command name: "%s"', $name));
-                continue;
+            try {
+                $this->create($name);
+                break;
+            } catch (Throwable $exception) {
+                Output::error($exception->getMessage());
             }
-
-            $command = $this->fileSystem->command($name);
-            if ($command->exists()) {
-                Output::error(
-                    sprintf(
-                        'Command "%s" already exists at %s',
-                        $command->getComponent()->getClassName(),
-                        $command->getPath()
-                    )
-                );
-                continue;
-            }
-
-            $command
-                ->ensureParentDirectoryExists()
-                ->getComponent()
-                    ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_ATTRIBUTE_ASCOMMAND)
-                    ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_COMMAND_COMMAND)
-                    ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_INPUT_INPUTINTERFACE)
-                    ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_OUTPUT_OUTPUTINTERFACE)
-                    ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_STYLE_SYMFONYSTYLE);
-
-            $content = $this->render($command->getComponent());
-            if (! $command->create($content)) {
-                Output::error(sprintf('Could not create Command "%s"', $command->getPath()), true);
-            }
-            Output::info(sprintf('Created Command "%s"', $command->getPath()));
         }
     }
 
+    /**
+     * @throws BadRequestException
+     * @throws DuplicateFileException
+     * @throws RuntimeException
+     */
     public function create(string $name): File
     {
         if (! $this->isValid($name)) {
-            Output::error(sprintf('Invalid Command name: "%s"', $name), true);
+            throw new BadRequestException(sprintf('Invalid Command name: "%s"', $name));
         }
 
         $command = $this->fileSystem->command($name);
         if ($command->exists()) {
-            Output::error(
-                sprintf(
-                    'Command "%s" already exists at %s',
-                    $command->getComponent()->getClassName(),
-                    $command->getPath()
-                ),
-                true
-            );
+            throw new DuplicateFileException(sprintf(
+                'Command "%s" already exists at %s',
+                $command->getComponent()->getClassName(),
+                $command->getPath()
+            ));
         }
 
-        $command
-            ->ensureParentDirectoryExists()
-            ->getComponent()
-                ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_ATTRIBUTE_ASCOMMAND)
-                ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_COMMAND_COMMAND)
-                ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_INPUT_INPUTINTERFACE)
-                ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_OUTPUT_OUTPUTINTERFACE)
-                ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_STYLE_SYMFONYSTYLE);
+        $command->ensureParentDirectoryExists();
 
         $serviceInterface = $this->fileSystem->serviceInterface($name);
-        if ($serviceInterface->exists()) {
-            $command
-                ->getComponent()
-                    ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
-                    ->useClass($serviceInterface->getComponent()->getFqcn());
-        }
 
         $content = $this->render(
             $command->getComponent(),
             $serviceInterface->exists() ? $serviceInterface->getComponent() : null,
         );
         if (! $command->create($content)) {
-            Output::error(sprintf('Could not create Command "%s"', $command->getPath()), true);
+            throw new RuntimeException(sprintf('Could not create Command "%s"', $command->getPath()));
         }
+
         Output::info(sprintf('Created Command "%s"', $command->getPath()));
 
         return $command;
     }
 
-    public function getDefaultName(string $className): string
-    {
-        $className = preg_replace('/Command$/', '', $className);
-
-        $parts  = preg_split('/(?<!^)(?=[A-Z])/', $className);
-        $module = array_shift($parts);
-
-        if (count($parts) === 0) {
-            $parts[] = 'action';
-        }
-
-        return strtolower(sprintf('%s:%s', $module, implode('-', $parts)));
-    }
-
     public function render(Component $command, ?Component $serviceInterface = null): string
     {
-        $methods = [];
+        $defaultName = $this->getDefaultName($command->getClassName());
+
+        $class = (new ClassFile($command->getNamespace(), $command->getClassName()))
+            ->setExtends('Command')
+            ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_ATTRIBUTE_ASCOMMAND)
+            ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_COMMAND_COMMAND)
+            ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_INPUT_INPUTINTERFACE)
+            ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_OUTPUT_OUTPUTINTERFACE)
+            ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_STYLE_SYMFONYSTYLE)
+            ->addInject(
+                (new Inject('AsCommand'))
+                    ->addArgument(self::wrap($defaultName), 'name')
+                    ->addArgument('\'Command description.\'', 'description')
+            )
+            ->addProperty(
+                (new Property('defaultName', ''))
+                    ->setDefault(self::wrap($defaultName))
+                    ->setComment('/** @var string $defaultName */')
+                    ->setStatic(true)
+            );
 
         $constructor = (new Constructor())->addBodyLine('parent::__construct(self::$defaultName);');
         if ($serviceInterface !== null) {
-            $constructor->addInject(
-                (new Inject())->addArgument($serviceInterface->getClassString())
-            )
-            ->addPromotedPropertyFromComponent($serviceInterface);
+            $class
+                ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
+                ->useClass($serviceInterface->getFqcn());
+            $constructor
+                ->addInject(
+                    (new Inject())->addArgument($serviceInterface->getClassString())
+                )
+                ->addPromotedPropertyFromComponent($serviceInterface);
         }
-        $methods[] = $constructor;
+        $class->addMethod($constructor);
 
-        $methods[] = (new Method('configure'))
+        $configure = (new Method('configure'))
             ->setVisibility(VisibilityEnum::Protected)
             ->setBody(<<<BODY
         \$this
             ->setName(self::\$defaultName)
             ->setDescription('Command description.');
 BODY);
+        $class->addMethod($configure);
 
-        $methods[] = (new Method('execute'))
+        $execute = (new Method('execute'))
             ->setVisibility(VisibilityEnum::Protected)
             ->setReturnType('int')
             ->addParameter(
@@ -167,13 +146,22 @@ BODY);
 
         return Command::SUCCESS;
 BODY);
+        $class->addMethod($execute);
 
-        return $this->stub->render('command.stub', [
-            'COMMAND_CLASS_NAME'   => $command->getClassName(),
-            'COMMAND_DEFAULT_NAME' => $this->getDefaultName($command->getClassName()),
-            'COMMAND_NAMESPACE'    => $command->getNamespace(),
-            'METHODS'              => implode(PHP_EOL . PHP_EOL . '    ', $methods),
-            'USES'                 => $command->getImport()->render(),
-        ]);
+        return $class->render();
+    }
+
+    public function getDefaultName(string $className): string
+    {
+        $className = preg_replace('/Command$/', '', $className);
+
+        $parts  = preg_split('/(?<!^)(?=[A-Z])/', $className);
+        $module = array_shift($parts);
+
+        if (count($parts) === 0) {
+            $parts[] = 'action';
+        }
+
+        return strtolower(sprintf('%s:%s', $module, implode('-', $parts)));
     }
 }

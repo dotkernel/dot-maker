@@ -50,7 +50,7 @@ class InputFilter extends AbstractType implements FileInterface
             if (! $inputFilter->create($content)) {
                 Output::error(sprintf('Could not create InputFilter "%s"', $inputFilter->getPath()), true);
             }
-            Output::info(sprintf('Created new InputFilter "%s"', $inputFilter->getPath()));
+            Output::info(sprintf('Created InputFilter "%s"', $inputFilter->getPath()));
         }
     }
 
@@ -81,7 +81,7 @@ class InputFilter extends AbstractType implements FileInterface
         if (! $inputFilter->create($content)) {
             Output::error(sprintf('Could not create InputFilter "%s"', $inputFilter->getPath()), true);
         }
-        Output::info(sprintf('Created new InputFilter "%s"', $inputFilter->getPath()));
+        Output::info(sprintf('Created InputFilter "%s"', $inputFilter->getPath()));
 
         return $inputFilter;
     }

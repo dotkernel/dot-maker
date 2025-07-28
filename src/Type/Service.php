@@ -5,20 +5,24 @@ declare(strict_types=1);
 namespace Dot\Maker\Type;
 
 use Dot\Maker\Component;
+use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
+use Dot\Maker\Component\Method;
 use Dot\Maker\Component\Method\Constructor;
+use Dot\Maker\Component\Parameter;
 use Dot\Maker\Component\PromotedProperty;
+use Dot\Maker\ContextInterface;
+use Dot\Maker\Exception\BadRequestException;
+use Dot\Maker\Exception\DuplicateFileException;
+use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
+use Throwable;
 
-use function array_unshift;
-use function implode;
 use function sprintf;
 use function ucfirst;
-
-use const PHP_EOL;
 
 class Service extends AbstractType implements FileInterface
 {
@@ -30,78 +34,36 @@ class Service extends AbstractType implements FileInterface
                 break;
             }
 
-            if (! $this->isValid($name)) {
-                Output::error(sprintf('Invalid Service name: "%s"', $name));
-                continue;
+            try {
+                $this->create($name);
+                $this->initComponent(TypeEnum::ServiceInterface)->create($name);
+                break;
+            } catch (Throwable $exception) {
+                Output::error($exception->getMessage());
             }
-
-            $service = $this->fileSystem->service($name);
-            if ($service->exists()) {
-                Output::error(
-                    sprintf(
-                        'Service "%s" already exists at %s',
-                        $service->getComponent()->getClassName(),
-                        $service->getPath()
-                    )
-                );
-                continue;
-            }
-
-            $service->ensureParentDirectoryExists();
-
-            $repository = $this->fileSystem->repository($name);
-            if ($repository->exists()) {
-                $service
-                    ->getComponent()
-                    ->useClass($repository->getComponent()->getFqcn())
-                    ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT);
-            }
-
-            $serviceInterface = $this->fileSystem->serviceInterface($name);
-
-            $content = $this->render(
-                $service->getComponent(),
-                $serviceInterface->getComponent(),
-                $repository->exists() ? $repository->getComponent() : null,
-            );
-            if (! $service->create($content)) {
-                Output::error(sprintf('Could not create Service "%s"', $service->getPath()), true);
-            }
-            Output::info(sprintf('Created Service "%s"', $service->getPath()));
-
-            $this->initComponent(TypeEnum::ServiceInterface)->create($name);
-
-            break;
         }
     }
 
+    /**
+     * @throws BadRequestException
+     * @throws DuplicateFileException
+     * @throws RuntimeException
+     */
     public function create(string $name): File
     {
         if (! $this->isValid($name)) {
-            Output::error(sprintf('Invalid Service name: "%s"', $name), true);
+            throw new BadRequestException(sprintf('Invalid Service name: "%s"', $name));
         }
 
         $service = $this->fileSystem->service($name);
         if ($service->exists()) {
-            Output::error(
-                sprintf(
-                    'Service "%s" already exists at %s',
-                    $service->getComponent()->getClassName(),
-                    $service->getPath()
-                ),
-                true
-            );
+            throw DuplicateFileException::create($service);
         }
 
         $service->ensureParentDirectoryExists();
 
         $repository = $this->fileSystem->repository($name);
-        if ($repository->exists()) {
-            $service
-                ->getComponent()
-                    ->useClass($repository->getComponent()->getFqcn())
-                    ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT);
-        }
+        $entity     = $this->fileSystem->entity($name);
 
         $serviceInterface = $this->fileSystem->serviceInterface($name);
 
@@ -109,6 +71,7 @@ class Service extends AbstractType implements FileInterface
             $service->getComponent(),
             $serviceInterface->getComponent(),
             $repository->exists() ? $repository->getComponent() : null,
+            $entity->exists() ? $entity->getComponent() : null,
         );
         if (! $service->create($content)) {
             Output::error(sprintf('Could not create Service "%s"', $service->getPath()), true);
@@ -118,28 +81,81 @@ class Service extends AbstractType implements FileInterface
         return $service;
     }
 
-    public function render(Component $service, Component $serviceInterface, ?Component $repository = null): string
-    {
-        $methods = [];
+    public function render(
+        Component $service,
+        Component $serviceInterface,
+        ?Component $repository = null,
+        ?Component $entity = null,
+    ): string {
+        $class = (new ClassFile($service->getNamespace(), $service->getClassName()))
+            ->addInterface($serviceInterface->getClassName());
+        if ($repository !== null && $entity !== null) {
+            $class
+                ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
+                ->useClass(Import::DOCTRINE_ORM_QUERYBUILDER)
+                ->useClass($repository->getFqcn())
+                ->useClass($entity->getFqcn())
+                ->useClass($this->getAppHelperPaginatorFqcn())
+                ->useFunction('in_array');
 
-        $constructor = new Constructor();
-        if ($repository !== null) {
             $promotedProperty = new PromotedProperty($repository->getPropertyName(true), $repository->getClassName());
-            $constructor
+
+            $constructor = (new Constructor())
                 ->addInject(
                     (new Inject())->addArgument($repository->getClassString())
                 )
                 ->addPromotedProperty($promotedProperty);
-            $methods[] = $promotedProperty->getGetter();
-        }
-        array_unshift($methods, $constructor);
+            $class->addMethod($constructor);
+            $class->addMethod($promotedProperty->getGetter());
 
-        return $this->stub->render('service.stub', [
-            'SERVICE_CLASS_NAME'     => $service->getClassName(),
-            'SERVICE_NAMESPACE'      => $service->getNamespace(),
-            'SERVICE_INTERFACE_NAME' => $serviceInterface->getClassName(),
-            'METHODS'                => implode(PHP_EOL . PHP_EOL . '    ', $methods),
-            'USES'                   => $service->getImport()->render(),
-        ]);
+            $deleteResource = (new Method($entity->getDeleteMethodName()))
+                ->addParameter(
+                    new Parameter($entity->getPropertyName(), $entity->getClassName())
+                )
+                ->addBodyLine(
+                    sprintf(
+                        '$this->%s->deleteResource(%s);',
+                        $repository->getPropertyName(),
+                        $entity->getVariable()
+                    )
+                );
+            $class->addMethod($deleteResource);
+
+            $getResources = (new Method($entity->getCollectionMethodName()))
+                ->addParameter(
+                    new Parameter('params', 'array')
+                )
+                ->setReturnType($this->context->isApi() ? 'QueryBuilder' : 'array')
+                ->addBodyLine('$filters = $params[\'filters\'] ?? [];')
+                ->addBodyLine('return $filters;')
+                ->setBody(<<<BODY
+        \$filters = \$params['filters'] ?? [];
+        \$params  = Paginator::getParams(\$params, '{$entity->getPropertyName()}.created');
+
+        \$sortableColumns = [
+            '{$entity->getPropertyName()}.created',
+            '{$entity->getPropertyName()}.updated',
+        ];
+        if (! in_array(\$params['sort'], \$sortableColumns, true)) {
+            \$params['sort'] = '{$entity->getPropertyName()}.created';
+        }
+
+        return \$this->{$repository->getPropertyName()}->{$entity->getCollectionMethodName()}(\$params, \$filters);
+BODY);
+            $class->addMethod($getResources);
+        }
+
+        return $class->render();
+    }
+
+    public function getAppHelperPaginatorFqcn(): string
+    {
+        $format = Import::ROOT_APP_HELPER_PAGINATOR;
+
+        if ($this->context->hasCore()) {
+            return sprintf($format, ContextInterface::NAMESPACE_CORE);
+        }
+
+        return sprintf($format, $this->context->getRootNamespace());
     }
 }

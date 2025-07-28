@@ -5,21 +5,25 @@ declare(strict_types=1);
 namespace Dot\Maker\Type;
 
 use Dot\Maker\Component;
+use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
+use Dot\Maker\Component\Inject;
 use Dot\Maker\Component\Method;
 use Dot\Maker\Component\Method\Constructor;
 use Dot\Maker\ContextInterface;
+use Dot\Maker\Exception\BadRequestException;
+use Dot\Maker\Exception\DuplicateFileException;
+use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
+use Throwable;
 
 use function implode;
 use function preg_split;
 use function sprintf;
 use function strtolower;
 use function ucfirst;
-
-use const PHP_EOL;
 
 class Entity extends AbstractType implements FileInterface
 {
@@ -31,93 +35,75 @@ class Entity extends AbstractType implements FileInterface
                 return;
             }
 
-            if (! $this->isValid($name)) {
-                Output::error(sprintf('Invalid Entity name: "%s"', $name));
-                continue;
+            try {
+                $this->create($name);
+                $this->initComponent(TypeEnum::Repository)->create($name);
+                break;
+            } catch (Throwable $exception) {
+                Output::error($exception->getMessage());
             }
-
-            $entity = $this->fileSystem->entity($name);
-            if ($entity->exists()) {
-                Output::error(
-                    sprintf(
-                        'Entity "%s" already exists at %s',
-                        $entity->getComponent()->getClassName(),
-                        $entity->getPath()
-                    )
-                );
-                continue;
-            }
-
-            $repository = $this->fileSystem->repository($name);
-
-            $entity
-                ->ensureParentDirectoryExists()
-                ->getComponent()
-                    ->useClass($repository->getComponent()->getFqcn())
-                    ->useClass($this->getAbstractEntityFqcn())
-                    ->useClass($this->getTimestampsTraitFqcn())
-                    ->useClass(Import::DOCTRINE_ORM_MAPPING, 'ORM');
-
-            $content = $this->render($entity->getComponent(), $repository->getComponent());
-            if (! $entity->create($content)) {
-                Output::error(sprintf('Could not create Entity "%s"', $entity->getPath()), true);
-            }
-            Output::info(sprintf('Created new Entity "%s"', $entity->getPath()));
-
-            $this->initComponent(TypeEnum::Repository)->create($name);
-
-            break;
         }
     }
 
+    /**
+     * @throws BadRequestException
+     * @throws DuplicateFileException
+     * @throws RuntimeException
+     */
     public function create(string $name): File
     {
         if (! $this->isValid($name)) {
-            Output::error(sprintf('Invalid Entity name: "%s"', $name), true);
+            throw new BadRequestException(sprintf('Invalid Entity name: "%s"', $name));
         }
 
         $entity = $this->fileSystem->entity($name);
         if ($entity->exists()) {
-            Output::error(
-                sprintf(
-                    'Entity "%s" already exists at %s',
-                    $entity->getComponent()->getClassName(),
-                    $entity->getPath()
-                ),
-                true
-            );
+            throw DuplicateFileException::create($entity);
         }
 
-        $repository = $this->fileSystem->repository($name);
+        $entity->ensureParentDirectoryExists();
 
-        $entity
-            ->ensureParentDirectoryExists()
-            ->getComponent()
-                ->useClass($repository->getComponent()->getFqcn())
-                ->useClass($this->getAbstractEntityFqcn())
-                ->useClass($this->getTimestampsTraitFqcn())
-                ->useClass(Import::DOCTRINE_ORM_MAPPING, 'ORM');
-
-        $content = $this->render($entity->getComponent(), $repository->getComponent());
+        $content = $this->render(
+            $entity->getComponent(),
+            $this->fileSystem->repository($name)->getComponent()
+        );
         if (! $entity->create($content)) {
-            Output::error(sprintf('Could not create Entity "%s"', $entity->getPath()), true);
+            throw new RuntimeException(sprintf('Could not create Entity "%s"', $entity->getPath()));
         }
-        Output::info(sprintf('Created new Entity "%s"', $entity->getPath()));
+
+        Output::info(sprintf('Created Entity "%s"', $entity->getPath()));
 
         return $entity;
     }
 
     public function render(Component $entity, Component $repository): string
     {
-        $methods = [];
+        $class = (new ClassFile($entity->getNamespace(), $entity->getClassName()))
+            ->setExtends('AbstractEntity')
+            ->useClass($this->getAbstractEntityFqcn())
+            ->useClass($this->getTimestampsTraitFqcn())
+            ->useClass($repository->getFqcn())
+            ->useClass(Import::DOCTRINE_ORM_MAPPING, 'ORM')
+            ->addInject(
+                (new Inject('ORM\Entity'))->addArgument($repository->getClassString(), 'repositoryClass')
+            )
+            ->addInject(
+                (new Inject('ORM\Table'))
+                    ->addArgument(self::wrap($this->getTableName($entity->getClassName())), 'name')
+            )
+            ->addInject(
+                new Inject('ORM\HasLifecycleCallbacks')
+            )
+            ->addTrait('TimestampsTrait');
 
-        $methods[] = (new Constructor())->setBody(<<<BODY
+        $constructor = (new Constructor())->setBody(<<<BODY
         parent::__construct();
 
         \$this->created();
 BODY);
+        $class->addMethod($constructor);
 
-        $methods[] = (new Method('getArrayCopy'))
+        $getArrayCopy = (new Method('getArrayCopy'))
             ->setReturnType('array')
             ->setBody(<<<BODY
         return [
@@ -126,15 +112,9 @@ BODY);
             'updated' => \$this->updated,
         ];
 BODY);
+        $class->addMethod($getArrayCopy);
 
-        return $this->stub->render('entity.stub', [
-            'ENTITY_CLASS_NAME'       => $entity->getClassName(),
-            'ENTITY_NAMESPACE'        => $entity->getNamespace(),
-            'ENTITY_TABLE'            => $this->getTableName($entity->getClassName()),
-            'REPOSITORY_CLASS_STRING' => $repository->getClassString(),
-            'METHODS'                 => implode(PHP_EOL . PHP_EOL . '    ', $methods),
-            'USES'                    => $entity->getImport()->render(),
-        ]);
+        return $class->render();
     }
 
     public function getAbstractEntityFqcn(): string

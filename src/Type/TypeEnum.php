@@ -43,6 +43,7 @@ enum TypeEnum: string
     case InputFilter               = 'inputFilter';
     case Middleware                = 'middleware';
     case Module                    = 'module';
+    case OpenApi                   = 'openApi';
     case Repository                = 'repository';
     case Service                   = 'service';
     case ServiceInterface          = 'serviceInterface';
@@ -72,6 +73,7 @@ enum TypeEnum: string
             self::InputFilter               => InputFilter::class,
             self::Middleware                => Middleware::class,
             self::Module                    => Module::class,
+            self::OpenApi                   => OpenApi::class,
             self::Repository                => Repository::class,
             self::Service                   => Service::class,
             self::ServiceInterface          => ServiceInterface::class,

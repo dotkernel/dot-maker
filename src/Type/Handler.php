@@ -4,17 +4,13 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
+use Dot\Maker\Component;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 
-use function in_array;
-use function preg_match;
 use function preg_replace;
 use function sprintf;
-use function strlen;
-use function strtolower;
-use function substr;
 use function ucfirst;
 
 class Handler extends AbstractType implements FileInterface
@@ -42,7 +38,7 @@ class Handler extends AbstractType implements FileInterface
     {
         $name = preg_replace('/Handler$/', '', $name);
 
-        $plural = self::pluralize($name);
+        $plural = Component::pluralize($name);
         if ($this->context->isApi()) {
             if (Input::confirm(sprintf('Allow listing %s?', $plural))) {
                 $this->initComponent(TypeEnum::HandlerApiGetCollection)->create($name);
@@ -53,9 +49,9 @@ class Handler extends AbstractType implements FileInterface
 //            if (Input::confirm(sprintf('Allow creating %s?', $plural))) {
 //                $this->initComponent(TypeEnum::HandlerApiPostResource)->create($name);
 //            }
-//            if (Input::confirm(sprintf('Allow deleting %s?', $plural))) {
-//                $this->initComponent(TypeEnum::HandlerApiDeleteResource)->create($name);
-//            }
+            if (Input::confirm(sprintf('Allow deleting %s?', $plural))) {
+                $this->initComponent(TypeEnum::HandlerApiDeleteResource)->create($name);
+            }
 //            if (Input::confirm(sprintf('Allow updating %s?', $plural))) {
 //                $this->initComponent(TypeEnum::HandlerApiPatchResource)->create($name);
 //            }
@@ -84,18 +80,5 @@ class Handler extends AbstractType implements FileInterface
         }
 
         return $this->fileSystem->handler($name);
-    }
-
-    public static function pluralize(string $name): string
-    {
-        $lastLetter = strtolower($name[strlen($name) - 1]);
-
-        if (in_array($lastLetter, ['s', 'x', 'z']) || preg_match('/(sh|ch)$/i', $name)) {
-            return $name . 'es';
-        } elseif (preg_match('/[^aeiou]y$/i', $name)) {
-            return substr($name, 0, -1) . 'ies';
-        } else {
-            return $name . 's';
-        }
     }
 }

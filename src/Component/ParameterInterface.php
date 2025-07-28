@@ -16,4 +16,6 @@ interface ParameterInterface
     public function getSetter(): Setter;
 
     public function getType(): string;
+
+    public function render(int $spaces = 0): string;
 }
