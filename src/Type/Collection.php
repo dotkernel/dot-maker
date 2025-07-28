@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
-use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Exception\BadRequestException;
@@ -57,7 +56,7 @@ class Collection extends AbstractType implements FileInterface
             throw DuplicateFileException::create($collection);
         }
 
-        $content = $this->render($collection->getComponent());
+        $content = $this->render($collection);
 
         try {
             $collection->create($content);
@@ -69,9 +68,9 @@ class Collection extends AbstractType implements FileInterface
         return $collection;
     }
 
-    public function render(Component $collection): string
+    public function render(File $collection): string
     {
-        return (new ClassFile($collection->getNamespace(), $collection->getClassName()))
+        return (new ClassFile($collection->getComponent()->getNamespace(), $collection->getComponent()->getClassName()))
             ->useClass(Import::getResourceCollectionFqcn($this->context->getRootNamespace()))
             ->setExtends('ResourceCollection')
             ->render();

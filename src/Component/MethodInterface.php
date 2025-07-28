@@ -8,11 +8,11 @@ use Dot\Maker\VisibilityEnum;
 
 interface MethodInterface
 {
-    public function addBodyLine(string $bodyLine, int $spaces = 8): self;
-
     public function addInject(Inject $inject): self;
 
     public function addParameter(ParameterInterface $parameter): self;
+
+    public function appendBody(string $bodyLine, int $spaces = 8): self;
 
     public function getName(): string;
 

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Component;
 
+use function array_key_exists;
 use function array_map;
 use function count;
 use function implode;
@@ -87,6 +88,11 @@ class ClassFile
         $this->traits[$trait] = sprintf('use %s;', $trait);
 
         return $this;
+    }
+
+    public function hasMethod(string $method): bool
+    {
+        return array_key_exists($method, $this->methods);
     }
 
     public function render(): string

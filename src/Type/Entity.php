@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
-use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
@@ -62,8 +61,8 @@ class Entity extends AbstractType implements FileInterface
         }
 
         $content = $this->render(
-            $entity->getComponent(),
-            $this->fileSystem->repository($name)->getComponent()
+            $entity,
+            $this->fileSystem->repository($name)
         );
 
         try {
@@ -76,20 +75,20 @@ class Entity extends AbstractType implements FileInterface
         return $entity;
     }
 
-    public function render(Component $entity, Component $repository): string
+    public function render(File $entity, File $repository): string
     {
-        $class = (new ClassFile($entity->getNamespace(), $entity->getClassName()))
+        $class = (new ClassFile($entity->getComponent()->getNamespace(), $entity->getComponent()->getClassName()))
             ->setExtends('AbstractEntity')
             ->useClass($this->getAbstractEntityFqcn())
             ->useClass($this->getTimestampsTraitFqcn())
-            ->useClass($repository->getFqcn())
+            ->useClass($repository->getComponent()->getFqcn())
             ->useClass(Import::DOCTRINE_ORM_MAPPING, 'ORM')
             ->addInject(
-                (new Inject('ORM\Entity'))->addArgument($repository->getClassString(), 'repositoryClass')
+                (new Inject('ORM\Entity'))->addArgument($repository->getComponent()->getClassString(), 'repositoryClass')
             )
             ->addInject(
                 (new Inject('ORM\Table'))
-                    ->addArgument(self::wrap($this->getTableName($entity->getClassName())), 'name')
+                    ->addArgument(self::wrap($this->getTableName($entity->getComponent()->getClassName())), 'name')
             )
             ->addInject(
                 new Inject('ORM\HasLifecycleCallbacks')

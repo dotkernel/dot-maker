@@ -44,6 +44,7 @@ enum TypeEnum: string
     case Middleware                = 'middleware';
     case Module                    = 'module';
     case OpenApi                   = 'openApi';
+    case RoutesDelegator           = 'routesDelegator';
     case Repository                = 'repository';
     case Service                   = 'service';
     case ServiceInterface          = 'serviceInterface';
@@ -75,6 +76,7 @@ enum TypeEnum: string
             self::Module                    => Module::class,
             self::OpenApi                   => OpenApi::class,
             self::Repository                => Repository::class,
+            self::RoutesDelegator           => RoutesDelegator::class,
             self::Service                   => Service::class,
             self::ServiceInterface          => ServiceInterface::class,
         };

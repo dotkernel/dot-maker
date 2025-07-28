@@ -4,24 +4,24 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type\Handler\Api;
 
-use Dot\Maker\Component;
+use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
 use Dot\Maker\Component\Method;
 use Dot\Maker\Component\Method\Constructor;
 use Dot\Maker\Component\Parameter;
+use Dot\Maker\Exception\BadRequestException;
+use Dot\Maker\Exception\DuplicateFileException;
+use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\AbstractType;
 use Dot\Maker\Type\FileInterface;
-use Dot\Maker\Type\TypeEnum;
+use Throwable;
 
-use function implode;
 use function sprintf;
 use function ucfirst;
-
-use const PHP_EOL;
 
 class DeleteResourceHandler extends AbstractType implements FileInterface
 {
@@ -33,35 +33,20 @@ class DeleteResourceHandler extends AbstractType implements FileInterface
                 break;
             }
 
-            if (! $this->isValid($name)) {
-                Output::error(sprintf('Invalid Handler name: "%s"', $name));
-                continue;
+            try {
+                $this->create($name);
+                break;
+            } catch (Throwable $exception) {
+                Output::error($exception->getMessage());
             }
-
-            $handler = $this->fileSystem->apiDeleteResourceHandler($name);
-            if ($handler->exists()) {
-                Output::error(
-                    sprintf(
-                        'Handler "%s" already exists at %s',
-                        $handler->getComponent()->getClassName(),
-                        $handler->getPath()
-                    )
-                );
-                continue;
-            }
-
-            $content = $this->render($handler->getComponent());
-            if (! $handler->create($content)) {
-                Output::error(sprintf('Could not create Handler "%s"', $handler->getPath()), true);
-            }
-            Output::info(sprintf('Created Handler "%s"', $handler->getPath()));
-
-            $this->initComponent(TypeEnum::Service)->create($name);
-
-            break;
         }
     }
 
+    /**
+     * @throws BadRequestException
+     * @throws DuplicateFileException
+     * @throws RuntimeException
+     */
     public function create(string $name): File
     {
         if (! $this->isValid($name)) {
@@ -70,98 +55,63 @@ class DeleteResourceHandler extends AbstractType implements FileInterface
 
         $handler = $this->fileSystem->apiDeleteResourceHandler($name);
         if ($handler->exists()) {
-            Output::error(
-                sprintf(
-                    'Handler "%s" already exists at %s',
-                    $handler->getComponent()->getClassName(),
-                    $handler->getPath()
-                ),
-                true
-            );
-        }
-
-        $handler
-            ->getComponent()
-                ->useClass($this->getAbstractHandlerFqcn())
-                ->useClass(Import::PSR_HTTP_MESSAGE_RESPONSEINTERFACE)
-                ->useClass(Import::PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE);
-
-        $entity = $this->fileSystem->entity($name);
-        if ($entity->exists()) {
-            $handler
-                ->getComponent()
-                    ->useClass($this->getResourceAttributeFqcn())
-                    ->useClass($entity->getComponent()->getFqcn());
-        }
-
-        $serviceInterface = $this->fileSystem->serviceInterface($name);
-        if ($serviceInterface->exists()) {
-            $handler
-                ->getComponent()
-                    ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
-                    ->useClass($serviceInterface->getComponent()->getFqcn());
+            throw DuplicateFileException::create($handler);
         }
 
         $content = $this->render(
-            $handler->getComponent(),
-            $serviceInterface->exists() ? $serviceInterface->getComponent() : null,
-            $entity->exists() ? $entity->getComponent() : null
+            $handler,
+            $this->fileSystem->serviceInterface($name),
+            $this->fileSystem->entity($name),
         );
-        if (! $handler->create($content)) {
-            Output::error(sprintf('Could not create Handler "%s"', $handler->getPath()), true);
+
+        try {
+            $handler->create($content);
+            Output::info(sprintf('Created Handler "%s"', $handler->getPath()));
+        } catch (RuntimeException $exception) {
+            Output::error($exception->getMessage());
         }
-        Output::info(sprintf('Created Handler "%s"', $handler->getPath()));
 
         return $handler;
     }
 
-    public function render(Component $handler, ?Component $serviceInterface = null, ?Component $entity = null): string
+    public function render(File $handler, File $serviceInterface, File $entity): string
     {
-        $methods = [];
+        $class = (new ClassFile($handler->getComponent()->getNamespace(), $handler->getComponent()->getClassName()))
+            ->setExtends('AbstractHandler')
+            ->useClass(Import::getAbstractHandlerFqcn($this->context->getRootNamespace()))
+            ->useClass(Import::getResourceAttributeFqcn($this->context->getRootNamespace()))
+            ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
+            ->useClass(Import::PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE)
+            ->useClass(Import::PSR_HTTP_MESSAGE_RESPONSEINTERFACE)
+            ->useClass($serviceInterface->getComponent()->getFqcn())
+            ->useClass($entity->getComponent()->getFqcn());
 
-        if ($serviceInterface !== null) {
-            $methods[] = (new Constructor())
-                ->addPromotedPropertyFromComponent($serviceInterface)
-                ->addInject(
-                    (new Inject())->addArgument($serviceInterface->getClassString())
-                );
-        }
+        $constructor = (new Constructor())
+            ->addPromotedPropertyFromComponent($serviceInterface->getComponent())
+            ->addInject(
+                (new Inject())->addArgument($serviceInterface->getComponent()->getClassString())
+            );
+        $class->addMethod($constructor);
 
+        // phpcs:disable Generic.Files.LineLength.TooLong
         $handle = (new Method('handle'))
+            ->setReturnType('ResponseInterface')
             ->addParameter(
                 new Parameter('request', 'ServerRequestInterface')
             )
-            ->setReturnType('ResponseInterface');
-        if ($entity !== null) {
-            $handle
-                ->addInject(
-                    (new Inject('Resource'))->addArgument($entity->getClassString(), 'entity')
-                )
-                ->addBodyLine(
-                    sprintf('$this->%s->delete%s(', $serviceInterface->getPropertyName(true), $entity->getClassName())
-                )
-                ->addBodyLine(sprintf('$request->getAttribute(%s)', $entity->getClassString()), 12)
-                ->addBodyLine(');')
-                ->addBodyLine('', 0);
-        }
-        $handle->addBodyLine('return $this->noContentResponse();');
-        $methods[] = $handle;
+            ->addInject(
+                (new Inject('Resource'))->addArgument($entity->getComponent()->getClassString(), 'entity')
+            )
+            ->setBody(<<<BODY
+        \$this->{$serviceInterface->getComponent()->getPropertyName(true)}->{$entity->getComponent()->getDeleteMethodName()}(
+            \$request->getAttribute({$entity->getComponent()->getClassString()})
+        );
 
-        return $this->stub->render('api-handler.stub', [
-            'HANDLER_CLASS_NAME' => $handler->getClassName(),
-            'HANDLER_NAMESPACE'  => $handler->getNamespace(),
-            'METHODS'            => implode(PHP_EOL . PHP_EOL . '    ', $methods),
-            'USES'               => $handler->getImport()->render(),
-        ]);
-    }
+        return \$this->noContentResponse();
+BODY);
+        // phpcs:enable Generic.Files.LineLength.TooLong
+        $class->addMethod($handle);
 
-    public function getAbstractHandlerFqcn(): string
-    {
-        return sprintf(Import::ROOT_APP_HANDLER_ABSTRACTHANDLER, $this->context->getRootNamespace());
-    }
-
-    public function getResourceAttributeFqcn(): string
-    {
-        return sprintf(Import::ROOT_APP_ATTRIBUTE_RESOURCE, $this->context->getRootNamespace());
+        return $class->render();
     }
 }

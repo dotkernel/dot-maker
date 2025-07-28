@@ -21,8 +21,13 @@ class Import
     public const DOCTRINE_ORM_QUERYBUILDER                        = 'Doctrine\\ORM\\QueryBuilder';
     public const DOT_DEPENDENCYINJECTION_ATTRIBUTE_ENTITY         = 'Dot\\DependencyInjection\\Attribute\\Entity';
     public const DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT         = 'Dot\\DependencyInjection\\Attribute\\Inject';
+    public const DOT_ROUTER_ROUTECOLLECTORINTERFACE               = 'Dot\\Router\\RouteCollectorInterface';
     public const FIG_HTTP_MESSAGE_STATUSCODEINTERFACE             = 'Fig\\Http\\Message\\StatusCodeInterface';
+    public const MEZZIO_APPLICATION                               = 'Mezzio\\Application';
     public const OPENAPI_ATTRIBUTES                               = 'OpenApi\\Attributes';
+    public const PSR_CONTAINER_CONTAINERINTERFACE                 = 'Psr\\Container\\ContainerInterface';
+    public const PSR_CONTAINER_CONTAINEREXCEPTIONINTERFACE        = 'Psr\\Container\\ContainerExceptionInterface';
+    public const PSR_CONTAINER_NOTFOUNDEXCEPTIONINTERFACE         = 'Psr\\Container\\NotFoundExceptionInterface';
     public const PSR_HTTP_MESSAGE_RESPONSEINTERFACE               = 'Psr\\Http\\Message\\ResponseInterface';
     public const PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE          = 'Psr\\Http\\Message\\ServerRequestInterface';
     public const PSR_HTTP_SERVER_MIDDLEWAREINTERFACE              = 'Psr\\Http\\Server\\MiddlewareInterface';
@@ -31,7 +36,11 @@ class Import
     public const ROOT_APP_COLLECTION_RESOURCECOLLECTION           = '%s\\App\\Collection\\ResourceCollection';
     public const ROOT_APP_ENTITY_ABSTRACTENTITY                   = '%s\\App\\Entity\\AbstractEntity';
     public const ROOT_APP_ENTITY_TIMESTAMPSTRAIT                  = '%s\\App\\Entity\\TimestampsTrait';
+    public const ROOT_APP_EXCEPTION_BADREQUESTEXCEPTION           = '%s\\App\\Exception\\BadRequestException';
+    public const ROOT_APP_EXCEPTION_CONFLICTEXCEPTION             = '%s\\App\\Exception\\ConflictException';
+    public const ROOT_APP_EXCEPTION_NOTFOUNDEXCEPTION             = '%s\\App\\Exception\\NotFoundException';
     public const ROOT_APP_HELPER_PAGINATOR                        = '%s\\App\\Helper\\Paginator';
+    public const ROOT_APP_MESSAGE                                 = '%s\\App\\Message';
     public const ROOT_APP_HANDLER_ABSTRACTHANDLER                 = '%s\\App\\Handler\\AbstractHandler';
     public const ROOT_APP_INPUTFILTER_ABSTRACTINPUTFILTER         = '%s\\App\\InputFilter\\AbstractInputFilter';
     public const ROOT_APP_REPOSITORY_ABSTRACTREPOSITORY           = '%s\\App\\Repository\\AbstractRepository';
@@ -124,6 +133,31 @@ class Import
         sort($classUses);
 
         return $classUses;
+    }
+
+    public static function getAbstractHandlerFqcn(string $rootNamespace): string
+    {
+        return sprintf(self::ROOT_APP_HANDLER_ABSTRACTHANDLER, $rootNamespace);
+    }
+
+    public static function getBadRequestExceptionFqcn(string $rootNamespace): string
+    {
+        return sprintf(self::ROOT_APP_EXCEPTION_BADREQUESTEXCEPTION, $rootNamespace);
+    }
+
+    public static function getConflictExceptionFqcn(string $rootNamespace): string
+    {
+        return sprintf(self::ROOT_APP_EXCEPTION_CONFLICTEXCEPTION, $rootNamespace);
+    }
+
+    public static function getNotFoundExceptionFqcn(string $rootNamespace): string
+    {
+        return sprintf(self::ROOT_APP_EXCEPTION_NOTFOUNDEXCEPTION, $rootNamespace);
+    }
+
+    public static function getResourceAttributeFqcn(string $rootNamespace): string
+    {
+        return sprintf(self::ROOT_APP_ATTRIBUTE_RESOURCE, $rootNamespace);
     }
 
     public static function getResourceCollectionFqcn(string $rootNamespace): string

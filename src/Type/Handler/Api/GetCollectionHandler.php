@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type\Handler\Api;
 
-use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
@@ -19,14 +18,10 @@ use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\AbstractType;
 use Dot\Maker\Type\FileInterface;
-use Dot\Maker\Type\TypeEnum;
-
 use Throwable;
-use function implode;
+
 use function sprintf;
 use function ucfirst;
-
-use const PHP_EOL;
 
 class GetCollectionHandler extends AbstractType implements FileInterface
 {
@@ -63,13 +58,11 @@ class GetCollectionHandler extends AbstractType implements FileInterface
             throw DuplicateFileException::create($handler);
         }
 
-        $serviceInterface = $this->fileSystem->serviceInterface($name);
-        $collection       = $this->fileSystem->collection($name);
-
         $content = $this->render(
-            $handler->getComponent(),
-            $serviceInterface->exists() ? $serviceInterface->getComponent() : null,
-            $collection->exists() ? $collection->getComponent() : null,
+            $handler,
+            $this->fileSystem->serviceInterface($name),
+            $this->fileSystem->collection($name),
+            $this->fileSystem->entity($name),
         );
 
         try {
@@ -82,70 +75,38 @@ class GetCollectionHandler extends AbstractType implements FileInterface
         return $handler;
     }
 
-    public function render(
-        Component $handler,
-        ?Component $serviceInterface = null,
-        ?Component $collection = null
-    ): string {
-        $class = (new ClassFile($collection->getNamespace(), $collection->getClassName()))
-            ->useClass($this->getAbstractHandlerFqcn())
+    public function render(File $handler, File $serviceInterface, File $collection, File $entity): string
+    {
+        $class = (new ClassFile($handler->getComponent()->getNamespace(), $handler->getComponent()->getClassName()))
+            ->setExtends('AbstractHandler')
+            ->useClass(Import::getAbstractHandlerFqcn($this->context->getRootNamespace()))
             ->useClass(Import::PSR_HTTP_MESSAGE_RESPONSEINTERFACE)
-            ->useClass(Import::PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE);
+            ->useClass(Import::PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE)
+            ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
+            ->useClass($serviceInterface->getComponent()->getFqcn())
+            ->useClass($collection->getComponent()->getFqcn());
 
-        if ($serviceInterface !== null) {
-            $class
-                ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
-                ->useClass($serviceInterface->getFqcn());
-        }
+        $constructor = (new Constructor())
+            ->addPromotedPropertyFromComponent($serviceInterface->getComponent())
+            ->addInject(
+                (new Inject())->addArgument($serviceInterface->getComponent()->getClassString())
+            );
+        $class->addMethod($constructor);
 
-        if ($serviceInterface !== null) {
-            $handler->useClass($collection->getFqcn());
-        }
-
-        $methods = [];
-
-        if ($serviceInterface !== null) {
-            $methods[] = (new Constructor())
-                ->addPromotedPropertyFromComponent($serviceInterface)
-                ->addInject(
-                    (new Inject())->addArgument($serviceInterface->getClassString())
-                );
-        }
-
-        if ($collection !== null) {
-            $getter = sprintf('get%s', ucfirst(Component::pluralize($this->fileSystem->getModuleName())));
-
-            // phpcs:disable Generic.Files.LineLength.TooLong
-            $body = <<<BODY
-        return \$this->createResponse(
-            \$request,
-            new {$collection->getClassName()}(\$this->{$serviceInterface->getPropertyName(true)}->$getter(\$request->getQueryParams()))
-        );
-BODY;
-            // phpcs:enable Generic.Files.LineLength.TooLong
-        } else {
-            $body = <<<BODY
-        \$this->emptyResponse();
-BODY;
-        }
-
-        $methods[] = (new Method('handle'))
+        // phpcs:disable Generic.Files.LineLength.TooLong
+        $handle = (new Method('handle'))
+            ->setReturnType('ResponseInterface')
             ->addParameter(
                 new Parameter('request', 'ServerRequestInterface')
-            )
-            ->setReturnType('ResponseInterface')
-            ->setBody($body);
+            )->setBody(<<<BODY
+        return \$this->createResponse(
+            \$request,
+            new {$collection->getComponent()->getClassName()}(\$this->{$serviceInterface->getComponent()->getPropertyName(true)}->{$entity->getComponent()->getCollectionMethodName()}(\$request->getQueryParams()))
+        );
+BODY);
+        // phpcs:enable Generic.Files.LineLength.TooLong
+        $class->addMethod($handle);
 
-        return $this->stub->render('api-handler.stub', [
-            'HANDLER_CLASS_NAME' => $handler->getClassName(),
-            'HANDLER_NAMESPACE'  => $handler->getNamespace(),
-            'METHODS'            => implode(PHP_EOL . PHP_EOL . '    ', $methods),
-            'USES'               => $handler->getImport()->render(),
-        ]);
-    }
-
-    public function getAbstractHandlerFqcn(): string
-    {
-        return sprintf(Import::ROOT_APP_HANDLER_ABSTRACTHANDLER, $this->context->getRootNamespace());
+        return $class->render();
     }
 }

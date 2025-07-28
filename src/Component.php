@@ -77,6 +77,11 @@ class Component
         return $property;
     }
 
+    public function getSaveMethodName(): string
+    {
+        return sprintf('save%s', ucfirst($this->className));
+    }
+
     public function getSetterName(): string
     {
         return sprintf('set%s', $this->className);

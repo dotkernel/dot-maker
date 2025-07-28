@@ -43,21 +43,21 @@ class Handler extends AbstractType implements FileInterface
             if (Input::confirm(sprintf('Allow listing %s?', $plural))) {
                 $this->initComponent(TypeEnum::HandlerApiGetCollection)->create($name);
             }
-//            if (Input::confirm(sprintf('Allow viewing %s?', $plural))) {
-//                $this->initComponent(TypeEnum::HandlerApiGetResource)->create($name);
-//            }
-//            if (Input::confirm(sprintf('Allow creating %s?', $plural))) {
-//                $this->initComponent(TypeEnum::HandlerApiPostResource)->create($name);
-//            }
+            if (Input::confirm(sprintf('Allow viewing %s?', $plural))) {
+                $this->initComponent(TypeEnum::HandlerApiGetResource)->create($name);
+            }
+            if (Input::confirm(sprintf('Allow creating %s?', $plural))) {
+                $this->initComponent(TypeEnum::HandlerApiPostResource)->create($name);
+            }
             if (Input::confirm(sprintf('Allow deleting %s?', $plural))) {
                 $this->initComponent(TypeEnum::HandlerApiDeleteResource)->create($name);
             }
-//            if (Input::confirm(sprintf('Allow updating %s?', $plural))) {
-//                $this->initComponent(TypeEnum::HandlerApiPatchResource)->create($name);
-//            }
-//            if (Input::confirm(sprintf('Allow replacing %s?', $plural))) {
-//                $this->initComponent(TypeEnum::HandlerApiPutResource)->create($name);
-//            }
+            if (Input::confirm(sprintf('Allow updating %s?', $plural))) {
+                $this->initComponent(TypeEnum::HandlerApiPatchResource)->create($name);
+            }
+            if (Input::confirm(sprintf('Allow replacing %s?', $plural))) {
+                $this->initComponent(TypeEnum::HandlerApiPutResource)->create($name);
+            }
 //        } else {
 //            if (Input::confirm(sprintf('Allow listing %s?', $plural))) {
 //                $this->initComponent(TypeEnum::HandlerGetListResource)->create($name);

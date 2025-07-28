@@ -170,7 +170,7 @@ class FileSystem
         return new File(
             new Directory('Handler', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
             sprintf('%s\\%s\\Handler', $this->context->getRootNamespace(), $this->moduleName),
-            sprintf('Post%sResourceHandler', $name),
+            sprintf('Put%sResourceHandler', $name),
         );
     }
 
@@ -207,6 +207,15 @@ class FileSystem
             new Directory('Handler', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
             sprintf('%s\\%s\\Handler', $this->context->getRootNamespace(), $this->moduleName),
             sprintf('Get%sListHandler', $name),
+        );
+    }
+
+    public function getResourceViewHandler(string $name): File
+    {
+        return new File(
+            new Directory('Handler', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
+            sprintf('%s\\%s\\Handler', $this->context->getRootNamespace(), $this->moduleName),
+            sprintf('Get%sViewHandler', $name),
         );
     }
 

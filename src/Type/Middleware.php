@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
-use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
@@ -57,11 +56,9 @@ class Middleware extends AbstractType implements FileInterface
             throw DuplicateFileException::create($middleware);
         }
 
-        $serviceInterface = $this->fileSystem->serviceInterface($name);
-
         $content = $this->render(
-            $middleware->getComponent(),
-            $serviceInterface->exists() ? $serviceInterface->getComponent() : null
+            $middleware,
+            $this->fileSystem->serviceInterface($name),
         );
 
         try {
@@ -74,27 +71,26 @@ class Middleware extends AbstractType implements FileInterface
         return $middleware;
     }
 
-    public function render(Component $middleware, ?Component $serviceInterface = null): string
+    public function render(File $middleware, File $serviceInterface): string
     {
-        $class = (new ClassFile($middleware->getNamespace(), $middleware->getClassName()))
+        $class = (new ClassFile(
+            $middleware->getComponent()->getNamespace(),
+            $middleware->getComponent()->getClassName()
+        ))
             ->addInterface('MiddlewareInterface')
             ->useClass(Import::PSR_HTTP_MESSAGE_RESPONSEINTERFACE)
             ->useClass(Import::PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE)
             ->useClass(Import::PSR_HTTP_SERVER_MIDDLEWAREINTERFACE)
-            ->useClass(Import::PSR_HTTP_SERVER_REQUESTHANDLERINTERFACE);
+            ->useClass(Import::PSR_HTTP_SERVER_REQUESTHANDLERINTERFACE)
+            ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
+            ->useClass($serviceInterface->getComponent()->getFqcn());
 
-        if ($serviceInterface !== null) {
-            $class
-                ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
-                ->useClass($serviceInterface->getFqcn());
-
-            $constructor = (new Constructor())
-                ->addInject(
-                    (new Inject())->addArgument($serviceInterface->getClassString())
-                )
-                ->addPromotedPropertyFromComponent($serviceInterface);
-            $class->addMethod($constructor);
-        }
+        $constructor = (new Constructor())
+            ->addInject(
+                (new Inject())->addArgument($serviceInterface->getComponent()->getClassString())
+            )
+            ->addPromotedPropertyFromComponent($serviceInterface->getComponent());
+        $class->addMethod($constructor);
 
         $execute = (new Method('process'))
             ->setReturnType('ResponseInterface')

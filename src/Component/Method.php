@@ -11,6 +11,7 @@ use function count;
 use function implode;
 use function sprintf;
 use function str_repeat;
+use function str_replace;
 
 use const PHP_EOL;
 
@@ -36,7 +37,7 @@ class Method implements MethodInterface
         return $this->render();
     }
 
-    public function addBodyLine(string $bodyLine, int $spaces = 8): self
+    public function appendBody(string $bodyLine, int $spaces = 8): self
     {
         $this->body .= PHP_EOL . str_repeat(' ', $spaces) . $bodyLine;
 
@@ -57,9 +58,23 @@ class Method implements MethodInterface
         return $this;
     }
 
+    public function commentBody(): self
+    {
+        $this->body = str_replace("\n", "\n// ", $this->body);
+
+        return $this;
+    }
+
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function prependBody(string $bodyLine, int $spaces = 8): self
+    {
+        $this->body = PHP_EOL . str_repeat(' ', $spaces) . $bodyLine . $this->body;
+
+        return $this;
     }
 
     public function render(): string

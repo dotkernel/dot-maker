@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
-use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
@@ -69,11 +68,9 @@ class Command extends AbstractType implements FileInterface
             ));
         }
 
-        $serviceInterface = $this->fileSystem->serviceInterface($name);
-
         $content = $this->render(
-            $command->getComponent(),
-            $serviceInterface->exists() ? $serviceInterface->getComponent() : null,
+            $command,
+            $this->fileSystem->serviceInterface($name),
         );
 
         try {
@@ -86,17 +83,19 @@ class Command extends AbstractType implements FileInterface
         return $command;
     }
 
-    public function render(Component $command, ?Component $serviceInterface = null): string
+    public function render(File $command, File $serviceInterface): string
     {
-        $defaultName = $this->getDefaultName($command->getClassName());
+        $defaultName = $this->getDefaultName($command->getComponent()->getClassName());
 
-        $class = (new ClassFile($command->getNamespace(), $command->getClassName()))
+        $class = (new ClassFile($command->getComponent()->getNamespace(), $command->getComponent()->getClassName()))
             ->setExtends('Command')
             ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_ATTRIBUTE_ASCOMMAND)
             ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_COMMAND_COMMAND)
             ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_INPUT_INPUTINTERFACE)
             ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_OUTPUT_OUTPUTINTERFACE)
             ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_STYLE_SYMFONYSTYLE)
+            ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
+            ->useClass($serviceInterface->getComponent()->getFqcn())
             ->addInject(
                 (new Inject('AsCommand'))
                     ->addArgument(self::wrap($defaultName), 'name')
@@ -109,17 +108,12 @@ class Command extends AbstractType implements FileInterface
                     ->setStatic(true)
             );
 
-        $constructor = (new Constructor())->addBodyLine('parent::__construct(self::$defaultName);');
-        if ($serviceInterface !== null) {
-            $class
-                ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
-                ->useClass($serviceInterface->getFqcn());
-            $constructor
-                ->addInject(
-                    (new Inject())->addArgument($serviceInterface->getClassString())
-                )
-                ->addPromotedPropertyFromComponent($serviceInterface);
-        }
+        $constructor = (new Constructor())
+            ->setBody('        parent::__construct(self::$defaultName);')
+            ->addInject(
+                (new Inject())->addArgument($serviceInterface->getComponent()->getClassString())
+            )
+            ->addPromotedPropertyFromComponent($serviceInterface->getComponent());
         $class->addMethod($constructor);
 
         $configure = (new Method('configure'))
@@ -142,7 +136,7 @@ BODY);
             )
             ->setBody(<<<BODY
         \$io = new SymfonyStyle(\$input, \$output);
-        \$io->info('{$command->getClassName()} default output');
+        \$io->info('{$command->getComponent()->getClassName()} default output');
 
         return Command::SUCCESS;
 BODY);

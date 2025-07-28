@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
-use Dot\Maker\Component;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Interface\Declaration;
 use Dot\Maker\Component\InterfaceFile;
@@ -56,13 +55,10 @@ class ServiceInterface extends AbstractType implements FileInterface
             throw DuplicateFileException::create($serviceInterface);
         }
 
-        $repository = $this->fileSystem->repository($name);
-        $entity     = $this->fileSystem->entity($name);
-
         $content = $this->render(
-            $serviceInterface->getComponent(),
-            $repository->exists() ? $repository->getComponent() : null,
-            $entity->exists() ? $entity->getComponent() : null,
+            $serviceInterface,
+            $this->fileSystem->repository($name),
+            $this->fileSystem->entity($name),
         );
 
         try {
@@ -75,35 +71,47 @@ class ServiceInterface extends AbstractType implements FileInterface
         return $serviceInterface;
     }
 
-    public function render(
-        Component $serviceInterface,
-        ?Component $repository = null,
-        ?Component $entity = null,
-    ): string {
-        $class = new InterfaceFile($serviceInterface->getNamespace(), $serviceInterface->getClassName());
-        if ($repository !== null && $entity !== null) {
-            $class
-                ->useClass(Import::DOCTRINE_ORM_QUERYBUILDER)
-                ->useClass($repository->getFqcn())
-                ->useClass($entity->getFqcn())
-                ->addDeclaration(
-                    (new Declaration($repository->getGetterName()))
-                        ->setReturnType($repository->getClassName())
-                )
-                ->addDeclaration(
-                    (new Declaration($entity->getDeleteMethodName()))
-                        ->addParameter(
-                            new Parameter($entity->getPropertyName(), $entity->getClassName())
+    public function render(File $serviceInterface, File $repository, File $entity): string
+    {
+        $class = (new InterfaceFile(
+            $serviceInterface->getComponent()->getNamespace(),
+            $serviceInterface->getComponent()->getClassName()
+        ))
+            ->useClass(Import::DOCTRINE_ORM_QUERYBUILDER)
+            ->useClass($repository->getComponent()->getFqcn())
+            ->useClass($entity->getComponent()->getFqcn())
+            ->addDeclaration(
+                (new Declaration($repository->getComponent()->getGetterName()))
+                    ->setReturnType($repository->getComponent()->getClassName())
+            )
+            ->addDeclaration(
+                (new Declaration($entity->getComponent()->getDeleteMethodName()))
+                    ->addParameter(
+                        new Parameter($entity->getComponent()->getPropertyName(), $entity->getComponent()->getClassName())
+                    )
+            )
+            ->addDeclaration(
+                (new Declaration($entity->getComponent()->getCollectionMethodName()))
+                    ->setReturnType('QueryBuilder')
+                    ->addParameter(
+                        new Parameter('params', 'array')
+                    )
+            )
+            ->addDeclaration(
+                (new Declaration($entity->getComponent()->getSaveMethodName()))
+                    ->setReturnType($entity->getComponent()->getClassName())
+                    ->addParameter(
+                        new Parameter('data', 'array')
+                    )
+                    ->addParameter(
+                        new Parameter(
+                            $entity->getComponent()->getPropertyName(),
+                            $entity->getComponent()->getClassName(),
+                            true,
+                            'null'
                         )
-                )
-                ->addDeclaration(
-                    (new Declaration($entity->getCollectionMethodName()))
-                        ->setReturnType('QueryBuilder')
-                        ->addParameter(
-                            new Parameter('params', 'array')
-                        )
-                );
-        }
+                    )
+            );
 
         return $class->render();
     }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
-use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
@@ -60,16 +59,11 @@ class Service extends AbstractType implements FileInterface
             throw DuplicateFileException::create($service);
         }
 
-        $repository = $this->fileSystem->repository($name);
-        $entity     = $this->fileSystem->entity($name);
-
-        $serviceInterface = $this->fileSystem->serviceInterface($name);
-
         $content = $this->render(
-            $service->getComponent(),
-            $serviceInterface->getComponent(),
-            $repository->exists() ? $repository->getComponent() : null,
-            $entity->exists() ? $entity->getComponent() : null,
+            $service,
+            $this->fileSystem->serviceInterface($name),
+            $this->fileSystem->repository($name),
+            $this->fileSystem->entity($name),
         );
 
         try {
@@ -82,69 +76,78 @@ class Service extends AbstractType implements FileInterface
         return $service;
     }
 
-    public function render(
-        Component $service,
-        Component $serviceInterface,
-        ?Component $repository = null,
-        ?Component $entity = null,
-    ): string {
-        $class = (new ClassFile($service->getNamespace(), $service->getClassName()))
-            ->addInterface($serviceInterface->getClassName());
-        if ($repository !== null && $entity !== null) {
-            $class
-                ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
-                ->useClass(Import::DOCTRINE_ORM_QUERYBUILDER)
-                ->useClass($repository->getFqcn())
-                ->useClass($entity->getFqcn())
-                ->useClass($this->getAppHelperPaginatorFqcn())
-                ->useFunction('in_array');
+    public function render(File $service, File $serviceInterface, File $repository, File $entity): string
+    {
+        $class = (new ClassFile($service->getComponent()->getNamespace(), $service->getComponent()->getClassName()))
+            ->addInterface($serviceInterface->getComponent()->getClassName())
+            ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
+            ->useClass(Import::DOCTRINE_ORM_QUERYBUILDER)
+            ->useClass($repository->getComponent()->getFqcn())
+            ->useClass($entity->getComponent()->getFqcn())
+            ->useClass($this->getAppHelperPaginatorFqcn())
+            ->useFunction('in_array');
 
-            $promotedProperty = new PromotedProperty($repository->getPropertyName(true), $repository->getClassName());
+        $promotedProperty = new PromotedProperty(
+            $repository->getComponent()->getPropertyName(true),
+            $repository->getComponent()->getClassName()
+        );
 
-            $constructor = (new Constructor())
-                ->addInject(
-                    (new Inject())->addArgument($repository->getClassString())
-                )
-                ->addPromotedProperty($promotedProperty);
-            $class->addMethod($constructor);
-            $class->addMethod($promotedProperty->getGetter());
+        $constructor = (new Constructor())
+            ->addInject(
+                (new Inject())->addArgument($repository->getComponent()->getClassString())
+            )
+            ->addPromotedProperty($promotedProperty);
+        $class->addMethod($constructor);
+        $class->addMethod($promotedProperty->getGetter());
 
-            $deleteResource = (new Method($entity->getDeleteMethodName()))
-                ->addParameter(
-                    new Parameter($entity->getPropertyName(), $entity->getClassName())
-                )
-                ->addBodyLine(
-                    sprintf(
-                        '$this->%s->deleteResource(%s);',
-                        $repository->getPropertyName(),
-                        $entity->getVariable()
-                    )
-                );
-            $class->addMethod($deleteResource);
+        $deleteResource = (new Method($entity->getComponent()->getDeleteMethodName()))
+            ->addParameter(
+                new Parameter($entity->getComponent()->getPropertyName(), $entity->getComponent()->getClassName())
+            )
+            ->setBody(<<<BODY
+        \$this->{$repository->getComponent()->getPropertyName()}->deleteResource({$entity->getComponent()->getVariable()});
+BODY);
+        $class->addMethod($deleteResource);
 
-            $getResources = (new Method($entity->getCollectionMethodName()))
-                ->addParameter(
-                    new Parameter('params', 'array')
-                )
-                ->setReturnType($this->context->isApi() ? 'QueryBuilder' : 'array')
-                ->addBodyLine('$filters = $params[\'filters\'] ?? [];')
-                ->addBodyLine('return $filters;')
-                ->setBody(<<<BODY
+        $getResources = (new Method($entity->getComponent()->getCollectionMethodName()))
+            ->addParameter(
+                new Parameter('params', 'array')
+            )
+            ->setReturnType($this->context->isApi() ? 'QueryBuilder' : 'array')
+            ->setBody(<<<BODY
         \$filters = \$params['filters'] ?? [];
-        \$params  = Paginator::getParams(\$params, '{$entity->getPropertyName()}.created');
+        \$params  = Paginator::getParams(\$params, '{$entity->getComponent()->getPropertyName()}.created');
 
         \$sortableColumns = [
-            '{$entity->getPropertyName()}.created',
-            '{$entity->getPropertyName()}.updated',
+            '{$entity->getComponent()->getPropertyName()}.created',
+            '{$entity->getComponent()->getPropertyName()}.updated',
         ];
         if (! in_array(\$params['sort'], \$sortableColumns, true)) {
-            \$params['sort'] = '{$entity->getPropertyName()}.created';
+            \$params['sort'] = '{$entity->getComponent()->getPropertyName()}.created';
         }
 
-        return \$this->{$repository->getPropertyName()}->{$entity->getCollectionMethodName()}(\$params, \$filters);
+        return \$this->{$repository->getComponent()->getPropertyName()}->{$entity->getComponent()->getCollectionMethodName()}(\$params, \$filters);
 BODY);
-            $class->addMethod($getResources);
+        $class->addMethod($getResources);
+
+        $saveResource = (new Method($entity->getComponent()->getSaveMethodName()))
+            ->setReturnType($entity->getComponent()->getClassName())
+            ->addParameter(
+                new Parameter('data', 'array')
+            )
+            ->addParameter(
+                new Parameter($entity->getComponent()->getPropertyName(), $entity->getComponent()->getClassName(), true, 'null')
+            )
+            ->setBody(<<<BODY
+        if (! {$entity->getComponent()->getVariable()} instanceof {$entity->getComponent()->getClassName()}) {
+            {$entity->getComponent()->getVariable()} = new {$entity->getComponent()->getClassName()}();
         }
+
+        \$this->{$repository->getComponent()->getPropertyName()}->saveResource({$entity->getComponent()->getVariable()});
+
+        return {$entity->getComponent()->getVariable()};
+BODY);
+        $class->addMethod($saveResource);
 
         return $class->render();
     }

@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
-use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Exception\DuplicateFileException;
@@ -36,18 +35,15 @@ class OpenApi extends AbstractType implements FileInterface
      */
     public function create(string $name): File
     {
-        $openApi = $this->fileSystem->openApi($name);
+        $openApi = $this->fileSystem->openApi();
         if ($openApi->exists()) {
             throw DuplicateFileException::create($openApi);
         }
 
-        $collection = $this->fileSystem->collection($name);
-        $entity     = $this->fileSystem->entity($name);
-
         $content = $this->render(
-            $openApi->getComponent(),
-            $collection->exists() ? $collection->getComponent() : null,
-            $entity->exists() ? $entity->getComponent() : null,
+            $openApi,
+            $this->fileSystem->collection($name),
+            $this->fileSystem->entity($name),
         );
 
         try {
@@ -60,18 +56,14 @@ class OpenApi extends AbstractType implements FileInterface
         return $openApi;
     }
 
-    public function render(Component $openApi, ?Component $collection = null, ?Component $entity = null): string
+    public function render(File $openApi, File $collection, File $entity): string
     {
-        $class = (new ClassFile($openApi->getNamespace(), $openApi->getClassName()))
+        $class = (new ClassFile($openApi->getComponent()->getNamespace(), $openApi->getComponent()->getClassName()))
             ->useClass(Import::DATETIMEIMMUTABLE)
             ->useClass(Import::FIG_HTTP_MESSAGE_STATUSCODEINTERFACE)
-            ->useClass(Import::OPENAPI_ATTRIBUTES, 'OA');
-        if ($collection !== null) {
-            $class->useClass($collection->getFqcn());
-        }
-        if ($entity !== null) {
-            $class->useClass($collection->getFqcn());
-        }
+            ->useClass(Import::OPENAPI_ATTRIBUTES, 'OA')
+            ->useClass($collection->getComponent()->getFqcn())
+            ->useClass($entity->getComponent()->getFqcn());
 
         return $class->render();
     }
