@@ -14,9 +14,9 @@ use const PHP_EOL;
 
 class ClassFile
 {
-    /** @var Inject[] $injects */
+    /** @var list<Inject> $injects */
     private array $injects = [];
-    /** @var MethodInterface[] $methods */
+    /** @var array<non-empty-string, MethodInterface> $methods */
     private array $methods = [];
     /** @var array<non-empty-string, ParameterInterface> $properties */
     private array $properties = [];

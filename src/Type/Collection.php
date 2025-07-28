@@ -57,14 +57,14 @@ class Collection extends AbstractType implements FileInterface
             throw DuplicateFileException::create($collection);
         }
 
-        $collection->ensureParentDirectoryExists();
-
         $content = $this->render($collection->getComponent());
-        if (! $collection->create($content)) {
-            throw new RuntimeException(sprintf('Could not create Collection "%s"', $collection->getPath()));
-        }
 
-        Output::info(sprintf('Created Collection "%s"', $collection->getPath()));
+        try {
+            $collection->create($content);
+            Output::info(sprintf('Created Collection "%s"', $collection->getPath()));
+        } catch (RuntimeException $exception) {
+            Output::error($exception->getMessage());
+        }
 
         return $collection;
     }

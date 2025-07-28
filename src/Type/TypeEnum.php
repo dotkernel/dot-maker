@@ -26,20 +26,20 @@ enum TypeEnum: string
     case Entity                    = 'entity';
     case Form                      = 'form';
     case Handler                   = 'handler';
-    case HandlerApiDeleteResource  = DeleteResourceHandler::class;
-    case HandlerApiGetResource     = GetResourceHandler::class;
-    case HandlerApiGetCollection   = GetCollectionHandler::class;
-    case HandlerApiPatchResource   = PatchResourceHandler::class;
-    case HandlerApiPostResource    = PostResourceHandler::class;
-    case HandlerApiPutResource     = PutResourceHandler::class;
-    case HandlerGetCreateResource  = GetCreateResourceHandler::class;
-    case HandlerGetDeleteResource  = GetDeleteResourceHandler::class;
-    case HandlerGetEditResource    = GetEditResourceHandler::class;
-    case HandlerGetListResource    = GetListResourceHandler::class;
-    case HandlerGetViewResource    = GetViewResourceHandler::class;
-    case HandlerPostCreateResource = PostCreateResourceHandler::class;
-    case HandlerPostDeleteResource = PostDeleteResourceHandler::class;
-    case HandlerPostEditResource   = PostEditResourceHandler::class;
+    case HandlerApiDeleteResource  = 'api-delete-resource-handler';
+    case HandlerApiGetResource     = 'api-get-resource-handler';
+    case HandlerApiGetCollection   = 'api-get-collection-handler';
+    case HandlerApiPatchResource   = 'api-patch-resource-handler';
+    case HandlerApiPostResource    = 'api-post-resource-handler';
+    case HandlerApiPutResource     = 'api-put-resource-handler';
+    case HandlerGetCreateResource  = 'get-create-resource-handler';
+    case HandlerGetDeleteResource  = 'get-delete-resource-handler';
+    case HandlerGetEditResource    = 'get-edit-resource-handler';
+    case HandlerGetListResource    = 'get-collection-handler';
+    case HandlerGetViewResource    = 'get-view-resource-handler';
+    case HandlerPostCreateResource = 'post-create-resource-handler';
+    case HandlerPostDeleteResource = 'post-delete-resource-handler';
+    case HandlerPostEditResource   = 'post-edit-resource-handler';
     case InputFilter               = 'inputFilter';
     case Middleware                = 'middleware';
     case Module                    = 'module';
@@ -78,5 +78,23 @@ enum TypeEnum: string
             self::Service                   => Service::class,
             self::ServiceInterface          => ServiceInterface::class,
         };
+    }
+
+    public function getCallables(): array
+    {
+        return [
+            self::Collection,
+            self::Command,
+            self::Entity,
+            self::Form,
+            self::Handler,
+            self::InputFilter,
+            self::Middleware,
+            self::Module,
+            self::OpenApi,
+            self::Repository,
+            self::Service,
+            self::ServiceInterface,
+        ];
     }
 }

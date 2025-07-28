@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Dot\Maker\FileSystem;
 
 use Dot\Maker\Component;
-use Dot\Maker\IO\Output;
+use Dot\Maker\Exception\RuntimeException;
 
 use function file_exists;
 use function file_put_contents;
@@ -27,18 +27,31 @@ class File
         $this->component = new Component($namespace, $className);
     }
 
-    public function create(string $data): bool
+    /**
+     * @throws RuntimeException
+     */
+    public function create(string $data): void
     {
-        return (bool) file_put_contents($this->path, $data);
+        $this->ensureParentDirectoryExists();
+
+        $created = file_put_contents($this->path, $data);
+
+        if ($created === false) {
+            throw new RuntimeException(
+                sprintf('Could not create file "%s"', $this->path)
+            );
+        }
     }
 
-    public function ensureParentDirectoryExists(bool $exit = true): self
+    /**
+     * @throws RuntimeException
+     */
+    public function ensureParentDirectoryExists(): self
     {
         if (! $this->parentDirectory->exists()) {
             if (! $this->parentDirectory->create()) {
-                Output::error(
-                    sprintf('Could not create directory "%s"', $this->parentDirectory->getPath()),
-                    $exit
+                throw new RuntimeException(
+                    sprintf('Could not create parent directory "%s"', $this->parentDirectory->getPath())
                 );
             }
         }

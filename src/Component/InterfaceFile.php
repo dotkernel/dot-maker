@@ -16,14 +16,18 @@ use const PHP_EOL;
 
 class InterfaceFile
 {
-    /** @var Declaration[] $declarations */
+    /** @var array<non-empty-string, Declaration> $declarations */
     private array $declarations = [];
-    private array $classUses    = [];
+    /** @var array<non-empty-string, non-empty-string> $classUses */
+    private array $classUses = [];
+    /** @var array<non-empty-string, non-empty-string> $constantUses */
     private array $constantUses = [];
+    /** @var array<non-empty-string, non-empty-string> $functionUses */
     private array $functionUses = [];
-    private array $interfaces   = [];
-    private string $comment     = '';
-    private bool $strictTypes   = true;
+    /** @var array<non-empty-string, non-empty-string> $interfaces */
+    private array $interfaces = [];
+    private bool $strictTypes = true;
+    private string $comment   = '';
 
     public function __construct(
         readonly public string $namespace,

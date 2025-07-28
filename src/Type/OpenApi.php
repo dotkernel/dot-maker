@@ -41,8 +41,6 @@ class OpenApi extends AbstractType implements FileInterface
             throw DuplicateFileException::create($openApi);
         }
 
-        $openApi->ensureParentDirectoryExists();
-
         $collection = $this->fileSystem->collection($name);
         $entity     = $this->fileSystem->entity($name);
 
@@ -51,11 +49,13 @@ class OpenApi extends AbstractType implements FileInterface
             $collection->exists() ? $collection->getComponent() : null,
             $entity->exists() ? $entity->getComponent() : null,
         );
-        if (! $openApi->create($content)) {
-            throw new RuntimeException(sprintf('Could not create OpenAPI "%s"', $openApi->getPath()));
-        }
 
-        Output::info(sprintf('Created OpenAPI "%s"', $openApi->getPath()));
+        try {
+            $openApi->create($content);
+            Output::info(sprintf('Created OpenAPI "%s"', $openApi->getPath()));
+        } catch (RuntimeException $exception) {
+            Output::error($exception->getMessage());
+        }
 
         return $openApi;
     }

@@ -7,9 +7,13 @@ namespace Dot\Maker\Type;
 use Dot\Maker\Component;
 use Dot\Maker\Component\Import;
 use Dot\Maker\ContextInterface;
+use Dot\Maker\Exception\BadRequestException;
+use Dot\Maker\Exception\DuplicateFileException;
+use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
+use Throwable;
 
 use function sprintf;
 use function ucfirst;
@@ -24,64 +28,43 @@ class InputFilter extends AbstractType implements FileInterface
                 return;
             }
 
-            if (! $this->isValid($name)) {
-                Output::error(sprintf('Invalid InputFilter name: "%s"', $name));
-                continue;
+            try {
+                $this->create($name);
+                break;
+            } catch (Throwable $exception) {
+                Output::error($exception->getMessage());
             }
-
-            $inputFilter = $this->fileSystem->inputFilter($name);
-            if ($inputFilter->exists()) {
-                Output::error(
-                    sprintf(
-                        'InputFilter "%s" already exists at %s',
-                        $inputFilter->getComponent()->getClassName(),
-                        $inputFilter->getPath()
-                    )
-                );
-                continue;
-            }
-
-            $inputFilter
-                ->ensureParentDirectoryExists()
-                ->getComponent()
-                    ->useClass($this->getAbstractInputFilterFqcn());
-
-            $content = $this->render($inputFilter->getComponent());
-            if (! $inputFilter->create($content)) {
-                Output::error(sprintf('Could not create InputFilter "%s"', $inputFilter->getPath()), true);
-            }
-            Output::info(sprintf('Created InputFilter "%s"', $inputFilter->getPath()));
         }
     }
 
+    /**
+     * @throws BadRequestException
+     * @throws DuplicateFileException
+     * @throws RuntimeException
+     */
     public function create(string $name): ?File
     {
         if (! $this->isValid($name)) {
-            Output::error(sprintf('Invalid InputFilter name: "%s"', $name), true);
+            throw new BadRequestException(sprintf('Invalid InputFilter name: "%s"', $name));
         }
 
         $inputFilter = $this->fileSystem->inputFilter($name);
         if ($inputFilter->exists()) {
-            Output::error(
-                sprintf(
-                    'InputFilter "%s" already exists at %s',
-                    $inputFilter->getComponent()->getClassName(),
-                    $inputFilter->getPath()
-                ),
-                true
-            );
+            throw DuplicateFileException::create($inputFilter);
         }
 
         $inputFilter
-            ->ensureParentDirectoryExists()
             ->getComponent()
-                ->useClass($this->getAbstractInputFilterFqcn());
+            ->useClass($this->getAbstractInputFilterFqcn());
 
-        $content = $this->render($inputFilter->getComponent());
-        if (! $inputFilter->create($content)) {
-            Output::error(sprintf('Could not create InputFilter "%s"', $inputFilter->getPath()), true);
+        $content = '';
+
+        try {
+            $inputFilter->create($content);
+            Output::info(sprintf('Created InputFilter "%s"', $inputFilter->getPath()));
+        } catch (RuntimeException $exception) {
+            Output::error($exception->getMessage());
         }
-        Output::info(sprintf('Created InputFilter "%s"', $inputFilter->getPath()));
 
         return $inputFilter;
     }

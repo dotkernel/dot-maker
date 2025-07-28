@@ -61,17 +61,17 @@ class Entity extends AbstractType implements FileInterface
             throw DuplicateFileException::create($entity);
         }
 
-        $entity->ensureParentDirectoryExists();
-
         $content = $this->render(
             $entity->getComponent(),
             $this->fileSystem->repository($name)->getComponent()
         );
-        if (! $entity->create($content)) {
-            throw new RuntimeException(sprintf('Could not create Entity "%s"', $entity->getPath()));
-        }
 
-        Output::info(sprintf('Created Entity "%s"', $entity->getPath()));
+        try {
+            $entity->create($content);
+            Output::info(sprintf('Created Entity "%s"', $entity->getPath()));
+        } catch (RuntimeException $exception) {
+            Output::error($exception->getMessage());
+        }
 
         return $entity;
     }

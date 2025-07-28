@@ -58,17 +58,17 @@ class Repository extends AbstractType implements FileInterface
             throw DuplicateFileException::create($repository);
         }
 
-        $repository->ensureParentDirectoryExists();
-
         $content = $this->render(
             $repository->getComponent(),
             $this->fileSystem->entity($name)->getComponent()
         );
-        if (! $repository->create($content)) {
-            throw new RuntimeException(sprintf('Could not create Repository "%s"', $repository->getPath()));
-        }
 
-        Output::info(sprintf('Created Repository "%s"', $repository->getPath()));
+        try {
+            $repository->create($content);
+            Output::info(sprintf('Created Repository "%s"', $repository->getPath()));
+        } catch (RuntimeException $exception) {
+            Output::error($exception->getMessage());
+        }
 
         return $repository;
     }

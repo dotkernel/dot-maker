@@ -41,8 +41,6 @@ class GetViewResourceHandler extends AbstractType implements FileInterface
                 continue;
             }
 
-            $handler->ensureParentDirectoryExists();
-
             $content = $this->render($handler->getComponent());
             if (! $handler->create($content)) {
                 Output::error(sprintf('Could not create ServiceInterface "%s"', $handler->getPath()), true);
@@ -70,8 +68,6 @@ class GetViewResourceHandler extends AbstractType implements FileInterface
                 true
             );
         }
-
-        $handler->ensureParentDirectoryExists();
 
         $content = $this->render($handler->getComponent());
         if (! $handler->create($content)) {

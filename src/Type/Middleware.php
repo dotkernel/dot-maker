@@ -57,19 +57,19 @@ class Middleware extends AbstractType implements FileInterface
             throw DuplicateFileException::create($middleware);
         }
 
-        $middleware->ensureParentDirectoryExists();
-
         $serviceInterface = $this->fileSystem->serviceInterface($name);
 
         $content = $this->render(
             $middleware->getComponent(),
             $serviceInterface->exists() ? $serviceInterface->getComponent() : null
         );
-        if (! $middleware->create($content)) {
-            throw new RuntimeException(sprintf('Could not create Middleware "%s"', $middleware->getPath()));
-        }
 
-        Output::info(sprintf('Created Middleware "%s"', $middleware->getPath()));
+        try {
+            $middleware->create($content);
+            Output::info(sprintf('Created Middleware "%s"', $middleware->getPath()));
+        } catch (RuntimeException $exception) {
+            Output::error($exception->getMessage());
+        }
 
         return $middleware;
     }

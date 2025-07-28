@@ -69,19 +69,19 @@ class Command extends AbstractType implements FileInterface
             ));
         }
 
-        $command->ensureParentDirectoryExists();
-
         $serviceInterface = $this->fileSystem->serviceInterface($name);
 
         $content = $this->render(
             $command->getComponent(),
             $serviceInterface->exists() ? $serviceInterface->getComponent() : null,
         );
-        if (! $command->create($content)) {
-            throw new RuntimeException(sprintf('Could not create Command "%s"', $command->getPath()));
-        }
 
-        Output::info(sprintf('Created Command "%s"', $command->getPath()));
+        try {
+            $command->create($content);
+            Output::info(sprintf('Created Command "%s"', $command->getPath()));
+        } catch (RuntimeException $exception) {
+            Output::error($exception->getMessage());
+        }
 
         return $command;
     }

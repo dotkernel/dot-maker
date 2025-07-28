@@ -50,8 +50,6 @@ class DeleteResourceHandler extends AbstractType implements FileInterface
                 continue;
             }
 
-            $handler->ensureParentDirectoryExists();
-
             $content = $this->render($handler->getComponent());
             if (! $handler->create($content)) {
                 Output::error(sprintf('Could not create Handler "%s"', $handler->getPath()), true);
@@ -83,7 +81,6 @@ class DeleteResourceHandler extends AbstractType implements FileInterface
         }
 
         $handler
-            ->ensureParentDirectoryExists()
             ->getComponent()
                 ->useClass($this->getAbstractHandlerFqcn())
                 ->useClass(Import::PSR_HTTP_MESSAGE_RESPONSEINTERFACE)

@@ -60,8 +60,6 @@ class Service extends AbstractType implements FileInterface
             throw DuplicateFileException::create($service);
         }
 
-        $service->ensureParentDirectoryExists();
-
         $repository = $this->fileSystem->repository($name);
         $entity     = $this->fileSystem->entity($name);
 
@@ -73,10 +71,13 @@ class Service extends AbstractType implements FileInterface
             $repository->exists() ? $repository->getComponent() : null,
             $entity->exists() ? $entity->getComponent() : null,
         );
-        if (! $service->create($content)) {
-            Output::error(sprintf('Could not create Service "%s"', $service->getPath()), true);
+
+        try {
+            $service->create($content);
+            Output::info(sprintf('Created Service "%s"', $service->getPath()));
+        } catch (RuntimeException $exception) {
+            Output::error($exception->getMessage());
         }
-        Output::info(sprintf('Created Service "%s"', $service->getPath()));
 
         return $service;
     }
