@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type\Handler\Api;
 
+use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
@@ -59,10 +60,10 @@ class GetCollectionHandler extends AbstractType implements FileInterface
         }
 
         $content = $this->render(
-            $handler,
-            $this->fileSystem->serviceInterface($name),
-            $this->fileSystem->collection($name),
-            $this->fileSystem->entity($name),
+            $handler->getComponent(),
+            $this->fileSystem->serviceInterface($name)->getComponent(),
+            $this->fileSystem->collection($name)->getComponent(),
+            $this->fileSystem->entity($name)->getComponent(),
         );
 
         try {
@@ -75,21 +76,25 @@ class GetCollectionHandler extends AbstractType implements FileInterface
         return $handler;
     }
 
-    public function render(File $handler, File $serviceInterface, File $collection, File $entity): string
-    {
-        $class = (new ClassFile($handler->getComponent()->getNamespace(), $handler->getComponent()->getClassName()))
+    public function render(
+        Component $handler,
+        Component $serviceInterface,
+        Component $collection,
+        Component $entity,
+    ): string {
+        $class = (new ClassFile($handler->getNamespace(), $handler->getClassName()))
             ->setExtends('AbstractHandler')
             ->useClass(Import::getAbstractHandlerFqcn($this->context->getRootNamespace()))
             ->useClass(Import::PSR_HTTP_MESSAGE_RESPONSEINTERFACE)
             ->useClass(Import::PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE)
             ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
-            ->useClass($serviceInterface->getComponent()->getFqcn())
-            ->useClass($collection->getComponent()->getFqcn());
+            ->useClass($serviceInterface->getFqcn())
+            ->useClass($collection->getFqcn());
 
         $constructor = (new Constructor())
-            ->addPromotedPropertyFromComponent($serviceInterface->getComponent())
+            ->addPromotedPropertyFromComponent($serviceInterface)
             ->addInject(
-                (new Inject())->addArgument($serviceInterface->getComponent()->getClassString())
+                (new Inject())->addArgument($serviceInterface->getClassString())
             );
         $class->addMethod($constructor);
 
@@ -101,7 +106,7 @@ class GetCollectionHandler extends AbstractType implements FileInterface
             )->setBody(<<<BODY
         return \$this->createResponse(
             \$request,
-            new {$collection->getComponent()->getClassName()}(\$this->{$serviceInterface->getComponent()->getPropertyName(true)}->{$entity->getComponent()->getCollectionMethodName()}(\$request->getQueryParams()))
+            new {$collection->getClassName()}(\$this->{$serviceInterface->toCamelCase(true)}->{$entity->getCollectionMethodName()}(\$request->getQueryParams()))
         );
 BODY);
         // phpcs:enable Generic.Files.LineLength.TooLong

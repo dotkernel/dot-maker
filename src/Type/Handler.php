@@ -58,25 +58,25 @@ class Handler extends AbstractType implements FileInterface
             if (Input::confirm(sprintf('Allow replacing %s?', $plural))) {
                 $this->initComponent(TypeEnum::HandlerApiPutResource)->create($name);
             }
-//        } else {
-//            if (Input::confirm(sprintf('Allow listing %s?', $plural))) {
-//                $this->initComponent(TypeEnum::HandlerGetListResource)->create($name);
-//            }
-//            if (Input::confirm(sprintf('Allow viewing %s?', $plural))) {
-//                $this->initComponent(TypeEnum::HandlerGetViewResource)->create($name);
-//            }
-//            if (Input::confirm(sprintf('Allow creating %s?', $plural))) {
-//                $this->initComponent(TypeEnum::HandlerGetCreateResource)->create($name);
-//                $this->initComponent(TypeEnum::HandlerPostCreateResource)->create($name);
-//            }
-//            if (Input::confirm(sprintf('Allow deleting %s?', $plural))) {
-//                $this->initComponent(TypeEnum::HandlerGetDeleteResource)->create($name);
-//                $this->initComponent(TypeEnum::HandlerPostDeleteResource)->create($name);
-//            }
-//            if (Input::confirm(sprintf('Allow updating %s?', $plural))) {
-//                $this->initComponent(TypeEnum::HandlerGetEditResource)->create($name);
-//                $this->initComponent(TypeEnum::HandlerPostEditResource)->create($name);
-//            }
+        } else {
+            if (Input::confirm(sprintf('Allow listing %s?', $plural))) {
+                $this->initComponent(TypeEnum::HandlerGetListResource)->create($name);
+            }
+            if (Input::confirm(sprintf('Allow viewing %s?', $plural))) {
+                $this->initComponent(TypeEnum::HandlerGetViewResource)->create($name);
+            }
+            if (Input::confirm(sprintf('Allow creating %s?', $plural))) {
+                $this->initComponent(TypeEnum::HandlerGetCreateResource)->create($name);
+                $this->initComponent(TypeEnum::HandlerPostCreateResource)->create($name);
+            }
+            if (Input::confirm(sprintf('Allow deleting %s?', $plural))) {
+                $this->initComponent(TypeEnum::HandlerGetDeleteResource)->create($name);
+                $this->initComponent(TypeEnum::HandlerPostDeleteResource)->create($name);
+            }
+            if (Input::confirm(sprintf('Allow updating %s?', $plural))) {
+                $this->initComponent(TypeEnum::HandlerGetEditResource)->create($name);
+                $this->initComponent(TypeEnum::HandlerPostEditResource)->create($name);
+            }
         }
 
         return $this->fileSystem->handler($name);

@@ -6,13 +6,17 @@ namespace Dot\Maker;
 
 use Dot\Maker\Component\Import;
 
+use function implode;
 use function in_array;
 use function lcfirst;
 use function preg_match;
 use function preg_replace;
+use function preg_split;
 use function sprintf;
+use function str_replace;
 use function strlen;
 use function strtolower;
+use function strtoupper;
 use function substr;
 use function ucfirst;
 
@@ -47,6 +51,11 @@ class Component
         return sprintf('delete%s', ucfirst($this->className));
     }
 
+    public function getFindMethodName(): string
+    {
+        return sprintf('find%s', ucfirst($this->className));
+    }
+
     public function getFqcn(): string
     {
         return sprintf('%s\\%s', $this->namespace, $this->className);
@@ -67,16 +76,6 @@ class Component
         return $this->namespace;
     }
 
-    public function getPropertyName(bool $noInterface = false): string
-    {
-        $property = lcfirst($this->className);
-        if ($noInterface) {
-            return preg_replace('/Interface$/', '', $property);
-        }
-
-        return $property;
-    }
-
     public function getSaveMethodName(): string
     {
         return sprintf('save%s', ucfirst($this->className));
@@ -89,7 +88,7 @@ class Component
 
     public function getVariable(bool $noInterface = true): string
     {
-        return sprintf('$%s', $this->getPropertyName($noInterface));
+        return sprintf('$%s', $this->toCamelCase($noInterface));
     }
 
     public static function pluralize(string $name): string
@@ -103,6 +102,33 @@ class Component
         } else {
             return $name . 's';
         }
+    }
+
+    public function toCamelCase(bool $noInterface = false): string
+    {
+        $property = lcfirst($this->className);
+        if ($noInterface) {
+            return preg_replace('/Interface$/', '', $property);
+        }
+
+        return $property;
+    }
+
+    public function toKebabCase(bool $noInterface = true): string
+    {
+        $parts = preg_split('/(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/', $this->toCamelCase($noInterface));
+
+        return strtolower(implode('-', $parts));
+    }
+
+    public function toSnakeCase(bool $noInterface = true): string
+    {
+        return str_replace('-', '_', $this->toKebabCase($noInterface));
+    }
+
+    public function toUpperCase(bool $noInterface = true): string
+    {
+        return strtoupper($this->toSnakeCase($noInterface));
     }
 
     public function useClass(string $name, ?string $alias = null): self

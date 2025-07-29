@@ -38,7 +38,7 @@ class Constructor extends Method
         mixed $default = null
     ): self {
         $this->parameters[] = new PromotedProperty(
-            $component->getPropertyName(true),
+            $component->toCamelCase(true),
             $component->getClassName(),
             $nullable,
             $default

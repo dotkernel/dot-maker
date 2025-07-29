@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type\Handler\Api;
 
+use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
@@ -60,10 +61,10 @@ class PatchResourceHandler extends AbstractType implements FileInterface
         }
 
         $content = $this->render(
-            $handler,
-            $this->fileSystem->serviceInterface($name),
-            $this->fileSystem->inputFilter($name),
-            $this->fileSystem->entity($name),
+            $handler->getComponent(),
+            $this->fileSystem->serviceInterface($name)->getComponent(),
+            $this->fileSystem->inputFilter($name)->getComponent(),
+            $this->fileSystem->entity($name)->getComponent(),
         );
 
         try {
@@ -76,9 +77,13 @@ class PatchResourceHandler extends AbstractType implements FileInterface
         return $handler;
     }
 
-    public function render(File $handler, File $serviceInterface, File $inputFilter, File $entity): string
-    {
-        $class = (new ClassFile($handler->getComponent()->getNamespace(), $handler->getComponent()->getClassName()))
+    public function render(
+        Component $handler,
+        Component $serviceInterface,
+        Component $inputFilter,
+        Component $entity,
+    ): string {
+        $class = (new ClassFile($handler->getNamespace(), $handler->getClassName()))
             ->setExtends('AbstractHandler')
             ->useClass(Import::getAbstractHandlerFqcn($this->context->getRootNamespace()))
             ->useClass(Import::getBadRequestExceptionFqcn($this->context->getRootNamespace()))
@@ -89,17 +94,17 @@ class PatchResourceHandler extends AbstractType implements FileInterface
             ->useClass(Import::PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE)
             ->useClass(Import::PSR_HTTP_MESSAGE_RESPONSEINTERFACE)
             ->useClass($this->getAppMessageFqcn())
-            ->useClass($serviceInterface->getComponent()->getFqcn())
-            ->useClass($inputFilter->getComponent()->getFqcn())
-            ->useClass($entity->getComponent()->getFqcn());
+            ->useClass($serviceInterface->getFqcn())
+            ->useClass($inputFilter->getFqcn())
+            ->useClass($entity->getFqcn());
 
         $constructor = (new Constructor())
-            ->addPromotedPropertyFromComponent($serviceInterface->getComponent())
-            ->addPromotedPropertyFromComponent($inputFilter->getComponent())
+            ->addPromotedPropertyFromComponent($serviceInterface)
+            ->addPromotedPropertyFromComponent($inputFilter)
             ->addInject(
                 (new Inject())
-                    ->addArgument($serviceInterface->getComponent()->getClassString())
-                    ->addArgument($inputFilter->getComponent()->getClassString())
+                    ->addArgument($serviceInterface->getClassString())
+                    ->addArgument($inputFilter->getClassString())
             );
         $class->addMethod($constructor);
 
@@ -110,7 +115,7 @@ class PatchResourceHandler extends AbstractType implements FileInterface
                 new Parameter('request', 'ServerRequestInterface')
             )
             ->addInject(
-                (new Inject('Resource'))->addArgument($entity->getComponent()->getClassString(), 'entity')
+                (new Inject('Resource'))->addArgument($entity->getClassString(), 'entity')
             )
             ->setComment(<<<COMM
 /**
@@ -132,7 +137,7 @@ COMM)
 
         return \$this->createResponse(
             \$request,
-            \$this->{$serviceInterface->getComponent()->getPropertyName(true)}->{$entity->getComponent()->getSaveMethodName()}(\$data, \$request->getAttribute({$entity->getComponent()->getClassString()}))
+            \$this->{$serviceInterface->toCamelCase(true)}->{$entity->getSaveMethodName()}(\$data, \$request->getAttribute({$entity->getClassString()}))
         );
 BODY);
         // phpcs:enable Generic.Files.LineLength.TooLong

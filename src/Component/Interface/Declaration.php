@@ -16,11 +16,12 @@ use const PHP_EOL;
 
 class Declaration
 {
-    protected VisibilityEnum $visibility = VisibilityEnum::Public;
+    private VisibilityEnum $visibility = VisibilityEnum::Public;
     /** @var ParameterInterface[] $parameters */
-    protected array $parameters  = [];
-    protected bool $nullable     = false;
-    protected string $returnType = 'void';
+    private array $parameters  = [];
+    private bool $nullable     = false;
+    private string $returnType = 'void';
+    private string $comment    = '';
 
     public function __construct(
         readonly public string $name,
@@ -41,7 +42,18 @@ class Declaration
 
     public function render(): string
     {
-        return count($this->parameters) > 0 ? $this->renderWithParams() : $this->renderWithoutParams();
+        $declaration = '';
+        if ($this->comment !== '') {
+            $declaration = $this->comment . PHP_EOL . '    ';
+        }
+
+        if (count($this->parameters) > 0) {
+            $declaration .= $this->renderWithParams();
+        } else {
+            $declaration .= $this->renderWithoutParams();
+        }
+
+        return $declaration;
     }
 
     public function renderParameters(): string
@@ -89,9 +101,9 @@ DEC;
         return sprintf(': %s', $this->returnType);
     }
 
-    public function setVisibility(VisibilityEnum $visibility): self
+    public function setComment(string $comment): self
     {
-        $this->visibility = $visibility;
+        $this->comment = $comment;
 
         return $this;
     }
@@ -106,6 +118,13 @@ DEC;
     public function setReturnType(string $returnType): self
     {
         $this->returnType = $returnType;
+
+        return $this;
+    }
+
+    public function setVisibility(VisibilityEnum $visibility): self
+    {
+        $this->visibility = $visibility;
 
         return $this;
     }

@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type\Handler\Api;
 
+use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
@@ -59,9 +60,9 @@ class DeleteResourceHandler extends AbstractType implements FileInterface
         }
 
         $content = $this->render(
-            $handler,
-            $this->fileSystem->serviceInterface($name),
-            $this->fileSystem->entity($name),
+            $handler->getComponent(),
+            $this->fileSystem->serviceInterface($name)->getComponent(),
+            $this->fileSystem->entity($name)->getComponent(),
         );
 
         try {
@@ -74,22 +75,22 @@ class DeleteResourceHandler extends AbstractType implements FileInterface
         return $handler;
     }
 
-    public function render(File $handler, File $serviceInterface, File $entity): string
+    public function render(Component $handler, Component $serviceInterface, Component $entity): string
     {
-        $class = (new ClassFile($handler->getComponent()->getNamespace(), $handler->getComponent()->getClassName()))
+        $class = (new ClassFile($handler->getNamespace(), $handler->getClassName()))
             ->setExtends('AbstractHandler')
             ->useClass(Import::getAbstractHandlerFqcn($this->context->getRootNamespace()))
             ->useClass(Import::getResourceAttributeFqcn($this->context->getRootNamespace()))
             ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
             ->useClass(Import::PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE)
             ->useClass(Import::PSR_HTTP_MESSAGE_RESPONSEINTERFACE)
-            ->useClass($serviceInterface->getComponent()->getFqcn())
-            ->useClass($entity->getComponent()->getFqcn());
+            ->useClass($serviceInterface->getFqcn())
+            ->useClass($entity->getFqcn());
 
         $constructor = (new Constructor())
-            ->addPromotedPropertyFromComponent($serviceInterface->getComponent())
+            ->addPromotedPropertyFromComponent($serviceInterface)
             ->addInject(
-                (new Inject())->addArgument($serviceInterface->getComponent()->getClassString())
+                (new Inject())->addArgument($serviceInterface->getClassString())
             );
         $class->addMethod($constructor);
 
@@ -100,11 +101,11 @@ class DeleteResourceHandler extends AbstractType implements FileInterface
                 new Parameter('request', 'ServerRequestInterface')
             )
             ->addInject(
-                (new Inject('Resource'))->addArgument($entity->getComponent()->getClassString(), 'entity')
+                (new Inject('Resource'))->addArgument($entity->getClassString(), 'entity')
             )
             ->setBody(<<<BODY
-        \$this->{$serviceInterface->getComponent()->getPropertyName(true)}->{$entity->getComponent()->getDeleteMethodName()}(
-            \$request->getAttribute({$entity->getComponent()->getClassString()})
+        \$this->{$serviceInterface->toCamelCase(true)}->{$entity->getDeleteMethodName()}(
+            \$request->getAttribute({$entity->getClassString()})
         );
 
         return \$this->noContentResponse();

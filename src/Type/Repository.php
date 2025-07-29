@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
+use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
@@ -58,8 +59,8 @@ class Repository extends AbstractType implements FileInterface
         }
 
         $content = $this->render(
-            $repository,
-            $this->fileSystem->entity($name)
+            $repository->getComponent(),
+            $this->fileSystem->entity($name)->getComponent(),
         );
 
         try {
@@ -72,22 +73,19 @@ class Repository extends AbstractType implements FileInterface
         return $repository;
     }
 
-    public function render(File $repository, File $entity): string
+    public function render(Component $repository, Component $entity): string
     {
-        $class = (new ClassFile(
-            $repository->getComponent()->getNamespace(),
-            $repository->getComponent()->getClassName()
-        ))
+        $class = (new ClassFile($repository->getNamespace(), $repository->getClassName()))
             ->setExtends('AbstractRepository')
             ->useClass($this->getAbstractRepositoryFqcn())
-            ->useClass($entity->getComponent()->getFqcn())
+            ->useClass($entity->getFqcn())
             ->useClass(Import::DOCTRINE_ORM_QUERYBUILDER)
             ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_ENTITY)
             ->addInject(
-                (new Inject('Entity'))->addArgument($entity->getComponent()->getClassString(), 'name')
+                (new Inject('Entity'))->addArgument($entity->getClassString(), 'name')
             );
 
-        $getResources = (new Method($entity->getComponent()->getCollectionMethodName()))
+        $getResources = (new Method($entity->getCollectionMethodName()))
             ->addParameter(
                 new Parameter('params', 'array', false, '[]')
             )
@@ -98,14 +96,16 @@ class Repository extends AbstractType implements FileInterface
             ->setBody(<<<BODY
         \$queryBuilder = \$this
             ->getQueryBuilder()
-            ->select(['{$entity->getComponent()->getPropertyName()}'])
-            ->from({$entity->getComponent()->getClassString()}, '{$entity->getComponent()->getPropertyName()}');
+            ->select(['{$entity->toCamelCase()}'])
+            ->from({$entity->getClassString()}, '{$entity->toCamelCase()}');
+
+        // add filters
 
         \$queryBuilder
             ->orderBy(\$params['sort'], \$params['dir'])
             ->setFirstResult(\$params['offset'])
             ->setMaxResults(\$params['limit'])
-            ->groupBy('{$entity->getComponent()->getPropertyName()}.uuid');
+            ->groupBy('{$entity->toCamelCase()}.uuid');
         \$queryBuilder->getQuery()->useQueryCache(true);
 
         return \$queryBuilder;

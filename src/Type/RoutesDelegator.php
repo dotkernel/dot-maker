@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
+use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Method;
@@ -44,7 +45,7 @@ class RoutesDelegator extends AbstractType implements FileInterface
 
         if ($this->context->isApi()) {
             $content = $this->render(
-                $routesDelegator,
+                $routesDelegator->getComponent(),
                 [
                     'collection' => $this->fileSystem->apiDeleteResourceHandler($name),
                     'delete'     => $this->fileSystem->apiDeleteResourceHandler($name),
@@ -56,7 +57,7 @@ class RoutesDelegator extends AbstractType implements FileInterface
             );
         } else {
             $content = $this->render(
-                $routesDelegator,
+                $routesDelegator->getComponent(),
                 [
                     'get-create'  => $this->fileSystem->getResourceCreateHandler($name),
                     'post-create' => $this->fileSystem->postResourceCreateHandler($name),
@@ -80,12 +81,9 @@ class RoutesDelegator extends AbstractType implements FileInterface
         return $routesDelegator;
     }
 
-    public function render(File $routesDelegator, array $handlers): string
+    public function render(Component $routesDelegator, array $handlers): string
     {
-        $class = (new ClassFile(
-            $routesDelegator->getComponent()->getNamespace(),
-            $routesDelegator->getComponent()->getClassName()
-        ))
+        $class = (new ClassFile($routesDelegator->getNamespace(), $routesDelegator->getClassName()))
             ->useClass(Import::DOT_ROUTER_ROUTECOLLECTORINTERFACE)
             ->useClass(Import::PSR_CONTAINER_CONTAINEREXCEPTIONINTERFACE)
             ->useClass(Import::PSR_CONTAINER_CONTAINERINTERFACE)
@@ -112,7 +110,12 @@ COMM)
             ->appendBody('/** @var RouteCollectorInterface $routeCollector */')
             ->appendBody('$routeCollector = $container->get(RouteCollectorInterface::class);')
             ->appendBody('')
-            ->appendBody('$routeCollector');
+            ->appendBody('$routeCollector;');
+
+//        foreach ($handlers as $method => $handler) {
+//            ;
+//        }
+
         $class->addMethod($invoke);
 
         return $class->render();

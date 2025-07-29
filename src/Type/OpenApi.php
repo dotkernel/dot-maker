@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
+use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Exception\DuplicateFileException;
@@ -41,9 +42,9 @@ class OpenApi extends AbstractType implements FileInterface
         }
 
         $content = $this->render(
-            $openApi,
-            $this->fileSystem->collection($name),
-            $this->fileSystem->entity($name),
+            $openApi->getComponent(),
+            $this->fileSystem->collection($name)->getComponent(),
+            $this->fileSystem->entity($name)->getComponent(),
         );
 
         try {
@@ -56,14 +57,14 @@ class OpenApi extends AbstractType implements FileInterface
         return $openApi;
     }
 
-    public function render(File $openApi, File $collection, File $entity): string
+    public function render(Component $openApi, Component $collection, Component $entity): string
     {
-        $class = (new ClassFile($openApi->getComponent()->getNamespace(), $openApi->getComponent()->getClassName()))
+        $class = (new ClassFile($openApi->getNamespace(), $openApi->getClassName()))
             ->useClass(Import::DATETIMEIMMUTABLE)
             ->useClass(Import::FIG_HTTP_MESSAGE_STATUSCODEINTERFACE)
             ->useClass(Import::OPENAPI_ATTRIBUTES, 'OA')
-            ->useClass($collection->getComponent()->getFqcn())
-            ->useClass($entity->getComponent()->getFqcn());
+            ->useClass($collection->getFqcn())
+            ->useClass($entity->getFqcn());
 
         return $class->render();
     }

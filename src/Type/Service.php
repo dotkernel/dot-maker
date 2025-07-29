@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
+use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
@@ -60,10 +61,10 @@ class Service extends AbstractType implements FileInterface
         }
 
         $content = $this->render(
-            $service,
-            $this->fileSystem->serviceInterface($name),
-            $this->fileSystem->repository($name),
-            $this->fileSystem->entity($name),
+            $service->getComponent(),
+            $this->fileSystem->serviceInterface($name)->getComponent(),
+            $this->fileSystem->repository($name)->getComponent(),
+            $this->fileSystem->entity($name)->getComponent(),
         );
 
         try {
@@ -76,78 +77,129 @@ class Service extends AbstractType implements FileInterface
         return $service;
     }
 
-    public function render(File $service, File $serviceInterface, File $repository, File $entity): string
-    {
-        $class = (new ClassFile($service->getComponent()->getNamespace(), $service->getComponent()->getClassName()))
-            ->addInterface($serviceInterface->getComponent()->getClassName())
+    public function render(
+        Component $service,
+        Component $serviceInterface,
+        Component $repository,
+        Component $entity
+    ): string {
+        $class = (new ClassFile($service->getNamespace(), $service->getClassName()))
+            ->addInterface($serviceInterface->getClassName())
             ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
-            ->useClass(Import::DOCTRINE_ORM_QUERYBUILDER)
-            ->useClass($repository->getComponent()->getFqcn())
-            ->useClass($entity->getComponent()->getFqcn())
+            ->useClass($repository->getFqcn())
+            ->useClass($entity->getFqcn())
             ->useClass($this->getAppHelperPaginatorFqcn())
             ->useFunction('in_array');
 
         $promotedProperty = new PromotedProperty(
-            $repository->getComponent()->getPropertyName(true),
-            $repository->getComponent()->getClassName()
+            $repository->toCamelCase(true),
+            $repository->getClassName()
         );
 
         $constructor = (new Constructor())
             ->addInject(
-                (new Inject())->addArgument($repository->getComponent()->getClassString())
+                (new Inject())->addArgument($repository->getClassString())
             )
             ->addPromotedProperty($promotedProperty);
         $class->addMethod($constructor);
         $class->addMethod($promotedProperty->getGetter());
 
-        $deleteResource = (new Method($entity->getComponent()->getDeleteMethodName()))
+        $deleteResource = (new Method($entity->getDeleteMethodName()))
             ->addParameter(
-                new Parameter($entity->getComponent()->getPropertyName(), $entity->getComponent()->getClassName())
+                new Parameter($entity->toCamelCase(), $entity->getClassName())
             )
             ->setBody(<<<BODY
-        \$this->{$repository->getComponent()->getPropertyName()}->deleteResource({$entity->getComponent()->getVariable()});
+        \$this->{$repository->toCamelCase()}->deleteResource({$entity->getVariable()});
 BODY);
         $class->addMethod($deleteResource);
 
-        $getResources = (new Method($entity->getComponent()->getCollectionMethodName()))
+        $getResources = (new Method($entity->getCollectionMethodName()))
             ->addParameter(
                 new Parameter('params', 'array')
             )
             ->setReturnType($this->context->isApi() ? 'QueryBuilder' : 'array')
             ->setBody(<<<BODY
         \$filters = \$params['filters'] ?? [];
-        \$params  = Paginator::getParams(\$params, '{$entity->getComponent()->getPropertyName()}.created');
+        \$params  = Paginator::getParams(\$params, '{$entity->toCamelCase()}.created');
 
         \$sortableColumns = [
-            '{$entity->getComponent()->getPropertyName()}.created',
-            '{$entity->getComponent()->getPropertyName()}.updated',
+            '{$entity->toCamelCase()}.created',
+            '{$entity->toCamelCase()}.updated',
         ];
         if (! in_array(\$params['sort'], \$sortableColumns, true)) {
-            \$params['sort'] = '{$entity->getComponent()->getPropertyName()}.created';
+            \$params['sort'] = '{$entity->toCamelCase()}.created';
         }
 
-        return \$this->{$repository->getComponent()->getPropertyName()}->{$entity->getComponent()->getCollectionMethodName()}(\$params, \$filters);
 BODY);
+        if ($this->context->isApi()) {
+            $class->useClass(Import::DOCTRINE_ORM_QUERYBUILDER);
+            $getResources->appendBody(
+                sprintf(
+                    'return $this->%s->%s($params, $filters);',
+                    $repository->toCamelCase(),
+                    $entity->getCollectionMethodName()
+                )
+            );
+        } else {
+            $class->useClass(Import::DOCTRINE_ORM_TOOLS_PAGINATION_PAGINATOR, 'DoctrinePaginator');
+            $getResources
+                ->appendBody(
+                    sprintf(
+                        '$paginator = new DoctrinePaginator($this->%s->%s($params, $filters)->getQuery());',
+                        $repository->toCamelCase(),
+                        $entity->getCollectionMethodName()
+                    )
+                )
+                ->appendBody('', 0)
+                ->appendBody('return Paginator::wrapper($paginator, $params, $filters);');
+        }
         $class->addMethod($getResources);
 
-        $saveResource = (new Method($entity->getComponent()->getSaveMethodName()))
-            ->setReturnType($entity->getComponent()->getClassName())
+        $saveResource = (new Method($entity->getSaveMethodName()))
+            ->setReturnType($entity->getClassName())
             ->addParameter(
                 new Parameter('data', 'array')
             )
             ->addParameter(
-                new Parameter($entity->getComponent()->getPropertyName(), $entity->getComponent()->getClassName(), true, 'null')
+                new Parameter($entity->toCamelCase(), $entity->getClassName(), true, 'null')
             )
             ->setBody(<<<BODY
-        if (! {$entity->getComponent()->getVariable()} instanceof {$entity->getComponent()->getClassName()}) {
-            {$entity->getComponent()->getVariable()} = new {$entity->getComponent()->getClassName()}();
+        if (! {$entity->getVariable()} instanceof {$entity->getClassName()}) {
+            {$entity->getVariable()} = new {$entity->getClassName()}();
         }
 
-        \$this->{$repository->getComponent()->getPropertyName()}->saveResource({$entity->getComponent()->getVariable()});
+        \$this->{$repository->toCamelCase()}->saveResource({$entity->getVariable()});
 
-        return {$entity->getComponent()->getVariable()};
+        return {$entity->getVariable()};
 BODY);
         $class->addMethod($saveResource);
+
+        if (! $this->context->isApi()) {
+            $class
+                ->useClass(Import::getNotFoundExceptionFqcn($this->context->getRootNamespace()))
+                ->useClass($this->getAppMessageFqcn());
+
+            $findResource = (new Method($entity->getFindMethodName()))
+                ->setReturnType($entity->getClassName())
+                ->addParameter(
+                    new Parameter('uuid', 'string')
+                )
+                ->setComment(<<<COMM
+/**
+     * @throws NotFoundException
+     */
+COMM)
+                ->setBody(<<<BODY
+        {$entity->getVariable()} = \$this->{$repository->toCamelCase()}->find(\$uuid);
+        if (! {$entity->getVariable()} instanceof {$entity->getClassName()}) {
+            throw new NotFoundException(Message::resourceNotFound('{$entity->getClassName()}'));
+        }
+
+        return {$entity->getVariable()};
+BODY);
+
+            $class->addMethod($findResource);
+        }
 
         return $class->render();
     }
@@ -155,6 +207,17 @@ BODY);
     public function getAppHelperPaginatorFqcn(): string
     {
         $format = Import::ROOT_APP_HELPER_PAGINATOR;
+
+        if ($this->context->hasCore()) {
+            return sprintf($format, ContextInterface::NAMESPACE_CORE);
+        }
+
+        return sprintf($format, $this->context->getRootNamespace());
+    }
+
+    public function getAppMessageFqcn(): string
+    {
+        $format = Import::ROOT_APP_MESSAGE;
 
         if ($this->context->hasCore()) {
             return sprintf($format, ContextInterface::NAMESPACE_CORE);

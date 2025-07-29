@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
+use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
@@ -18,10 +19,7 @@ use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Throwable;
 
-use function implode;
-use function preg_split;
 use function sprintf;
-use function strtolower;
 use function ucfirst;
 
 class Entity extends AbstractType implements FileInterface
@@ -61,8 +59,8 @@ class Entity extends AbstractType implements FileInterface
         }
 
         $content = $this->render(
-            $entity,
-            $this->fileSystem->repository($name)
+            $entity->getComponent(),
+            $this->fileSystem->repository($name)->getComponent(),
         );
 
         try {
@@ -75,20 +73,20 @@ class Entity extends AbstractType implements FileInterface
         return $entity;
     }
 
-    public function render(File $entity, File $repository): string
+    public function render(Component $entity, Component $repository): string
     {
-        $class = (new ClassFile($entity->getComponent()->getNamespace(), $entity->getComponent()->getClassName()))
+        $class = (new ClassFile($entity->getNamespace(), $entity->getClassName()))
             ->setExtends('AbstractEntity')
             ->useClass($this->getAbstractEntityFqcn())
             ->useClass($this->getTimestampsTraitFqcn())
-            ->useClass($repository->getComponent()->getFqcn())
+            ->useClass($repository->getFqcn())
             ->useClass(Import::DOCTRINE_ORM_MAPPING, 'ORM')
             ->addInject(
-                (new Inject('ORM\Entity'))->addArgument($repository->getComponent()->getClassString(), 'repositoryClass')
+                (new Inject('ORM\Entity'))->addArgument($repository->getClassString(), 'repositoryClass')
             )
             ->addInject(
                 (new Inject('ORM\Table'))
-                    ->addArgument(self::wrap($this->getTableName($entity->getComponent()->getClassName())), 'name')
+                    ->addArgument(self::wrap($entity->toSnakeCase()), 'name')
             )
             ->addInject(
                 new Inject('ORM\HasLifecycleCallbacks')
@@ -136,12 +134,5 @@ BODY);
         }
 
         return sprintf($format, $this->context->getRootNamespace());
-    }
-
-    public function getTableName(string $name): string
-    {
-        $parts = preg_split('/(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/', $name);
-
-        return strtolower(implode('_', $parts));
     }
 }

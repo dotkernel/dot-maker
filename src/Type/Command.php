@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
+use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
@@ -69,8 +70,8 @@ class Command extends AbstractType implements FileInterface
         }
 
         $content = $this->render(
-            $command,
-            $this->fileSystem->serviceInterface($name),
+            $command->getComponent(),
+            $this->fileSystem->serviceInterface($name)->getComponent(),
         );
 
         try {
@@ -83,11 +84,11 @@ class Command extends AbstractType implements FileInterface
         return $command;
     }
 
-    public function render(File $command, File $serviceInterface): string
+    public function render(Component $command, Component $serviceInterface): string
     {
-        $defaultName = $this->getDefaultName($command->getComponent()->getClassName());
+        $defaultName = $this->getDefaultName($command->getClassName());
 
-        $class = (new ClassFile($command->getComponent()->getNamespace(), $command->getComponent()->getClassName()))
+        $class = (new ClassFile($command->getNamespace(), $command->getClassName()))
             ->setExtends('Command')
             ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_ATTRIBUTE_ASCOMMAND)
             ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_COMMAND_COMMAND)
@@ -95,7 +96,7 @@ class Command extends AbstractType implements FileInterface
             ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_OUTPUT_OUTPUTINTERFACE)
             ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_STYLE_SYMFONYSTYLE)
             ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
-            ->useClass($serviceInterface->getComponent()->getFqcn())
+            ->useClass($serviceInterface->getFqcn())
             ->addInject(
                 (new Inject('AsCommand'))
                     ->addArgument(self::wrap($defaultName), 'name')
@@ -111,9 +112,9 @@ class Command extends AbstractType implements FileInterface
         $constructor = (new Constructor())
             ->setBody('        parent::__construct(self::$defaultName);')
             ->addInject(
-                (new Inject())->addArgument($serviceInterface->getComponent()->getClassString())
+                (new Inject())->addArgument($serviceInterface->getClassString())
             )
-            ->addPromotedPropertyFromComponent($serviceInterface->getComponent());
+            ->addPromotedPropertyFromComponent($serviceInterface);
         $class->addMethod($constructor);
 
         $configure = (new Method('configure'))
@@ -136,7 +137,7 @@ BODY);
             )
             ->setBody(<<<BODY
         \$io = new SymfonyStyle(\$input, \$output);
-        \$io->info('{$command->getComponent()->getClassName()} default output');
+        \$io->info('{$command->getClassName()} default output');
 
         return Command::SUCCESS;
 BODY);

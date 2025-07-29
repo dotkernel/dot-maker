@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
+use Dot\Maker\Component;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Interface\Declaration;
 use Dot\Maker\Component\InterfaceFile;
@@ -56,9 +57,9 @@ class ServiceInterface extends AbstractType implements FileInterface
         }
 
         $content = $this->render(
-            $serviceInterface,
-            $this->fileSystem->repository($name),
-            $this->fileSystem->entity($name),
+            $serviceInterface->getComponent(),
+            $this->fileSystem->repository($name)->getComponent(),
+            $this->fileSystem->entity($name)->getComponent(),
         );
 
         try {
@@ -71,48 +72,63 @@ class ServiceInterface extends AbstractType implements FileInterface
         return $serviceInterface;
     }
 
-    public function render(File $serviceInterface, File $repository, File $entity): string
+    public function render(Component $serviceInterface, Component $repository, Component $entity): string
     {
-        $class = (new InterfaceFile(
-            $serviceInterface->getComponent()->getNamespace(),
-            $serviceInterface->getComponent()->getClassName()
-        ))
-            ->useClass(Import::DOCTRINE_ORM_QUERYBUILDER)
-            ->useClass($repository->getComponent()->getFqcn())
-            ->useClass($entity->getComponent()->getFqcn())
+        $interface = (new InterfaceFile($serviceInterface->getNamespace(), $serviceInterface->getClassName()))
+            ->useClass($repository->getFqcn())
+            ->useClass($entity->getFqcn())
             ->addDeclaration(
-                (new Declaration($repository->getComponent()->getGetterName()))
-                    ->setReturnType($repository->getComponent()->getClassName())
+                (new Declaration($repository->getGetterName()))
+                    ->setReturnType($repository->getClassName())
             )
             ->addDeclaration(
-                (new Declaration($entity->getComponent()->getDeleteMethodName()))
+                (new Declaration($entity->getDeleteMethodName()))
                     ->addParameter(
-                        new Parameter($entity->getComponent()->getPropertyName(), $entity->getComponent()->getClassName())
+                        new Parameter($entity->toCamelCase(), $entity->getClassName())
                     )
             )
             ->addDeclaration(
-                (new Declaration($entity->getComponent()->getCollectionMethodName()))
-                    ->setReturnType('QueryBuilder')
+                (new Declaration($entity->getCollectionMethodName()))
+                    ->setReturnType($this->context->isApi() ? 'QueryBuilder' : 'array')
                     ->addParameter(
                         new Parameter('params', 'array')
                     )
             )
             ->addDeclaration(
-                (new Declaration($entity->getComponent()->getSaveMethodName()))
-                    ->setReturnType($entity->getComponent()->getClassName())
+                (new Declaration($entity->getSaveMethodName()))
+                    ->setReturnType($entity->getClassName())
                     ->addParameter(
                         new Parameter('data', 'array')
                     )
                     ->addParameter(
                         new Parameter(
-                            $entity->getComponent()->getPropertyName(),
-                            $entity->getComponent()->getClassName(),
+                            $entity->toCamelCase(),
+                            $entity->getClassName(),
                             true,
                             'null'
                         )
                     )
             );
 
-        return $class->render();
+        if (! $this->context->isApi()) {
+            $interface
+                ->useClass(Import::getNotFoundExceptionFqcn($this->context->getRootNamespace()))
+                ->addDeclaration(
+                    (new Declaration($entity->getFindMethodName()))
+                        ->setReturnType($entity->getClassName())
+                        ->addParameter(
+                            new Parameter('uuid', 'string')
+                        )
+                        ->setComment(<<<COMM
+/**
+     * @throws NotFoundException
+     */
+COMM)
+                );
+        } else {
+            $interface->useClass(Import::DOCTRINE_ORM_QUERYBUILDER);
+        }
+
+        return $interface->render();
     }
 }

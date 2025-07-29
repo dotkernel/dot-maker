@@ -68,7 +68,7 @@ ATTR;
 
     $visibility->value function {$component->getGetterName()}(): $nullable{$component->getClassName()}
     {
-        return \$this->{$component->getPropertyName()};
+        return \$this->{$component->toCamelCase()};
     }
 GTR;
 
@@ -87,9 +87,9 @@ GTR;
         // phpcs:disable Generic.Files.LineLength.TooLong
         $this->setters[$component->getFqcn()] = <<<STR
 
-    $visibility->value function {$component->getSetterName()}($nullable{$component->getClassName()} \${$component->getPropertyName()}$default): self
+    $visibility->value function {$component->getSetterName()}($nullable{$component->getClassName()} \${$component->toCamelCase()}$default): self
     {
-        \$this->{$component->getPropertyName()} = \${$component->getPropertyName()};
+        \$this->{$component->toCamelCase()} = \${$component->toCamelCase()};
 
         return \$this;
     }

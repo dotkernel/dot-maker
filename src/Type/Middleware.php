@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
+use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
@@ -57,8 +58,8 @@ class Middleware extends AbstractType implements FileInterface
         }
 
         $content = $this->render(
-            $middleware,
-            $this->fileSystem->serviceInterface($name),
+            $middleware->getComponent(),
+            $this->fileSystem->serviceInterface($name)->getComponent(),
         );
 
         try {
@@ -71,25 +72,22 @@ class Middleware extends AbstractType implements FileInterface
         return $middleware;
     }
 
-    public function render(File $middleware, File $serviceInterface): string
+    public function render(Component $middleware, Component $serviceInterface): string
     {
-        $class = (new ClassFile(
-            $middleware->getComponent()->getNamespace(),
-            $middleware->getComponent()->getClassName()
-        ))
+        $class = (new ClassFile($middleware->getNamespace(), $middleware->getClassName()))
             ->addInterface('MiddlewareInterface')
             ->useClass(Import::PSR_HTTP_MESSAGE_RESPONSEINTERFACE)
             ->useClass(Import::PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE)
             ->useClass(Import::PSR_HTTP_SERVER_MIDDLEWAREINTERFACE)
             ->useClass(Import::PSR_HTTP_SERVER_REQUESTHANDLERINTERFACE)
             ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
-            ->useClass($serviceInterface->getComponent()->getFqcn());
+            ->useClass($serviceInterface->getFqcn());
 
         $constructor = (new Constructor())
             ->addInject(
-                (new Inject())->addArgument($serviceInterface->getComponent()->getClassString())
+                (new Inject())->addArgument($serviceInterface->getClassString())
             )
-            ->addPromotedPropertyFromComponent($serviceInterface->getComponent());
+            ->addPromotedPropertyFromComponent($serviceInterface);
         $class->addMethod($constructor);
 
         $execute = (new Method('process'))

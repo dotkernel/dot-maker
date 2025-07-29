@@ -19,11 +19,18 @@ class Import
     public const DATETIMEIMMUTABLE                                = 'DateTimeImmutable';
     public const DOCTRINE_ORM_MAPPING                             = 'Doctrine\\ORM\\Mapping';
     public const DOCTRINE_ORM_QUERYBUILDER                        = 'Doctrine\\ORM\\QueryBuilder';
+    public const DOCTRINE_ORM_TOOLS_PAGINATION_PAGINATOR          = 'Doctrine\\ORM\\Tools\\Pagination\\Paginator';
     public const DOT_DEPENDENCYINJECTION_ATTRIBUTE_ENTITY         = 'Dot\\DependencyInjection\\Attribute\\Entity';
     public const DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT         = 'Dot\\DependencyInjection\\Attribute\\Inject';
+    public const DOT_FLASHMESSENGER_FLASHMESSENGERINTERFACE       = 'Dot\\FlashMessenger\\FlashMessengerInterface';
+    public const DOT_LOG_LOGGER                                   = 'Dot\\Log\\Logger';
     public const DOT_ROUTER_ROUTECOLLECTORINTERFACE               = 'Dot\\Router\\RouteCollectorInterface';
     public const FIG_HTTP_MESSAGE_STATUSCODEINTERFACE             = 'Fig\\Http\\Message\\StatusCodeInterface';
+    public const LAMINAS_DIACTOROS_RESPONSE_HTMLRESPONSE          = 'Laminas\\Diactoros\\Response\\HtmlResponse';
+    public const LAMINAS_DIACTOROS_RESPONSE_EMPTYRESPONSE         = 'Laminas\\Diactoros\\Response\\EmptyResponse';
     public const MEZZIO_APPLICATION                               = 'Mezzio\\Application';
+    public const MEZZIO_ROUTER_ROUTERINTERFACE                    = 'Mezzio\\Router\\RouterInterface';
+    public const MEZZIO_TEMPLATE_TEMPLATERENDERERINTERFACE        = 'Mezzio\\Template\\TemplateRendererInterface';
     public const OPENAPI_ATTRIBUTES                               = 'OpenApi\\Attributes';
     public const PSR_CONTAINER_CONTAINERINTERFACE                 = 'Psr\\Container\\ContainerInterface';
     public const PSR_CONTAINER_CONTAINEREXCEPTIONINTERFACE        = 'Psr\\Container\\ContainerExceptionInterface';
@@ -49,6 +56,7 @@ class Import
     public const SYMFONY_COMPONENT_CONSOLE_INPUT_INPUTINTERFACE   = 'Symfony\\Component\\Console\\Input\\InputInterface';
     public const SYMFONY_COMPONENT_CONSOLE_OUTPUT_OUTPUTINTERFACE = 'Symfony\\Component\\Console\\Output\\OutputInterface';
     public const SYMFONY_COMPONENT_CONSOLE_STYLE_SYMFONYSTYLE     = 'Symfony\\Component\\Console\\Style\\SymfonyStyle';
+    public const THROWABLE                                        = 'Throwable';
     // phpcs:enable Generic.Files.LineLength.TooLong
 
     private array $classUses    = [];
