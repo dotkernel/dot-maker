@@ -12,7 +12,7 @@ interface MethodInterface
 
     public function addParameter(ParameterInterface $parameter): self;
 
-    public function appendBody(string $bodyLine, int $spaces = 8): self;
+    public function appendBody(string $string, int $spaces = 8, bool $newLine = true): self;
 
     public function getName(): string;
 

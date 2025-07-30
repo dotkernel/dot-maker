@@ -37,9 +37,13 @@ class Method implements MethodInterface
         return $this->render();
     }
 
-    public function appendBody(string $bodyLine, int $spaces = 8): self
+    public function appendBody(string $string, int $spaces = 8, bool $newLine = true): self
     {
-        $this->body .= PHP_EOL . str_repeat(' ', $spaces) . $bodyLine;
+        if ($newLine === true) {
+            $this->body .= PHP_EOL . str_repeat(' ', $spaces) . $string;
+        } else {
+            $this->body .= $string;
+        }
 
         return $this;
     }

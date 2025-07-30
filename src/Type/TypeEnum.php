@@ -23,6 +23,7 @@ enum TypeEnum: string
 {
     case Collection                = 'collection';
     case Command                   = 'command';
+    case ConfigProvider            = 'ConfigProvider';
     case Entity                    = 'entity';
     case Form                      = 'form';
     case Handler                   = 'handler';
@@ -53,6 +54,7 @@ enum TypeEnum: string
     {
         return match ($this) {
             self::Collection                => Collection::class,
+            self::ConfigProvider            => ConfigProvider::class,
             self::Command                   => Command::class,
             self::Entity                    => Entity::class,
             self::Form                      => Form::class,

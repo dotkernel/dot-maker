@@ -9,6 +9,7 @@ use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Method;
 use Dot\Maker\Component\Parameter;
+use Dot\Maker\ContextInterface;
 use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
@@ -17,14 +18,12 @@ use Throwable;
 
 use function sprintf;
 
+use const PHP_EOL;
+
 class RoutesDelegator extends AbstractType implements FileInterface
 {
     public function __invoke(): void
     {
-        if (! $this->context->isApi()) {
-            return;
-        }
-
         try {
             $this->create('RoutesDelegator');
         } catch (Throwable $exception) {
@@ -43,33 +42,25 @@ class RoutesDelegator extends AbstractType implements FileInterface
             throw DuplicateFileException::create($routesDelegator);
         }
 
-        if ($this->context->isApi()) {
-            $content = $this->render(
-                $routesDelegator->getComponent(),
-                [
-                    'collection' => $this->fileSystem->apiDeleteResourceHandler($name),
-                    'delete'     => $this->fileSystem->apiDeleteResourceHandler($name),
-                    'get'        => $this->fileSystem->apiGetResourceHandler($name),
-                    'patch'      => $this->fileSystem->apiPatchResourceHandler($name),
-                    'post'       => $this->fileSystem->apiPostResourceHandler($name),
-                    'put'        => $this->fileSystem->apiPutResourceHandler($name),
-                ]
-            );
-        } else {
-            $content = $this->render(
-                $routesDelegator->getComponent(),
-                [
-                    'get-create'  => $this->fileSystem->getResourceCreateHandler($name),
-                    'post-create' => $this->fileSystem->postResourceCreateHandler($name),
-                    'get-delete'  => $this->fileSystem->getResourceDeleteHandler($name),
-                    'post-delete' => $this->fileSystem->postResourceDeleteHandler($name),
-                    'get-edit'    => $this->fileSystem->getResourceEditHandler($name),
-                    'post-edit'   => $this->fileSystem->postResourceEditHandler($name),
-                    'get-list'    => $this->fileSystem->getResourceListHandler($name),
-                    'get-view'    => $this->fileSystem->getResourceViewHandler($name),
-                ]
-            );
-        }
+        $content = $this->render(
+            $routesDelegator->getComponent(),
+            $this->fileSystem->module($name)->getComponent(),
+            $this->fileSystem->entity($name)->getComponent(),
+            $this->fileSystem->apiDeleteResourceHandler($name),
+            $this->fileSystem->apiGetResourceHandler($name),
+            $this->fileSystem->apiGetCollectionHandler($name),
+            $this->fileSystem->apiPatchResourceHandler($name),
+            $this->fileSystem->apiPostResourceHandler($name),
+            $this->fileSystem->apiPutResourceHandler($name),
+            $this->fileSystem->getCreateResourceHandler($name),
+            $this->fileSystem->postCreateResourceHandler($name),
+            $this->fileSystem->getDeleteResourceHandler($name),
+            $this->fileSystem->postDeleteResourceHandler($name),
+            $this->fileSystem->getEditResourceHandler($name),
+            $this->fileSystem->postEditResourceHandler($name),
+            $this->fileSystem->getListResourcesHandler($name),
+            $this->fileSystem->getViewResourceHandler($name),
+        );
 
         try {
             $routesDelegator->create($content);
@@ -81,9 +72,27 @@ class RoutesDelegator extends AbstractType implements FileInterface
         return $routesDelegator;
     }
 
-    public function render(Component $routesDelegator, array $handlers): string
-    {
+    public function render(
+        Component $routesDelegator,
+        Component $module,
+        Component $entity,
+        File $apiDeleteResourceHandler,
+        File $apiGetResourceHandler,
+        File $apiGetCollectionHandler,
+        File $apiPatchResourceHandler,
+        File $apiPostResourceHandler,
+        File $apiPutResourceHandler,
+        File $getCreateResourceHandler,
+        File $postCreateResourceHandler,
+        File $getDeleteResourceHandler,
+        File $postDeleteResourceHandler,
+        File $getEditResourceHandler,
+        File $postEditResourceHandler,
+        File $getListResourcesHandler,
+        File $getViewResourceHandler,
+    ): string {
         $class = (new ClassFile($routesDelegator->getNamespace(), $routesDelegator->getClassName()))
+            ->useClass($this->getAppConfigProviderFqcn(true))
             ->useClass(Import::DOT_ROUTER_ROUTECOLLECTORINTERFACE)
             ->useClass(Import::PSR_CONTAINER_CONTAINEREXCEPTIONINTERFACE)
             ->useClass(Import::PSR_CONTAINER_CONTAINERINTERFACE)
@@ -107,17 +116,226 @@ class RoutesDelegator extends AbstractType implements FileInterface
      * @throws NotFoundExceptionInterface
      */
 COMM)
+            ->appendBody('$uuid = ConfigProvider::REGEXP_UUID;')
+            ->appendBody('', 0)
             ->appendBody('/** @var RouteCollectorInterface $routeCollector */')
             ->appendBody('$routeCollector = $container->get(RouteCollectorInterface::class);')
-            ->appendBody('')
-            ->appendBody('$routeCollector;');
+            ->appendBody('', 0)
+            ->appendBody('$routeCollector');
 
-//        foreach ($handlers as $method => $handler) {
-//            ;
-//        }
+        if ($apiDeleteResourceHandler->exists()) {
+            $class->useClass($apiDeleteResourceHandler->getComponent()->getFqcn());
+            $invoke->appendBody(
+                sprintf(
+                    '->delete(\'/%s/\' . $uuid, %s, \'%s::delete-%s\')',
+                    $entity->toKebabCase(),
+                    $apiDeleteResourceHandler->getComponent()->getClassString(),
+                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
+                ),
+                12
+            );
+        }
+
+        if ($apiGetResourceHandler->exists()) {
+            $class->useClass($apiGetResourceHandler->getComponent()->getFqcn());
+            $invoke->appendBody(
+                sprintf(
+                    '->get(\'/%s/\' . $uuid, %s, \'%s::view-%s\')',
+                    $entity->toKebabCase(),
+                    $apiGetResourceHandler->getComponent()->getClassString(),
+                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
+                ),
+                12
+            );
+        }
+
+        if ($apiGetCollectionHandler->exists()) {
+            $class->useClass($apiGetCollectionHandler->getComponent()->getFqcn());
+            $invoke->appendBody(
+                sprintf(
+                    '->get(\'/%s\', %s, \'%s::list-%s\')',
+                    $entity->toKebabCase(),
+                    $apiGetCollectionHandler->getComponent()->getClassString(),
+                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
+                ),
+                12
+            );
+        }
+
+        if ($apiPatchResourceHandler->exists()) {
+            $class->useClass($apiPatchResourceHandler->getComponent()->getFqcn());
+            $invoke->appendBody(
+                sprintf(
+                    '->patch(\'/%s/\' . $uuid, %s, \'%s::update-%s\')',
+                    $entity->toKebabCase(),
+                    $apiPatchResourceHandler->getComponent()->getClassString(),
+                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
+                ),
+                12
+            );
+        }
+
+        if ($apiPostResourceHandler->exists()) {
+            $class->useClass($apiPostResourceHandler->getComponent()->getFqcn());
+            $invoke->appendBody(
+                sprintf(
+                    '->post(\'/%s\', %s, \'%s::create-%s\')',
+                    $entity->toKebabCase(),
+                    $apiPostResourceHandler->getComponent()->getClassString(),
+                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
+                ),
+                12
+            );
+        }
+
+        if ($apiPutResourceHandler->exists()) {
+            $class->useClass($apiPutResourceHandler->getComponent()->getFqcn());
+            $invoke->appendBody(
+                sprintf(
+                    '->put(\'/%s/\' . $uuid, %s, \'%s::replace-%s\')',
+                    $entity->toKebabCase(),
+                    $apiPutResourceHandler->getComponent()->getClassString(),
+                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
+                ),
+                12
+            );
+        }
+
+        if ($getCreateResourceHandler->exists()) {
+            $class->useClass($getCreateResourceHandler->getComponent()->getFqcn());
+            $invoke->appendBody(
+                sprintf(
+                    '->get(\'/create-%s\', %s, \'%s::create-%s-form\')',
+                    $entity->toKebabCase(),
+                    $getCreateResourceHandler->getComponent()->getClassString(),
+                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
+                ),
+                12
+            );
+        }
+
+        if ($postCreateResourceHandler->exists()) {
+            $class->useClass($postCreateResourceHandler->getComponent()->getFqcn());
+            $invoke->appendBody(
+                sprintf(
+                    '->post(\'/create-%s\', %s, \'%s::create-%s\')',
+                    $entity->toKebabCase(),
+                    $postCreateResourceHandler->getComponent()->getClassString(),
+                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
+                ),
+                12
+            );
+        }
+
+        if ($getDeleteResourceHandler->exists()) {
+            $class->useClass($getDeleteResourceHandler->getComponent()->getFqcn());
+            $invoke->appendBody(
+                sprintf(
+                    '->get(\'/delete-%s/\' . $uuid, %s, \'%s::delete-%s-form\')',
+                    $entity->toKebabCase(),
+                    $getDeleteResourceHandler->getComponent()->getClassString(),
+                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
+                ),
+                12
+            );
+        }
+
+        if ($postDeleteResourceHandler->exists()) {
+            $class->useClass($postDeleteResourceHandler->getComponent()->getFqcn());
+            $invoke->appendBody(
+                sprintf(
+                    '->post(\'/delete-%s/\' . $uuid, %s, \'%s::delete-%s\')',
+                    $entity->toKebabCase(),
+                    $postDeleteResourceHandler->getComponent()->getClassString(),
+                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
+                ),
+                12
+            );
+        }
+
+        if ($getEditResourceHandler->exists()) {
+            $class->useClass($getEditResourceHandler->getComponent()->getFqcn());
+            $invoke->appendBody(
+                sprintf(
+                    '->get(\'/edit-%s/\' . $uuid, %s, \'%s::edit-%s-form\')',
+                    $entity->toKebabCase(),
+                    $getEditResourceHandler->getComponent()->getClassString(),
+                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
+                ),
+                12
+            );
+        }
+
+        if ($postEditResourceHandler->exists()) {
+            $class->useClass($postEditResourceHandler->getComponent()->getFqcn());
+            $invoke->appendBody(
+                sprintf(
+                    '->post(\'/edit-%s/\' . $uuid, %s, \'%s::edit-%s\')',
+                    $entity->toKebabCase(),
+                    $postEditResourceHandler->getComponent()->getClassString(),
+                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
+                ),
+                12
+            );
+        }
+
+        if ($getListResourcesHandler->exists()) {
+            $class->useClass($getListResourcesHandler->getComponent()->getFqcn());
+            $invoke->appendBody(
+                sprintf(
+                    '->get(\'/list-%s\', %s, \'%s::list-%s\')',
+                    $entity->toKebabCase(),
+                    $getListResourcesHandler->getComponent()->getClassString(),
+                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
+                ),
+                12
+            );
+        }
+
+        if ($getViewResourceHandler->exists()) {
+            $class->useClass($getViewResourceHandler->getComponent()->getFqcn());
+            $invoke->appendBody(
+                sprintf(
+                    '->get(\'/view-%s/\' . $uuid, %s, \'%s::view-%s-form\')',
+                    $entity->toKebabCase(),
+                    $getViewResourceHandler->getComponent()->getClassString(),
+                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
+                ),
+                12
+            );
+        }
+
+        $invoke
+            ->appendBody(';' . PHP_EOL, 0, false)
+            ->appendBody('return $callback();');
 
         $class->addMethod($invoke);
 
         return $class->render();
+    }
+
+    public function getAppConfigProviderFqcn(bool $core = false): string
+    {
+        if ($core) {
+            $rootNamespace = ContextInterface::NAMESPACE_CORE;
+        } else {
+            $rootNamespace = $this->context->getRootNamespace();
+        }
+
+        return sprintf(Import::ROOT_APP_CONFIGPROVIDER, $rootNamespace);
     }
 }

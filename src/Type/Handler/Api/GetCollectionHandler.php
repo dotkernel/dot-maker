@@ -54,7 +54,7 @@ class GetCollectionHandler extends AbstractType implements FileInterface
             Output::error(sprintf('Invalid Handler name: "%s"', $name), true);
         }
 
-        $handler = $this->fileSystem->apiGetCollectionResourceHandler($name);
+        $handler = $this->fileSystem->apiGetCollectionHandler($name);
         if ($handler->exists()) {
             throw DuplicateFileException::create($handler);
         }

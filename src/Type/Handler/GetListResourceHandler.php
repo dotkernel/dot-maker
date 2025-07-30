@@ -55,7 +55,7 @@ class GetListResourceHandler extends AbstractType implements FileInterface
             Output::error(sprintf('Invalid Handler name: "%s"', $name), true);
         }
 
-        $handler = $this->fileSystem->getResourceListHandler($name);
+        $handler = $this->fileSystem->getListResourcesHandler($name);
         if ($handler->exists()) {
             throw DuplicateFileException::create($handler);
         }

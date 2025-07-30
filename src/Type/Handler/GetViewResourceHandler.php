@@ -55,7 +55,7 @@ class GetViewResourceHandler extends AbstractType implements FileInterface
             Output::error(sprintf('Invalid Handler name: "%s"', $name), true);
         }
 
-        $handler = $this->fileSystem->getResourceViewHandler($name);
+        $handler = $this->fileSystem->getViewResourceHandler($name);
         if ($handler->exists()) {
             throw DuplicateFileException::create($handler);
         }

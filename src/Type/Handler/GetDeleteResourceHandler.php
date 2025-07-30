@@ -55,7 +55,7 @@ class GetDeleteResourceHandler extends AbstractType implements FileInterface
             Output::error(sprintf('Invalid Handler name: "%s"', $name), true);
         }
 
-        $handler = $this->fileSystem->getResourceDeleteHandler($name);
+        $handler = $this->fileSystem->getDeleteResourceHandler($name);
         if ($handler->exists()) {
             throw DuplicateFileException::create($handler);
         }
@@ -64,7 +64,7 @@ class GetDeleteResourceHandler extends AbstractType implements FileInterface
             $handler->getComponent(),
             $this->fileSystem->serviceInterface($name)->getComponent(),
             $this->fileSystem->entity($name)->getComponent(),
-            $this->fileSystem->form($name)->getComponent(),
+            $this->fileSystem->deleteResourceForm($name)->getComponent(),
         );
 
         try {

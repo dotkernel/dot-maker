@@ -55,7 +55,7 @@ class GetCreateResourceHandler extends AbstractType implements FileInterface
             Output::error(sprintf('Invalid Handler name: "%s"', $name), true);
         }
 
-        $handler = $this->fileSystem->getResourceCreateHandler($name);
+        $handler = $this->fileSystem->getCreateResourceHandler($name);
         if ($handler->exists()) {
             throw DuplicateFileException::create($handler);
         }
@@ -63,7 +63,7 @@ class GetCreateResourceHandler extends AbstractType implements FileInterface
         $content = $this->render(
             $handler->getComponent(),
             $this->fileSystem->entity($name)->getComponent(),
-            $this->fileSystem->form($name)->getComponent(),
+            $this->fileSystem->createResourceForm($name)->getComponent(),
         );
 
         try {

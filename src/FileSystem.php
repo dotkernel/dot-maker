@@ -86,7 +86,7 @@ class FileSystem
         );
     }
 
-    public function form(string $name): File
+    public function createResourceForm(string $name): File
     {
         $name = preg_replace('/Form$/', '', $name);
 
@@ -94,6 +94,28 @@ class FileSystem
             new Directory('Form', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
             sprintf('%s\\%s\\Form', $this->context->getRootNamespace(), $this->moduleName),
             sprintf('Create%sForm', $name),
+        );
+    }
+
+    public function deleteResourceForm(string $name): File
+    {
+        $name = preg_replace('/Form$/', '', $name);
+
+        return new File(
+            new Directory('Form', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
+            sprintf('%s\\%s\\Form', $this->context->getRootNamespace(), $this->moduleName),
+            sprintf('Delete%sForm', $name),
+        );
+    }
+
+    public function editResourceForm(string $name): File
+    {
+        $name = preg_replace('/Form$/', '', $name);
+
+        return new File(
+            new Directory('Form', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
+            sprintf('%s\\%s\\Form', $this->context->getRootNamespace(), $this->moduleName),
+            sprintf('Edit%sForm', $name),
         );
     }
 
@@ -130,7 +152,7 @@ class FileSystem
         );
     }
 
-    public function apiGetCollectionResourceHandler(string $name): File
+    public function apiGetCollectionHandler(string $name): File
     {
         $name = preg_replace('/Handler$/', '', $name);
 
@@ -174,7 +196,7 @@ class FileSystem
         );
     }
 
-    public function getResourceCreateHandler(string $name): File
+    public function getCreateResourceHandler(string $name): File
     {
         return new File(
             new Directory('Handler', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
@@ -183,7 +205,7 @@ class FileSystem
         );
     }
 
-    public function getResourceDeleteHandler(string $name): File
+    public function getDeleteResourceHandler(string $name): File
     {
         return new File(
             new Directory('Handler', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
@@ -192,7 +214,7 @@ class FileSystem
         );
     }
 
-    public function getResourceEditHandler(string $name): File
+    public function getEditResourceHandler(string $name): File
     {
         return new File(
             new Directory('Handler', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
@@ -201,7 +223,7 @@ class FileSystem
         );
     }
 
-    public function getResourceListHandler(string $name): File
+    public function getListResourcesHandler(string $name): File
     {
         return new File(
             new Directory('Handler', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
@@ -210,7 +232,7 @@ class FileSystem
         );
     }
 
-    public function getResourceViewHandler(string $name): File
+    public function getViewResourceHandler(string $name): File
     {
         return new File(
             new Directory('Handler', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
@@ -219,7 +241,7 @@ class FileSystem
         );
     }
 
-    public function postResourceCreateHandler(string $name): File
+    public function postCreateResourceHandler(string $name): File
     {
         return new File(
             new Directory('Handler', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
@@ -228,7 +250,7 @@ class FileSystem
         );
     }
 
-    public function postResourceDeleteHandler(string $name): File
+    public function postDeleteResourceHandler(string $name): File
     {
         return new File(
             new Directory('Handler', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
@@ -237,7 +259,7 @@ class FileSystem
         );
     }
 
-    public function postResourceEditHandler(string $name): File
+    public function postEditResourceHandler(string $name): File
     {
         return new File(
             new Directory('Handler', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
@@ -363,6 +385,16 @@ class FileSystem
             sprintf('%s\\%s\\Service', $this->context->getRootNamespace(), $this->moduleName),
             sprintf('%sServiceInterface', $name),
         );
+    }
+
+    public function templates(string $name = 'templates'): Directory
+    {
+        return new Directory($name, sprintf('%s/src/%s', $this->rootDir, $this->moduleName));
+    }
+
+    public function templatesDir(string $name): Directory
+    {
+        return new Directory($name, sprintf('%s/src/%s/templates', $this->rootDir, $this->moduleName));
     }
 
     public function getModuleName(): string

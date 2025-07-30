@@ -20,9 +20,7 @@ class Module extends AbstractType implements ModuleInterface
     private ?File $form             = null;
     private ?File $inputFilter      = null;
     private ?File $middleware       = null;
-    private ?File $openApi          = null;
     private ?File $repository       = null;
-    private ?File $routesDelegator  = null;
     private ?File $service          = null;
     private ?File $serviceInterface = null;
     private array $inputs           = [];
@@ -84,10 +82,20 @@ class Module extends AbstractType implements ModuleInterface
 //                $this->inputFilter = $this->initComponent(TypeEnum::InputFilter)->create($module->getName());
 //            }
             if ($this->context->isApi()) {
-                $this->openApi = $this->initComponent(TypeEnum::OpenApi)->create($module->getName());
+                $this->initComponent(TypeEnum::OpenApi)->create($module->getName());
+            } else {
+                $templates = $this->fileSystem->templates();
+                if (! $templates->exists()) {
+                    $templates->create();
+                }
+                $templatesDir = $this->fileSystem->templatesDir($this->entity->getComponent()->toKebabCase());
+                if (! $templatesDir->exists()) {
+                    $templatesDir->create();
+                }
             }
 
-            $this->routesDelegator = $this->initComponent(TypeEnum::RoutesDelegator)->create($module->getName());
+            $this->initComponent(TypeEnum::RoutesDelegator)->create($module->getName());
+            $this->initComponent(TypeEnum::ConfigProvider)->create($module->getName());
 
             break;
         }
