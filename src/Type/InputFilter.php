@@ -40,13 +40,18 @@ class InputFilter extends AbstractType implements FileInterface
 
         $plural = Component::pluralize($name);
         if (Input::confirm(sprintf('Allow creating %s?', $plural))) {
-            $this->initComponent(TypeEnum::FormCreateResource)->create($name);
+            $this->initComponent(TypeEnum::InputFilterCreateResource)->create($name);
         }
         if (Input::confirm(sprintf('Allow deleting %s?', $plural))) {
-            $this->initComponent(TypeEnum::FormDeleteResource)->create($name);
+            $this->initComponent(TypeEnum::InputFilterDeleteResource)->create($name);
         }
         if (Input::confirm(sprintf('Allow editing %s?', $plural))) {
-            $this->initComponent(TypeEnum::FormEditResource)->create($name);
+            $this->initComponent(TypeEnum::InputFilterEditResource)->create($name);
+        }
+        if ($this->context->isApi()) {
+            if (Input::confirm(sprintf('Allow replacing %s?', $plural))) {
+                $this->initComponent(TypeEnum::InputFilterReplaceResource)->create($name);
+            }
         }
 
         return $this->fileSystem->form($name);

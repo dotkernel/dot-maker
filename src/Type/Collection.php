@@ -33,7 +33,6 @@ class Collection extends AbstractType implements FileInterface
 
             try {
                 $this->create($name);
-                break;
             } catch (Throwable $exception) {
                 Output::error($exception->getMessage());
             }

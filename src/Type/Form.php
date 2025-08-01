@@ -17,6 +17,11 @@ class Form extends AbstractType implements FileInterface
 {
     public function __invoke(): void
     {
+        if ($this->context->isApi()) {
+            Output::error('Cannot create Forms in an API');
+            return;
+        }
+
         while (true) {
             $name = ucfirst(Input::prompt('Enter new Form name: '));
             if ($name === '') {

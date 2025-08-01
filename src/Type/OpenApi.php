@@ -45,6 +45,12 @@ class OpenApi extends AbstractType implements FileInterface
             $openApi->getComponent(),
             $this->fileSystem->collection($name)->getComponent(),
             $this->fileSystem->entity($name)->getComponent(),
+            $this->fileSystem->apiDeleteResourceHandler($name),
+            $this->fileSystem->apiGetResourceHandler($name),
+            $this->fileSystem->apiGetCollectionHandler($name),
+            $this->fileSystem->apiPatchResourceHandler($name),
+            $this->fileSystem->apiPostResourceHandler($name),
+            $this->fileSystem->apiPutResourceHandler($name),
         );
 
         try {
@@ -57,8 +63,17 @@ class OpenApi extends AbstractType implements FileInterface
         return $openApi;
     }
 
-    public function render(Component $openApi, Component $collection, Component $entity): string
-    {
+    public function render(
+        Component $openApi,
+        Component $collection,
+        Component $entity,
+        File $apiDeleteResourceHandler,
+        File $apiGetResourceHandler,
+        File $apiGetCollectionHandler,
+        File $apiPatchResourceHandler,
+        File $apiPostResourceHandler,
+        File $apiPutResourceHandler,
+    ): string {
         $class = (new ClassFile($openApi->getNamespace(), $openApi->getClassName()))
             ->useClass(Import::DATETIMEIMMUTABLE)
             ->useClass(Import::FIG_HTTP_MESSAGE_STATUSCODEINTERFACE)

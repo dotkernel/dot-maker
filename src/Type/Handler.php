@@ -29,8 +29,6 @@ class Handler extends AbstractType implements FileInterface
             }
 
             $this->create($name);
-
-            break;
         }
     }
 
@@ -41,6 +39,7 @@ class Handler extends AbstractType implements FileInterface
         $plural = Component::pluralize($name);
         if ($this->context->isApi()) {
             if (Input::confirm(sprintf('Allow listing %s?', $plural))) {
+                $this->initComponent(TypeEnum::Collection)->create($name);
                 $this->initComponent(TypeEnum::HandlerApiGetCollection)->create($name);
             }
             if (Input::confirm(sprintf('Allow viewing %s?', $plural))) {
@@ -80,7 +79,7 @@ class Handler extends AbstractType implements FileInterface
                 $this->initComponent(TypeEnum::HandlerPostDeleteResource)->create($name);
                 $this->initComponent(TypeEnum::FormDeleteResource)->create($name);
                 $this->initComponent(TypeEnum::InputFilterDeleteResource)->create($name);
-                $this->initComponent(TypeEnum::Input)->create('Confirmation');
+                $this->initComponent(TypeEnum::Input)->create(sprintf('%sConfirmation', $name));
             }
             if (Input::confirm(sprintf('Allow editing %s?', $plural))) {
                 $this->initComponent(TypeEnum::HandlerGetEditResource)->create($name);

@@ -33,6 +33,7 @@ enum TypeEnum: string
     case Collection                 = Collection::class;
     case Command                    = Command::class;
     case ConfigProvider             = ConfigProvider::class;
+    case CoreConfigProvider         = CoreConfigProvider::class;
     case Entity                     = Entity::class;
     case Form                       = Form::class;
     case FormCreateResource         = CreateResourceForm::class;

@@ -35,7 +35,6 @@ class Entity extends AbstractType implements FileInterface
             try {
                 $this->create($name);
                 $this->initComponent(TypeEnum::Repository)->create($name);
-                break;
             } catch (Throwable $exception) {
                 Output::error($exception->getMessage());
             }

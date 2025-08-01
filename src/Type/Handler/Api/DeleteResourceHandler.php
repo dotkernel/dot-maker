@@ -61,8 +61,8 @@ class DeleteResourceHandler extends AbstractType implements FileInterface
 
         $content = $this->render(
             $handler->getComponent(),
-            $this->fileSystem->serviceInterface($name)->getComponent(),
-            $this->fileSystem->entity($name)->getComponent(),
+            $this->fileSystem->serviceInterface($this->fileSystem->getModuleName())->getComponent(),
+            $this->fileSystem->entity($this->fileSystem->getModuleName())->getComponent(),
         );
 
         try {
@@ -75,8 +75,11 @@ class DeleteResourceHandler extends AbstractType implements FileInterface
         return $handler;
     }
 
-    public function render(Component $handler, Component $serviceInterface, Component $entity): string
-    {
+    public function render(
+        Component $handler,
+        Component $serviceInterface,
+        Component $entity,
+    ): string {
         $class = (new ClassFile($handler->getNamespace(), $handler->getClassName()))
             ->setExtends('AbstractHandler')
             ->useClass($this->import->getAbstractHandlerFqcn())
@@ -94,7 +97,6 @@ class DeleteResourceHandler extends AbstractType implements FileInterface
             );
         $class->addMethod($constructor);
 
-        // phpcs:disable Generic.Files.LineLength.TooLong
         $handle = (new Method('handle'))
             ->setReturnType('ResponseInterface')
             ->addParameter(
@@ -110,7 +112,6 @@ class DeleteResourceHandler extends AbstractType implements FileInterface
 
         return \$this->noContentResponse();
 BODY);
-        // phpcs:enable Generic.Files.LineLength.TooLong
         $class->addMethod($handle);
 
         return $class->render();

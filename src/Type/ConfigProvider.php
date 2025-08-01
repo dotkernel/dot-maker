@@ -108,10 +108,31 @@ class ConfigProvider extends AbstractType implements FileInterface
     ): string {
         $class = (new ClassFile($configProvider->getNamespace(), $configProvider->getClassName()))
             ->useClass(Import::DOT_DEPENDENCYINJECTION_FACTORY_ATTRIBUTEDSERVICEFACTORY)
-            ->useClass(Import::MEZZIO_APPLICATION);
+            ->useClass(Import::MEZZIO_APPLICATION)
+            ->setComment(<<<COMM
+/**
+ * @phpstan-type ConfigType array{
+ *      dependencies: DependenciesType,
+ *      templates: TemplatesType,
+ * }
+ * @phpstan-type DependenciesType array{
+ *      delegators: non-empty-array<class-string, array<class-string>>,
+ *      factories: non-empty-array<class-string, class-string>,
+ *      aliases: non-empty-array<class-string, class-string>,
+ * }
+ * @phpstan-type TemplatesType array{
+ *      paths: non-empty-array<non-empty-string, non-empty-string[]>,
+ * }
+ */
+COMM);
 
         $invoke = (new Method('__invoke'))
             ->setReturnType('array')
+            ->setComment(<<<COMM
+/**
+     * @return ConfigType
+     */
+COMM)
             ->setBody(<<<BODY
         return [
             'dependencies' => \$this->getDependencies(),
@@ -123,6 +144,11 @@ BODY);
         $getDependencies = (new Method('getDependencies'))
             ->setReturnType('array')
             ->setVisibility(VisibilityEnum::Private)
+            ->setComment(<<<COMM
+/**
+     * @return DependenciesType
+     */
+COMM)
             ->appendBody('return [')
             ->appendBody('\'delegators\' => [', 12)
             ->appendBody('Application::class => [RoutesDelegator::class],', 16)
@@ -218,6 +244,11 @@ BODY);
         $templates = (new Method('getTemplates'))
             ->setVisibility(VisibilityEnum::Private)
             ->setReturnType('array')
+            ->setComment(<<<COMM
+/**
+     * @return TemplatesType
+     */
+COMM)
             ->setBody(<<<BODY
         return [
             'paths' => [
@@ -249,10 +280,28 @@ BODY);
             ->useClass($this->import->getHandlerDelegatorFactoryFqcn())
             ->useClass(Import::DOT_DEPENDENCYINJECTION_FACTORY_ATTRIBUTEDSERVICEFACTORY)
             ->useClass(Import::MEZZIO_APPLICATION)
-            ->useClass(Import::MEZZIO_HAL_METADATA_METADATAMAP);
+            ->useClass(Import::MEZZIO_HAL_METADATA_METADATAMAP)
+            ->setComment(<<<COMM
+/**
+ * @phpstan-import-type MetadataType from AppConfigProvider
+ * @phpstan-type DependenciesType array{
+ *     delegators: array<class-string, class-string[]>,
+ *     factories: array<class-string, class-string>,
+ *     aliases: array<class-string, class-string>,
+ * }
+ */
+COMM);
 
         $invoke = (new Method('__invoke'))
             ->setReturnType('array')
+            ->setComment(<<<COMM
+/**
+     * @return array{
+     *     dependencies: DependenciesType,
+     *     "Mezzio\Hal\Metadata\MetadataMap": MetadataType[],
+     * }
+     */
+COMM)
             ->setBody(<<<BODY
         return [
             'dependencies'     => \$this->getDependencies(),
@@ -264,6 +313,11 @@ BODY);
         $getDependencies = (new Method('getDependencies'))
             ->setReturnType('array')
             ->setVisibility(VisibilityEnum::Private)
+            ->setComment(<<<COMM
+/**
+     * @return DependenciesType
+     */
+COMM)
             ->appendBody('return [')
             ->appendBody('\'delegators\' => [', 12)
             ->appendBody('Application::class => [RoutesDelegator::class],', 16);
@@ -359,7 +413,12 @@ BODY);
 
         $getHalConfig = (new Method('getHalConfig'))
             ->setReturnType('array')
-            ->setVisibility(VisibilityEnum::Private);
+            ->setVisibility(VisibilityEnum::Private)
+            ->setComment(<<<COMM
+/**
+     * @return MetadataType[]
+     */
+COMM);
         if ($collection->exists() && $entity->exists()) {
             $class
                 ->useClass($collection->getComponent()->getFqcn())

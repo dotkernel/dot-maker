@@ -11,6 +11,7 @@ use Dot\Maker\Component\Inject;
 use Dot\Maker\Component\Method;
 use Dot\Maker\Component\Method\Constructor;
 use Dot\Maker\Component\Parameter;
+use Dot\Maker\Component\PromotedProperty;
 use Dot\Maker\Exception\BadRequestException;
 use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
@@ -61,9 +62,9 @@ class PostResourceHandler extends AbstractType implements FileInterface
 
         $content = $this->render(
             $handler->getComponent(),
-            $this->fileSystem->serviceInterface($name)->getComponent(),
-            $this->fileSystem->inputFilter($name)->getComponent(),
-            $this->fileSystem->entity($name)->getComponent(),
+            $this->fileSystem->serviceInterface($this->fileSystem->getModuleName())->getComponent(),
+            $this->fileSystem->createResourceInputFilter($name)->getComponent(),
+            $this->fileSystem->entity($this->fileSystem->getModuleName())->getComponent(),
         );
 
         try {
@@ -87,8 +88,6 @@ class PostResourceHandler extends AbstractType implements FileInterface
             ->useClass($this->import->getAbstractHandlerFqcn())
             ->useClass($this->import->getAppMessageFqcn())
             ->useClass($this->import->getBadRequestExceptionFqcn())
-            ->useClass($this->import->getConflictExceptionFqcn())
-            ->useClass($this->import->getNotFoundExceptionFqcn())
             ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
             ->useClass(Import::PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE)
             ->useClass(Import::PSR_HTTP_MESSAGE_RESPONSEINTERFACE)
@@ -97,7 +96,9 @@ class PostResourceHandler extends AbstractType implements FileInterface
 
         $constructor = (new Constructor())
             ->addPromotedPropertyFromComponent($serviceInterface)
-            ->addPromotedPropertyFromComponent($inputFilter)
+            ->addPromotedProperty(
+                new PromotedProperty('inputFilter', $inputFilter->getClassName())
+            )
             ->addInject(
                 (new Inject())
                     ->addArgument($serviceInterface->getClassString())
@@ -114,8 +115,6 @@ class PostResourceHandler extends AbstractType implements FileInterface
             ->setComment(<<<COMM
 /**
      * @throws BadRequestException
-     * @throws ConflictException
-     * @throws NotFoundException
      */
 COMM)
             ->setBody(<<<BODY

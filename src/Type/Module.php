@@ -47,10 +47,6 @@ class Module extends AbstractType implements ModuleInterface
 
             $this->fileSystem->setModuleName($name);
 
-            if ($this->context->isApi()) {
-                $this->collection = $this->initComponent(TypeEnum::Collection)->create($module->getName());
-            }
-
             if (Input::confirm('Create entity?')) {
                 $this->entity = $this->initComponent(TypeEnum::Entity)->create($module->getName());
                 if ($this->hasEntity()) {
@@ -93,6 +89,10 @@ class Module extends AbstractType implements ModuleInterface
 
             $this->initComponent(TypeEnum::RoutesDelegator)->create($module->getName());
             $this->initComponent(TypeEnum::ConfigProvider)->create($module->getName());
+
+            if ($this->context->hasCore()) {
+                $this->initComponent(TypeEnum::CoreConfigProvider)->create($module->getName());
+            }
 
             break;
         }

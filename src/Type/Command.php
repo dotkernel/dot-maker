@@ -42,7 +42,6 @@ class Command extends AbstractType implements FileInterface
 
             try {
                 $this->create($name);
-                break;
             } catch (Throwable $exception) {
                 Output::error($exception->getMessage());
             }
@@ -71,7 +70,7 @@ class Command extends AbstractType implements FileInterface
 
         $content = $this->render(
             $command->getComponent(),
-            $this->fileSystem->serviceInterface($name)->getComponent(),
+            $this->fileSystem->serviceInterface($this->fileSystem->getModuleName())->getComponent(),
         );
 
         try {

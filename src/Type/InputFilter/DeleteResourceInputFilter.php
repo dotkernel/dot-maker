@@ -59,14 +59,16 @@ class DeleteResourceInputFilter extends AbstractType implements FileInterface
 
         if ($this->context->isApi()) {
             $content = $this->renderApi(
+                $name,
                 $inputFilter->getComponent(),
                 $this->fileSystem->entity($name)->getComponent(),
             );
         } else {
             $content = $this->render(
+                $name,
                 $inputFilter->getComponent(),
-                $this->fileSystem->entity($name)->getComponent(),
-                $this->fileSystem->input('Confirmation')->getComponent(),
+                $this->fileSystem->entity($this->fileSystem->getModuleName())->getComponent(),
+                $this->fileSystem->input(sprintf('%sConfirmation', $name))->getComponent(),
             );
         }
 
@@ -80,7 +82,7 @@ class DeleteResourceInputFilter extends AbstractType implements FileInterface
         return $inputFilter;
     }
 
-    public function render(Component $form, Component $entity, Component $input): string
+    public function render(string $name, Component $form, Component $entity, Component $input): string
     {
         $class = (new ClassFile($form->getNamespace(), $form->getClassName()))
             ->setExtends('AbstractInputFilter')
@@ -89,8 +91,8 @@ class DeleteResourceInputFilter extends AbstractType implements FileInterface
             ->useClass($input->getFqcn())
             ->setComment(<<<COMM
 /**
- * @phpstan-type Delete{$entity->getClassName()}DataType array{}
- * @extends AbstractInputFilter<Delete{$entity->getClassName()}DataType>
+ * @phpstan-type Delete{$name}DataType array{}
+ * @extends AbstractInputFilter<Delete{$name}DataType>
  */
 COMM);
 
@@ -101,22 +103,22 @@ COMM);
 
         return \$this
             ->add(new {$input->getClassName()}('confirmation'))
-            ->add(new CsrfInput('{$entity->toCamelCase()}DeleteCsrf', true));
+            ->add(new CsrfInput('{$name}DeleteCsrf', true));
 BODY);
         $class->addMethod($init);
 
         return $class->render();
     }
 
-    public function renderApi(Component $form, Component $entity): string
+    public function renderApi(string $name, Component $form, Component $entity): string
     {
         $class = (new ClassFile($form->getNamespace(), $form->getClassName()))
             ->setExtends('AbstractInputFilter')
             ->useClass($this->import->getAbstractInputFilterFqcn())
             ->setComment(<<<COMM
 /**
- * @phpstan-type Delete{$entity->getClassName()}DataType array{}
- * @extends AbstractInputFilter<Delete{$entity->getClassName()}DataType>
+ * @phpstan-type Delete{$name}DataType array{}
+ * @extends AbstractInputFilter<Delete{$name}DataType>
  */
 COMM);
 
@@ -125,9 +127,7 @@ COMM);
             ->setBody(<<<BODY
         // chain inputs below
 
-        return \$this
-//            ->add(new SomeInput('name', true))
-            ;
+        return \$this;
 BODY);
         $class->addMethod($init);
 

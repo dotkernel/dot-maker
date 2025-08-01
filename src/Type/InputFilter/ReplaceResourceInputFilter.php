@@ -56,8 +56,9 @@ class ReplaceResourceInputFilter extends AbstractType implements FileInterface
         }
 
         $content = $this->render(
+            $name,
             $inputFilter->getComponent(),
-            $this->fileSystem->entity($name)->getComponent(),
+            $this->fileSystem->entity($this->fileSystem->getModuleName())->getComponent(),
         );
 
         try {
@@ -70,15 +71,15 @@ class ReplaceResourceInputFilter extends AbstractType implements FileInterface
         return $inputFilter;
     }
 
-    public function render(Component $form, Component $entity): string
+    public function render(string $name, Component $form, Component $entity): string
     {
         $class = (new ClassFile($form->getNamespace(), $form->getClassName()))
             ->setExtends('AbstractInputFilter')
             ->useClass($this->import->getAbstractInputFilterFqcn())
             ->setComment(<<<COMM
 /**
- * @phpstan-type Replace{$entity->getClassName()}DataType array{}
- * @extends AbstractInputFilter<Replace{$entity->getClassName()}DataType>
+ * @phpstan-type Replace{$name}DataType array{}
+ * @extends AbstractInputFilter<Replace{$name}DataType>
  */
 COMM);
 
@@ -87,9 +88,7 @@ COMM);
             ->setBody(<<<BODY
         // chain inputs below
 
-        return \$this
-//            ->add(new SomeInput('name', true))
-            ;
+        return \$this;
 BODY);
         $class->addMethod($init);
 

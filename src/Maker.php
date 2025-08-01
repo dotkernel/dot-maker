@@ -16,6 +16,7 @@ use function count;
 use function is_callable;
 use function sprintf;
 use function strtolower;
+use function trim;
 
 use const PHP_SAPI;
 
@@ -38,7 +39,7 @@ final readonly class Maker
             Output::error('dot-maker must be called with at least one parameter', true);
         }
 
-        $argument  = strtolower(array_shift($arguments));
+        $argument  = trim(strtolower(array_shift($arguments)));
         $component = TypeEnum::getClass($argument);
         if ($component === null) {
             Output::error(sprintf('unknown component: "%s"', $argument), true);
