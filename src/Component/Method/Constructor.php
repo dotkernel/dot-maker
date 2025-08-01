@@ -6,15 +6,7 @@ namespace Dot\Maker\Component\Method;
 
 use Dot\Maker\Component;
 use Dot\Maker\Component\Method;
-use Dot\Maker\Component\ParameterInterface;
 use Dot\Maker\Component\PromotedProperty;
-
-use function array_map;
-use function count;
-use function implode;
-use function sprintf;
-
-use const PHP_EOL;
 
 class Constructor extends Method
 {
@@ -45,19 +37,5 @@ class Constructor extends Method
         );
 
         return $this;
-    }
-
-    public function renderParameters(int $spaces = 0): string
-    {
-        if (count($this->parameters) === 0) {
-            return '';
-        }
-
-        $parameters = array_map(
-            fn (ParameterInterface $parameter) => sprintf('        %s', $parameter->render()),
-            $this->parameters
-        );
-
-        return implode(PHP_EOL, $parameters);
     }
 }

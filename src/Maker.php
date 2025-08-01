@@ -39,7 +39,7 @@ final readonly class Maker
         }
 
         $argument  = strtolower(array_shift($arguments));
-        $component = TypeEnum::tryFrom($argument);
+        $component = TypeEnum::getClass($argument);
         if ($component === null) {
             Output::error(sprintf('unknown component: "%s"', $argument), true);
         }
@@ -47,7 +47,7 @@ final readonly class Maker
         $config     = new Config($this->configPath);
         $context    = new Context($this->composerPath);
         $fileSystem = new FileSystem($context);
-        $instance   = new ($component->getClass())($fileSystem, $context, $config);
+        $instance   = new ($component)($fileSystem, $context, $config);
         assert($instance instanceof TypeInterface);
 
         if (! $instance->isModule()) {

@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Dot\Maker;
 
-use Dot\Maker\Component\Import;
-
 use function implode;
 use function in_array;
 use function lcfirst;
@@ -22,13 +20,10 @@ use function ucfirst;
 
 class Component
 {
-    private Import $import;
-
     public function __construct(
         private readonly string $namespace,
         private readonly string $className,
     ) {
-        $this->import = new Import();
     }
 
     public function getClassName(): string
@@ -64,11 +59,6 @@ class Component
     public function getGetterName(): string
     {
         return sprintf('get%s', $this->className);
-    }
-
-    public function getImport(): Import
-    {
-        return $this->import;
     }
 
     public function getNamespace(): string
@@ -129,26 +119,5 @@ class Component
     public function toUpperCase(bool $noInterface = true): string
     {
         return strtoupper($this->toSnakeCase($noInterface));
-    }
-
-    public function useClass(string $name, ?string $alias = null): self
-    {
-        $this->import->addClassUse($name, $alias);
-
-        return $this;
-    }
-
-    public function useFunction(string $name): self
-    {
-        $this->import->addFunctionUse($name);
-
-        return $this;
-    }
-
-    public function useConstant(string $name): self
-    {
-        $this->import->addConstantUse($name);
-
-        return $this;
     }
 }

@@ -86,6 +86,17 @@ class FileSystem
         );
     }
 
+    public function form(string $name): File
+    {
+        $name = preg_replace('/Form$/', '', $name);
+
+        return new File(
+            new Directory('Form', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
+            sprintf('%s\\%s\\Form', $this->context->getRootNamespace(), $this->moduleName),
+            sprintf('%sForm', $name),
+        );
+    }
+
     public function createResourceForm(string $name): File
     {
         $name = preg_replace('/Form$/', '', $name);
@@ -268,6 +279,17 @@ class FileSystem
         );
     }
 
+    public function input(string $name): File
+    {
+        $name = preg_replace('/Input$/', '', $name);
+
+        return new File(
+            new Directory('Input', sprintf('%s/src/%s/src/InputFilter', $this->rootDir, $this->moduleName)),
+            sprintf('%s\\%s\\InputFilter\\Input', $this->context->getRootNamespace(), $this->moduleName),
+            sprintf('%sInput', $name),
+        );
+    }
+
     public function inputFilter(string $name): File
     {
         $name = preg_replace('/InputFilter$/', '', $name);
@@ -309,6 +331,17 @@ class FileSystem
             new Directory('InputFilter', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
             sprintf('%s\\%s\\InputFilter', $this->context->getRootNamespace(), $this->moduleName),
             sprintf('Edit%sInputFilter', $name),
+        );
+    }
+
+    public function replaceResourceInputFilter(string $name): File
+    {
+        $name = preg_replace('/InputFilter$/', '', $name);
+
+        return new File(
+            new Directory('InputFilter', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
+            sprintf('%s\\%s\\InputFilter', $this->context->getRootNamespace(), $this->moduleName),
+            sprintf('Replace%sInputFilter', $name),
         );
     }
 

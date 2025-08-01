@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
+use Dot\Maker\Component\Import;
 use Dot\Maker\Config;
 use Dot\Maker\ContextInterface;
 use Dot\Maker\FileSystem;
@@ -13,12 +14,15 @@ use function sprintf;
 
 abstract class AbstractType implements TypeInterface
 {
+    protected Import $import;
+
     public function __construct(
         protected FileSystem $fileSystem,
         protected ContextInterface $context,
         protected Config $config,
         protected ?Module $module = null,
     ) {
+        $this->import = new Import($context);
     }
 
     public function getConfig(): Config
@@ -48,7 +52,7 @@ abstract class AbstractType implements TypeInterface
 
     public function initComponent(TypeEnum $typeEnum): FileInterface
     {
-        return new ($typeEnum->getClass())(
+        return new ($typeEnum->value)(
             $this->fileSystem,
             $this->context,
             $this->config,

@@ -79,8 +79,8 @@ class GetResourceHandler extends AbstractType implements FileInterface
     {
         $class = (new ClassFile($handler->getNamespace(), $handler->getClassName()))
             ->setExtends('AbstractHandler')
-            ->useClass(Import::getAbstractHandlerFqcn($this->context->getRootNamespace()))
-            ->useClass(Import::getResourceAttributeFqcn($this->context->getRootNamespace()))
+            ->useClass($this->import->getAbstractHandlerFqcn())
+            ->useClass($this->import->getResourceAttributeFqcn())
             ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
             ->useClass(Import::PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE)
             ->useClass(Import::PSR_HTTP_MESSAGE_RESPONSEINTERFACE)

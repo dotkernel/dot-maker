@@ -130,7 +130,7 @@ class ClassFile
         }
 
         if ($this->comment !== '') {
-            $class .= PHP_EOL . $this->comment . PHP_EOL;
+            $class .= PHP_EOL . $this->comment;
         }
 
         if (count($this->injects) > 0) {

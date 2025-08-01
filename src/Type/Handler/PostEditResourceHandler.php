@@ -12,7 +12,6 @@ use Dot\Maker\Component\Method;
 use Dot\Maker\Component\Method\Constructor;
 use Dot\Maker\Component\Parameter;
 use Dot\Maker\Component\PromotedProperty;
-use Dot\Maker\ContextInterface;
 use Dot\Maker\Exception\BadRequestException;
 use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
@@ -82,10 +81,10 @@ class PostEditResourceHandler extends AbstractType implements FileInterface
     {
         $class = (new ClassFile($handler->getNamespace(), $handler->getClassName()))
             ->addInterface('RequestHandlerInterface')
-            ->useClass($this->getAppMessageFqcn())
-            ->useClass(Import::getBadRequestExceptionFqcn($this->context->getRootNamespace()))
-            ->useClass(Import::getConflictExceptionFqcn($this->context->getRootNamespace()))
-            ->useClass(Import::getNotFoundExceptionFqcn($this->context->getRootNamespace()))
+            ->useClass($this->import->getAppMessageFqcn())
+            ->useClass($this->import->getBadRequestExceptionFqcn())
+            ->useClass($this->import->getConflictExceptionFqcn())
+            ->useClass($this->import->getNotFoundExceptionFqcn())
             ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
             ->useClass(Import::DOT_FLASHMESSENGER_FLASHMESSENGERINTERFACE)
             ->useClass(Import::DOT_LOG_LOGGER)
@@ -198,16 +197,5 @@ BODY);
         $class->addMethod($handle);
 
         return $class->render();
-    }
-
-    public function getAppMessageFqcn(): string
-    {
-        $format = Import::ROOT_APP_MESSAGE;
-
-        if ($this->context->hasCore()) {
-            return sprintf($format, ContextInterface::NAMESPACE_CORE);
-        }
-
-        return sprintf($format, $this->context->getRootNamespace());
     }
 }

@@ -10,7 +10,6 @@ use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
 use Dot\Maker\Component\Method;
 use Dot\Maker\Component\Parameter;
-use Dot\Maker\ContextInterface;
 use Dot\Maker\Exception\BadRequestException;
 use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
@@ -77,7 +76,7 @@ class Repository extends AbstractType implements FileInterface
     {
         $class = (new ClassFile($repository->getNamespace(), $repository->getClassName()))
             ->setExtends('AbstractRepository')
-            ->useClass($this->getAbstractRepositoryFqcn())
+            ->useClass($this->import->getAbstractRepositoryFqcn())
             ->useClass($entity->getFqcn())
             ->useClass(Import::DOCTRINE_ORM_QUERYBUILDER)
             ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_ENTITY)
@@ -113,16 +112,5 @@ BODY);
         $class->addMethod($getResources);
 
         return $class->render();
-    }
-
-    public function getAbstractRepositoryFqcn(): string
-    {
-        $format = Import::ROOT_APP_REPOSITORY_ABSTRACTREPOSITORY;
-
-        if ($this->context->hasCore()) {
-            return sprintf($format, ContextInterface::NAMESPACE_CORE);
-        }
-
-        return sprintf($format, $this->context->getRootNamespace());
     }
 }

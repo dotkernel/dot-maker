@@ -80,7 +80,7 @@ class GetViewResourceHandler extends AbstractType implements FileInterface
     {
         $class = (new ClassFile($handler->getNamespace(), $handler->getClassName()))
             ->addInterface('RequestHandlerInterface')
-            ->useClass(Import::getNotFoundExceptionFqcn($this->context->getRootNamespace()))
+            ->useClass($this->import->getNotFoundExceptionFqcn())
             ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
             ->useClass(Import::DOT_FLASHMESSENGER_FLASHMESSENGERINTERFACE)
             ->useClass(Import::FIG_HTTP_MESSAGE_STATUSCODEINTERFACE)

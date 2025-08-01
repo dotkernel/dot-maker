@@ -9,7 +9,6 @@ use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Method;
 use Dot\Maker\Component\Parameter;
-use Dot\Maker\ContextInterface;
 use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
@@ -92,7 +91,7 @@ class RoutesDelegator extends AbstractType implements FileInterface
         File $getViewResourceHandler,
     ): string {
         $class = (new ClassFile($routesDelegator->getNamespace(), $routesDelegator->getClassName()))
-            ->useClass($this->getAppConfigProviderFqcn(true))
+            ->useClass($this->import->getConfigProviderFqcn(true))
             ->useClass(Import::DOT_ROUTER_ROUTECOLLECTORINTERFACE)
             ->useClass(Import::PSR_CONTAINER_CONTAINEREXCEPTIONINTERFACE)
             ->useClass(Import::PSR_CONTAINER_CONTAINERINTERFACE)
@@ -326,16 +325,5 @@ COMM)
         $class->addMethod($invoke);
 
         return $class->render();
-    }
-
-    public function getAppConfigProviderFqcn(bool $core = false): string
-    {
-        if ($core) {
-            $rootNamespace = ContextInterface::NAMESPACE_CORE;
-        } else {
-            $rootNamespace = $this->context->getRootNamespace();
-        }
-
-        return sprintf(Import::ROOT_APP_CONFIGPROVIDER, $rootNamespace);
     }
 }

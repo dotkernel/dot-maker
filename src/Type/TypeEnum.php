@@ -4,6 +4,9 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
+use Dot\Maker\Type\Form\CreateResourceForm;
+use Dot\Maker\Type\Form\DeleteResourceForm;
+use Dot\Maker\Type\Form\EditResourceForm;
 use Dot\Maker\Type\Handler\Api\DeleteResourceHandler;
 use Dot\Maker\Type\Handler\Api\GetCollectionHandler;
 use Dot\Maker\Type\Handler\Api\GetResourceHandler;
@@ -18,87 +21,66 @@ use Dot\Maker\Type\Handler\GetViewResourceHandler;
 use Dot\Maker\Type\Handler\PostCreateResourceHandler;
 use Dot\Maker\Type\Handler\PostDeleteResourceHandler;
 use Dot\Maker\Type\Handler\PostEditResourceHandler;
+use Dot\Maker\Type\InputFilter\CreateResourceInputFilter;
+use Dot\Maker\Type\InputFilter\DeleteResourceInputFilter;
+use Dot\Maker\Type\InputFilter\EditResourceInputFilter;
+use Dot\Maker\Type\InputFilter\ReplaceResourceInputFilter;
+
+use function strtolower;
 
 enum TypeEnum: string
 {
-    case Collection                = 'collection';
-    case Command                   = 'command';
-    case ConfigProvider            = 'ConfigProvider';
-    case Entity                    = 'entity';
-    case Form                      = 'form';
-    case Handler                   = 'handler';
-    case HandlerApiDeleteResource  = 'api-delete-resource-handler';
-    case HandlerApiGetResource     = 'api-get-resource-handler';
-    case HandlerApiGetCollection   = 'api-get-collection-handler';
-    case HandlerApiPatchResource   = 'api-patch-resource-handler';
-    case HandlerApiPostResource    = 'api-post-resource-handler';
-    case HandlerApiPutResource     = 'api-put-resource-handler';
-    case HandlerGetCreateResource  = 'get-create-resource-handler';
-    case HandlerGetDeleteResource  = 'get-delete-resource-handler';
-    case HandlerGetEditResource    = 'get-edit-resource-handler';
-    case HandlerGetListResource    = 'get-collection-handler';
-    case HandlerGetViewResource    = 'get-view-resource-handler';
-    case HandlerPostCreateResource = 'post-create-resource-handler';
-    case HandlerPostDeleteResource = 'post-delete-resource-handler';
-    case HandlerPostEditResource   = 'post-edit-resource-handler';
-    case InputFilter               = 'inputFilter';
-    case Middleware                = 'middleware';
-    case Module                    = 'module';
-    case OpenApi                   = 'openApi';
-    case RoutesDelegator           = 'routesDelegator';
-    case Repository                = 'repository';
-    case Service                   = 'service';
-    case ServiceInterface          = 'serviceInterface';
+    case Collection                 = Collection::class;
+    case Command                    = Command::class;
+    case ConfigProvider             = ConfigProvider::class;
+    case Entity                     = Entity::class;
+    case Form                       = Form::class;
+    case FormCreateResource         = CreateResourceForm::class;
+    case FormDeleteResource         = DeleteResourceForm::class;
+    case FormEditResource           = EditResourceForm::class;
+    case Handler                    = Handler::class;
+    case HandlerApiDeleteResource   = DeleteResourceHandler::class;
+    case HandlerApiGetResource      = GetResourceHandler::class;
+    case HandlerApiGetCollection    = GetCollectionHandler::class;
+    case HandlerApiPatchResource    = PatchResourceHandler::class;
+    case HandlerApiPostResource     = PostResourceHandler::class;
+    case HandlerApiPutResource      = PutResourceHandler::class;
+    case HandlerGetCreateResource   = GetCreateResourceHandler::class;
+    case HandlerGetDeleteResource   = GetDeleteResourceHandler::class;
+    case HandlerGetEditResource     = GetEditResourceHandler::class;
+    case HandlerGetListResource     = GetListResourceHandler::class;
+    case HandlerGetViewResource     = GetViewResourceHandler::class;
+    case HandlerPostCreateResource  = PostCreateResourceHandler::class;
+    case HandlerPostDeleteResource  = PostDeleteResourceHandler::class;
+    case HandlerPostEditResource    = PostEditResourceHandler::class;
+    case Input                      = Input::class;
+    case InputFilter                = InputFilter::class;
+    case InputFilterCreateResource  = CreateResourceInputFilter::class;
+    case InputFilterDeleteResource  = DeleteResourceInputFilter::class;
+    case InputFilterEditResource    = EditResourceInputFilter::class;
+    case InputFilterReplaceResource = ReplaceResourceInputFilter::class;
+    case Middleware                 = Middleware::class;
+    case Module                     = Module::class;
+    case OpenApi                    = OpenApi::class;
+    case Repository                 = Repository::class;
+    case RoutesDelegator            = RoutesDelegator::class;
+    case Service                    = Service::class;
+    case ServiceInterface           = ServiceInterface::class;
 
-    public function getClass(): string
+    public static function getClass(string $name): ?string
     {
-        return match ($this) {
-            self::Collection                => Collection::class,
-            self::ConfigProvider            => ConfigProvider::class,
-            self::Command                   => Command::class,
-            self::Entity                    => Entity::class,
-            self::Form                      => Form::class,
-            self::Handler                   => Handler::class,
-            self::HandlerApiDeleteResource  => DeleteResourceHandler::class,
-            self::HandlerApiGetResource     => GetResourceHandler::class,
-            self::HandlerApiGetCollection   => GetCollectionHandler::class,
-            self::HandlerApiPatchResource   => PatchResourceHandler::class,
-            self::HandlerApiPostResource    => PostResourceHandler::class,
-            self::HandlerApiPutResource     => PutResourceHandler::class,
-            self::HandlerGetCreateResource  => GetCreateResourceHandler::class,
-            self::HandlerGetDeleteResource  => GetDeleteResourceHandler::class,
-            self::HandlerGetEditResource    => GetEditResourceHandler::class,
-            self::HandlerGetListResource    => GetListResourceHandler::class,
-            self::HandlerGetViewResource    => GetViewResourceHandler::class,
-            self::HandlerPostCreateResource => PostCreateResourceHandler::class,
-            self::HandlerPostDeleteResource => PostDeleteResourceHandler::class,
-            self::HandlerPostEditResource   => PostEditResourceHandler::class,
-            self::InputFilter               => InputFilter::class,
-            self::Middleware                => Middleware::class,
-            self::Module                    => Module::class,
-            self::OpenApi                   => OpenApi::class,
-            self::Repository                => Repository::class,
-            self::RoutesDelegator           => RoutesDelegator::class,
-            self::Service                   => Service::class,
-            self::ServiceInterface          => ServiceInterface::class,
+        return match (strtolower($name)) {
+            'col', 'coll', 'collection'              => Collection::class,
+            'com', 'command', 'comm'                 => Command::class,
+            'e', 'ent', 'entity'                     => Entity::class,
+            'f', 'frm', 'form'                       => Form::class,
+            'h', 'handler'                           => Handler::class,
+            'i', 'if', 'inputfilter', 'input-filter' => InputFilter::class,
+            'mi', 'mid', 'middleware'                => Middleware::class,
+            'mo', 'mod', 'module'                    => Module::class,
+            'r', 'rep', 'repository'                 => Repository::class,
+            's', 'srv', 'service'                    => Service::class,
+            default                                  => null,
         };
-    }
-
-    public function getCallables(): array
-    {
-        return [
-            self::Collection,
-            self::Command,
-            self::Entity,
-            self::Form,
-            self::Handler,
-            self::InputFilter,
-            self::Middleware,
-            self::Module,
-            self::OpenApi,
-            self::Repository,
-            self::Service,
-            self::ServiceInterface,
-        ];
     }
 }

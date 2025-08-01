@@ -84,7 +84,7 @@ class GetCollectionHandler extends AbstractType implements FileInterface
     ): string {
         $class = (new ClassFile($handler->getNamespace(), $handler->getClassName()))
             ->setExtends('AbstractHandler')
-            ->useClass(Import::getAbstractHandlerFqcn($this->context->getRootNamespace()))
+            ->useClass($this->import->getAbstractHandlerFqcn())
             ->useClass(Import::PSR_HTTP_MESSAGE_RESPONSEINTERFACE)
             ->useClass(Import::PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE)
             ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)

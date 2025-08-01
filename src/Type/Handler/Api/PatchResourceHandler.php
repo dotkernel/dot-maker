@@ -11,7 +11,6 @@ use Dot\Maker\Component\Inject;
 use Dot\Maker\Component\Method;
 use Dot\Maker\Component\Method\Constructor;
 use Dot\Maker\Component\Parameter;
-use Dot\Maker\ContextInterface;
 use Dot\Maker\Exception\BadRequestException;
 use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
@@ -85,15 +84,15 @@ class PatchResourceHandler extends AbstractType implements FileInterface
     ): string {
         $class = (new ClassFile($handler->getNamespace(), $handler->getClassName()))
             ->setExtends('AbstractHandler')
-            ->useClass(Import::getAbstractHandlerFqcn($this->context->getRootNamespace()))
-            ->useClass(Import::getBadRequestExceptionFqcn($this->context->getRootNamespace()))
-            ->useClass(Import::getConflictExceptionFqcn($this->context->getRootNamespace()))
-            ->useClass(Import::getNotFoundExceptionFqcn($this->context->getRootNamespace()))
-            ->useClass(Import::getResourceAttributeFqcn($this->context->getRootNamespace()))
+            ->useClass($this->import->getAbstractHandlerFqcn())
+            ->useClass($this->import->getAppMessageFqcn())
+            ->useClass($this->import->getBadRequestExceptionFqcn())
+            ->useClass($this->import->getConflictExceptionFqcn())
+            ->useClass($this->import->getNotFoundExceptionFqcn())
+            ->useClass($this->import->getResourceAttributeFqcn())
             ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
             ->useClass(Import::PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE)
             ->useClass(Import::PSR_HTTP_MESSAGE_RESPONSEINTERFACE)
-            ->useClass($this->getAppMessageFqcn())
             ->useClass($serviceInterface->getFqcn())
             ->useClass($inputFilter->getFqcn())
             ->useClass($entity->getFqcn());
@@ -144,16 +143,5 @@ BODY);
         $class->addMethod($handle);
 
         return $class->render();
-    }
-
-    public function getAppMessageFqcn(): string
-    {
-        $format = Import::ROOT_APP_MESSAGE;
-
-        if ($this->context->hasCore()) {
-            return sprintf($format, ContextInterface::NAMESPACE_CORE);
-        }
-
-        return sprintf($format, $this->context->getRootNamespace());
     }
 }

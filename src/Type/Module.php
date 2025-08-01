@@ -78,9 +78,6 @@ class Module extends AbstractType implements ModuleInterface
                 $this->initComponent(TypeEnum::Handler)->create($module->getName());
             }
 
-//            if (Input::confirm('Create input filter?')) {
-//                $this->inputFilter = $this->initComponent(TypeEnum::InputFilter)->create($module->getName());
-//            }
             if ($this->context->isApi()) {
                 $this->initComponent(TypeEnum::OpenApi)->create($module->getName());
             } else {

@@ -8,7 +8,6 @@ use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Method;
-use Dot\Maker\ContextInterface;
 use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
@@ -243,14 +242,14 @@ BODY);
         File $middleware,
         File $service,
         File $serviceInterface,
-        array $handlers
+        array $handlers,
     ): string {
         $class = (new ClassFile($configProvider->getNamespace(), $configProvider->getClassName()))
-            ->useClass(Import::getHandlerDelegatorFactoryFqcn($this->context->getRootNamespace()))
+            ->useClass($this->import->getConfigProviderFqcn(), 'AppConfigProvider')
+            ->useClass($this->import->getHandlerDelegatorFactoryFqcn())
             ->useClass(Import::DOT_DEPENDENCYINJECTION_FACTORY_ATTRIBUTEDSERVICEFACTORY)
             ->useClass(Import::MEZZIO_APPLICATION)
-            ->useClass(Import::MEZZIO_HAL_METADATA_METADATAMAP)
-            ->useClass($this->getAppConfigProviderFqcn(), 'AppConfigProvider');
+            ->useClass(Import::MEZZIO_HAL_METADATA_METADATAMAP);
 
         $invoke = (new Method('__invoke'))
             ->setReturnType('array')
@@ -394,16 +393,5 @@ BODY);
         $class->addMethod($getHalConfig);
 
         return $class->render();
-    }
-
-    public function getAppConfigProviderFqcn(bool $core = false): string
-    {
-        if ($core) {
-            $rootNamespace = ContextInterface::NAMESPACE_CORE;
-        } else {
-            $rootNamespace = $this->context->getRootNamespace();
-        }
-
-        return sprintf(Import::ROOT_APP_CONFIGPROVIDER, $rootNamespace);
     }
 }

@@ -6,7 +6,6 @@ namespace Dot\Maker\Type;
 
 use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
-use Dot\Maker\Component\Import;
 use Dot\Maker\Exception\BadRequestException;
 use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
@@ -72,7 +71,7 @@ class Collection extends AbstractType implements FileInterface
     public function render(Component $collection): string
     {
         return (new ClassFile($collection->getNamespace(), $collection->getClassName()))
-            ->useClass(Import::getResourceCollectionFqcn($this->context->getRootNamespace()))
+            ->useClass($this->import->getResourceCollectionFqcn())
             ->setExtends('ResourceCollection')
             ->render();
     }

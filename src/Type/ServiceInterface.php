@@ -112,7 +112,7 @@ class ServiceInterface extends AbstractType implements FileInterface
 
         if (! $this->context->isApi()) {
             $interface
-                ->useClass(Import::getNotFoundExceptionFqcn($this->context->getRootNamespace()))
+                ->useClass($this->import->getNotFoundExceptionFqcn())
                 ->addDeclaration(
                     (new Declaration($entity->getFindMethodName()))
                         ->setReturnType($entity->getClassName())

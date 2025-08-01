@@ -37,7 +37,7 @@ class Property extends Parameter
         $property .= ' ' . parent::render();
 
         if ($this->promoted === true) {
-            return $property . ',';
+            return $property;
         }
 
         return $property . ';';

@@ -12,7 +12,6 @@ use Dot\Maker\Component\Method;
 use Dot\Maker\Component\Method\Constructor;
 use Dot\Maker\Component\Parameter;
 use Dot\Maker\Component\PromotedProperty;
-use Dot\Maker\ContextInterface;
 use Dot\Maker\Exception\BadRequestException;
 use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
@@ -81,14 +80,14 @@ class Service extends AbstractType implements FileInterface
         Component $service,
         Component $serviceInterface,
         Component $repository,
-        Component $entity
+        Component $entity,
     ): string {
         $class = (new ClassFile($service->getNamespace(), $service->getClassName()))
             ->addInterface($serviceInterface->getClassName())
+            ->useClass($this->import->getAppHelperPaginatorFqcn())
             ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
             ->useClass($repository->getFqcn())
             ->useClass($entity->getFqcn())
-            ->useClass($this->getAppHelperPaginatorFqcn())
             ->useFunction('in_array');
 
         $promotedProperty = new PromotedProperty(
@@ -176,8 +175,8 @@ BODY);
 
         if (! $this->context->isApi()) {
             $class
-                ->useClass(Import::getNotFoundExceptionFqcn($this->context->getRootNamespace()))
-                ->useClass($this->getAppMessageFqcn());
+                ->useClass($this->import->getAppMessageFqcn())
+                ->useClass($this->import->getNotFoundExceptionFqcn());
 
             $findResource = (new Method($entity->getFindMethodName()))
                 ->setReturnType($entity->getClassName())
@@ -202,27 +201,5 @@ BODY);
         }
 
         return $class->render();
-    }
-
-    public function getAppHelperPaginatorFqcn(): string
-    {
-        $format = Import::ROOT_APP_HELPER_PAGINATOR;
-
-        if ($this->context->hasCore()) {
-            return sprintf($format, ContextInterface::NAMESPACE_CORE);
-        }
-
-        return sprintf($format, $this->context->getRootNamespace());
-    }
-
-    public function getAppMessageFqcn(): string
-    {
-        $format = Import::ROOT_APP_MESSAGE;
-
-        if ($this->context->hasCore()) {
-            return sprintf($format, ContextInterface::NAMESPACE_CORE);
-        }
-
-        return sprintf($format, $this->context->getRootNamespace());
     }
 }

@@ -4,14 +4,9 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Component;
 
-use function array_map;
-use function array_merge;
-use function count;
-use function implode;
-use function sort;
-use function sprintf;
+use Dot\Maker\ContextInterface;
 
-use const PHP_EOL;
+use function sprintf;
 
 class Import
 {
@@ -29,6 +24,14 @@ class Import
     public const FIG_HTTP_MESSAGE_STATUSCODEINTERFACE                     = 'Fig\\Http\\Message\\StatusCodeInterface';
     public const LAMINAS_DIACTOROS_RESPONSE_HTMLRESPONSE                  = 'Laminas\\Diactoros\\Response\\HtmlResponse';
     public const LAMINAS_DIACTOROS_RESPONSE_EMPTYRESPONSE                 = 'Laminas\\Diactoros\\Response\\EmptyResponse';
+    public const LAMINAS_FORM_ELEMENT_CHECKBOX                            = 'Laminas\\Form\\Element\\Checkbox';
+    public const LAMINAS_FORM_ELEMENT_CSRF                                = 'Laminas\\Form\\Element\\Csrf';
+    public const LAMINAS_FORM_ELEMENT_SUBMIT                              = 'Laminas\\Form\\Element\\Submit';
+    public const LAMINAS_FORM_EXCEPTION_EXCEPTIONINTERFACE                = 'Laminas\\Form\\Exception\\ExceptionInterface';
+    public const LAMINAS_INPUTFILTER_INPUT                                = 'Laminas\\InputFilter\\Input';
+    public const LAMINAS_SESSION_CONTAINER                                = 'Laminas\\Session\\Container';
+    public const LAMINAS_VALIDATOR_INARRAY                                = 'Laminas\\Validator\\InArray';
+    public const LAMINAS_VALIDATOR_NOTEMPTY                               = 'Laminas\\Validator\\NotEmpty';
     public const MEZZIO_APPLICATION                                       = 'Mezzio\\Application';
     public const MEZZIO_HAL_METADATA_METADATAMAP                          = 'Mezzio\\Hal\\Metadata\\MetadataMap';
     public const MEZZIO_ROUTER_ROUTERINTERFACE                            = 'Mezzio\\Router\\RouterInterface';
@@ -50,10 +53,12 @@ class Import
     public const ROOT_APP_EXCEPTION_CONFLICTEXCEPTION                     = '%s\\App\\Exception\\ConflictException';
     public const ROOT_APP_EXCEPTION_NOTFOUNDEXCEPTION                     = '%s\\App\\Exception\\NotFoundException';
     public const ROOT_APP_FACTORY_HANDLERDELEGATORFACTORY                 = '%s\\App\\Factory\\HandlerDelegatorFactory';
+    public const ROOT_APP_FORM_ABSTRACTFORM                               = '%s\App\Form\AbstractForm';
+    public const ROOT_APP_INPUTFILTER_ABSTRACTINPUTFILTER                 = '%s\\App\\InputFilter\\AbstractInputFilter';
+    public const ROOT_APP_INPUTFILTER_INPUT_CSRFINPUT                     = '%s\\App\\InputFilter\\Input\\CsrfInput';
     public const ROOT_APP_HELPER_PAGINATOR                                = '%s\\App\\Helper\\Paginator';
     public const ROOT_APP_MESSAGE                                         = '%s\\App\\Message';
     public const ROOT_APP_HANDLER_ABSTRACTHANDLER                         = '%s\\App\\Handler\\AbstractHandler';
-    public const ROOT_APP_INPUTFILTER_ABSTRACTINPUTFILTER                 = '%s\\App\\InputFilter\\AbstractInputFilter';
     public const ROOT_APP_REPOSITORY_ABSTRACTREPOSITORY                   = '%s\\App\\Repository\\AbstractRepository';
     public const SYMFONY_COMPONENT_CONSOLE_ATTRIBUTE_ASCOMMAND            = 'Symfony\\Component\\Console\\Attribute\\AsCommand';
     public const SYMFONY_COMPONENT_CONSOLE_COMMAND_COMMAND                = 'Symfony\\Component\\Console\\Command\\Command';
@@ -63,122 +68,108 @@ class Import
     public const THROWABLE                                                = 'Throwable';
     // phpcs:enable Generic.Files.LineLength.TooLong
 
-    private array $classUses    = [];
-    private array $functionUses = [];
-    private array $constantUses = [];
-
-    public function addClassUse(string $fqcn, ?string $alias = null): self
-    {
-        $this->classUses[$fqcn] = [
-            'fqcn'  => $fqcn,
-            'alias' => $alias,
-        ];
-
-        return $this;
+    public function __construct(
+        private ContextInterface $context,
+    ) {
     }
 
-    public function addFunctionUse(string $function): self
+    public function getAbstractFormFqcn(): string
     {
-        $this->functionUses[$function] = $function;
-
-        return $this;
+        return sprintf(self::ROOT_APP_FORM_ABSTRACTFORM, $this->context->getRootNamespace());
     }
 
-    public function addConstantUse(string $constant): self
+    public function getAbstractInputFilterFqcn(): string
     {
-        $this->constantUses[$constant] = $constant;
+        $format = self::ROOT_APP_INPUTFILTER_ABSTRACTINPUTFILTER;
 
-        return $this;
-    }
-
-    public function render(): string
-    {
-        $classUses = $this->renderClassUses();
-
-        $functionUses = array_map(
-            fn (string $functionUse) => sprintf('use function %s;', $functionUse),
-            $this->functionUses
-        );
-        sort($functionUses);
-
-        $constantUses = array_map(
-            fn (string $constantUse) => sprintf('use const %s;', $constantUse),
-            $this->constantUses
-        );
-        sort($constantUses);
-
-        $uses = [];
-        if (count($classUses) > 0) {
-            $uses = array_merge($uses, $classUses);
-        }
-        if (count($functionUses) > 0) {
-            $uses = array_merge($uses, ['']);
-            $uses = array_merge($uses, $functionUses);
-        }
-        if (count($constantUses) > 0) {
-            $uses = array_merge($uses, ['']);
-            $uses = array_merge($uses, $constantUses);
+        if ($this->context->hasCore()) {
+            return sprintf($format, ContextInterface::NAMESPACE_CORE);
         }
 
-        if (count($uses) === 0) {
-            return '';
+        return sprintf($format, $this->context->getRootNamespace());
+    }
+
+    public function getAbstractHandlerFqcn(): string
+    {
+        return sprintf(self::ROOT_APP_HANDLER_ABSTRACTHANDLER, $this->context->getRootNamespace());
+    }
+
+    public function getAbstractRepositoryFqcn(): string
+    {
+        $format = self::ROOT_APP_REPOSITORY_ABSTRACTREPOSITORY;
+
+        if ($this->context->hasCore()) {
+            return sprintf($format, ContextInterface::NAMESPACE_CORE);
         }
 
-        if ($uses[0] === '') {
-            unset($uses[0]);
+        return sprintf($format, $this->context->getRootNamespace());
+    }
+
+    public function getAppHelperPaginatorFqcn(): string
+    {
+        $format = self::ROOT_APP_HELPER_PAGINATOR;
+
+        if ($this->context->hasCore()) {
+            return sprintf($format, ContextInterface::NAMESPACE_CORE);
         }
 
-        return PHP_EOL . implode(PHP_EOL, $uses) . PHP_EOL;
+        return sprintf($format, $this->context->getRootNamespace());
     }
 
-    private function renderClassUses(): array
+    public function getAppMessageFqcn(): string
     {
-        $classUses = [];
+        $format = self::ROOT_APP_MESSAGE;
 
-        foreach ($this->classUses as $use) {
-            if ($use['alias'] !== null) {
-                $classUses[] = sprintf('use %s as %s;', $use['fqcn'], $use['alias']);
-            } else {
-                $classUses[] = sprintf('use %s;', $use['fqcn']);
-            }
+        if ($this->context->hasCore()) {
+            return sprintf($format, ContextInterface::NAMESPACE_CORE);
         }
-        sort($classUses);
 
-        return $classUses;
+        return sprintf($format, $this->context->getRootNamespace());
     }
 
-    public static function getAbstractHandlerFqcn(string $rootNamespace): string
+    public function getBadRequestExceptionFqcn(): string
     {
-        return sprintf(self::ROOT_APP_HANDLER_ABSTRACTHANDLER, $rootNamespace);
+        return sprintf(self::ROOT_APP_EXCEPTION_BADREQUESTEXCEPTION, $this->context->getRootNamespace());
     }
 
-    public static function getBadRequestExceptionFqcn(string $rootNamespace): string
+    public function getConfigProviderFqcn(bool $core = false): string
     {
-        return sprintf(self::ROOT_APP_EXCEPTION_BADREQUESTEXCEPTION, $rootNamespace);
+        if ($core && $this->context->hasCore()) {
+            $rootNamespace = ContextInterface::NAMESPACE_CORE;
+        } else {
+            $rootNamespace = $this->context->getRootNamespace();
+        }
+
+        return sprintf(self::ROOT_APP_CONFIGPROVIDER, $rootNamespace);
     }
 
-    public static function getConflictExceptionFqcn(string $rootNamespace): string
+    public function getConflictExceptionFqcn(): string
     {
-        return sprintf(self::ROOT_APP_EXCEPTION_CONFLICTEXCEPTION, $rootNamespace);
+        return sprintf(self::ROOT_APP_EXCEPTION_CONFLICTEXCEPTION, $this->context->getRootNamespace());
     }
 
-    public static function getHandlerDelegatorFactoryFqcn(string $rootNamespace): string
+    public function getCsrfInputFqcn(): string
     {
-        return sprintf(self::ROOT_APP_FACTORY_HANDLERDELEGATORFACTORY, $rootNamespace);
+        return sprintf(self::ROOT_APP_INPUTFILTER_INPUT_CSRFINPUT, $this->context->getRootNamespace());
     }
 
-    public static function getNotFoundExceptionFqcn(string $rootNamespace): string
+    public function getHandlerDelegatorFactoryFqcn(): string
     {
-        return sprintf(self::ROOT_APP_EXCEPTION_NOTFOUNDEXCEPTION, $rootNamespace);
+        return sprintf(self::ROOT_APP_FACTORY_HANDLERDELEGATORFACTORY, $this->context->getRootNamespace());
     }
 
-    public static function getResourceAttributeFqcn(string $rootNamespace): string
+    public function getNotFoundExceptionFqcn(): string
     {
-        return sprintf(self::ROOT_APP_ATTRIBUTE_RESOURCE, $rootNamespace);
+        return sprintf(self::ROOT_APP_EXCEPTION_NOTFOUNDEXCEPTION, $this->context->getRootNamespace());
     }
 
-    public static function getResourceCollectionFqcn(string $rootNamespace): string
+    public function getResourceAttributeFqcn(): string
     {
-        return sprintf(self::ROOT_APP_COLLECTION_RESOURCECOLLECTION, $rootNamespace);
+        return sprintf(self::ROOT_APP_ATTRIBUTE_RESOURCE, $this->context->getRootNamespace());
+    }
+
+    public function getResourceCollectionFqcn(): string
+    {
+        return sprintf(self::ROOT_APP_COLLECTION_RESOURCECOLLECTION, $this->context->getRootNamespace());
     }
 }
