@@ -8,6 +8,7 @@ use Dot\Maker\Component;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
+use Throwable;
 
 use function preg_replace;
 use function sprintf;
@@ -23,12 +24,11 @@ class Handler extends AbstractType implements FileInterface
                 break;
             }
 
-            if (! $this->isValid($name)) {
-                Output::error(sprintf('Invalid Handler name: "%s"', $name));
-                continue;
+            try {
+                $this->create($name);
+            } catch (Throwable $exception) {
+                Output::error($exception->getMessage());
             }
-
-            $this->create($name);
         }
     }
 
@@ -39,53 +39,52 @@ class Handler extends AbstractType implements FileInterface
         $plural = Component::pluralize($name);
         if ($this->context->isApi()) {
             if (Input::confirm(sprintf('Allow listing %s?', $plural))) {
-                $this->initComponent(TypeEnum::Collection)->create($name);
-                $this->initComponent(TypeEnum::HandlerApiGetCollection)->create($name);
+                $this->component(TypeEnum::Collection)->create($name);
+                $this->component(TypeEnum::HandlerApiGetCollection)->create($name);
             }
             if (Input::confirm(sprintf('Allow viewing %s?', $plural))) {
-                $this->initComponent(TypeEnum::HandlerApiGetResource)->create($name);
+                $this->component(TypeEnum::HandlerApiGetResource)->create($name);
             }
             if (Input::confirm(sprintf('Allow creating %s?', $plural))) {
-                $this->initComponent(TypeEnum::HandlerApiPostResource)->create($name);
-                $this->initComponent(TypeEnum::InputFilterCreateResource)->create($name);
+                $this->component(TypeEnum::HandlerApiPostResource)->create($name);
+                $this->component(TypeEnum::InputFilterCreateResource)->create($name);
             }
             if (Input::confirm(sprintf('Allow deleting %s?', $plural))) {
-                $this->initComponent(TypeEnum::HandlerApiDeleteResource)->create($name);
-                $this->initComponent(TypeEnum::InputFilterDeleteResource)->create($name);
+                $this->component(TypeEnum::HandlerApiDeleteResource)->create($name);
             }
             if (Input::confirm(sprintf('Allow editing %s?', $plural))) {
-                $this->initComponent(TypeEnum::HandlerApiPatchResource)->create($name);
-                $this->initComponent(TypeEnum::InputFilterEditResource)->create($name);
+                $this->component(TypeEnum::HandlerApiPatchResource)->create($name);
+                $this->component(TypeEnum::InputFilterEditResource)->create($name);
             }
             if (Input::confirm(sprintf('Allow replacing %s?', $plural))) {
-                $this->initComponent(TypeEnum::HandlerApiPutResource)->create($name);
-                $this->initComponent(TypeEnum::InputFilterReplaceResource)->create($name);
+                $this->component(TypeEnum::HandlerApiPutResource)->create($name);
+                $this->component(TypeEnum::InputFilterReplaceResource)->create($name);
             }
         } else {
             if (Input::confirm(sprintf('Allow listing %s?', $plural))) {
-                $this->initComponent(TypeEnum::HandlerGetListResource)->create($name);
+                $this->component(TypeEnum::HandlerGetListResource)->create($name);
             }
             if (Input::confirm(sprintf('Allow viewing %s?', $plural))) {
-                $this->initComponent(TypeEnum::HandlerGetViewResource)->create($name);
+                $this->component(TypeEnum::HandlerGetViewResource)->create($name);
             }
             if (Input::confirm(sprintf('Allow creating %s?', $plural))) {
-                $this->initComponent(TypeEnum::HandlerGetCreateResource)->create($name);
-                $this->initComponent(TypeEnum::HandlerPostCreateResource)->create($name);
-                $this->initComponent(TypeEnum::FormCreateResource)->create($name);
-                $this->initComponent(TypeEnum::InputFilterCreateResource)->create($name);
+                $this->component(TypeEnum::HandlerGetCreateResource)->create($name);
+                $this->component(TypeEnum::HandlerPostCreateResource)->create($name);
+                $this->component(TypeEnum::FormCreateResource)->create($name);
+                $this->component(TypeEnum::InputFilterCreateResource)->create($name);
             }
             if (Input::confirm(sprintf('Allow deleting %s?', $plural))) {
-                $this->initComponent(TypeEnum::HandlerGetDeleteResource)->create($name);
-                $this->initComponent(TypeEnum::HandlerPostDeleteResource)->create($name);
-                $this->initComponent(TypeEnum::FormDeleteResource)->create($name);
-                $this->initComponent(TypeEnum::InputFilterDeleteResource)->create($name);
-                $this->initComponent(TypeEnum::Input)->create(sprintf('%sConfirmation', $name));
+                $this->component(TypeEnum::HandlerGetDeleteResource)->create($name);
+                $this->component(TypeEnum::HandlerPostDeleteResource)->create($name);
+                $this->component(TypeEnum::FormDeleteResource)->create($name);
+                $this->component(TypeEnum::InputFilterDeleteResource)->create($name);
+                $this->component(TypeEnum::Input)->create(sprintf('%sConfirmation', $name));
             }
             if (Input::confirm(sprintf('Allow editing %s?', $plural))) {
-                $this->initComponent(TypeEnum::HandlerGetEditResource)->create($name);
-                $this->initComponent(TypeEnum::HandlerPostEditResource)->create($name);
-                $this->initComponent(TypeEnum::FormEditResource)->create($name);
-                $this->initComponent(TypeEnum::InputFilterEditResource)->create($name);
+                $this->component(TypeEnum::HandlerGetEditResource)->create($name);
+                $this->component(TypeEnum::HandlerPostEditResource)->create($name);
+                $this->component(TypeEnum::FormEditResource)->create($name);
+                $this->component(TypeEnum::InputFilterEditResource)->create($name);
             }
         }
 

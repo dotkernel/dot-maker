@@ -57,12 +57,9 @@ class Collection extends AbstractType implements FileInterface
 
         $content = $this->render($collection->getComponent());
 
-        try {
-            $collection->create($content);
-            Output::info(sprintf('Created Collection "%s"', $collection->getPath()));
-        } catch (RuntimeException $exception) {
-            Output::error($exception->getMessage());
-        }
+        $collection->create($content);
+
+        Output::success(sprintf('Created Collection "%s"', $collection->getPath()));
 
         return $collection;
     }

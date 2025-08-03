@@ -35,8 +35,7 @@ class Service extends AbstractType implements FileInterface
 
             try {
                 $this->create($name);
-                $this->initComponent(TypeEnum::ServiceInterface)->create($name);
-                break;
+                $this->component(TypeEnum::ServiceInterface)->create($name);
             } catch (Throwable $exception) {
                 Output::error($exception->getMessage());
             }
@@ -66,12 +65,9 @@ class Service extends AbstractType implements FileInterface
             $this->fileSystem->entity($name)->getComponent(),
         );
 
-        try {
-            $service->create($content);
-            Output::info(sprintf('Created Service "%s"', $service->getPath()));
-        } catch (RuntimeException $exception) {
-            Output::error($exception->getMessage());
-        }
+        $service->create($content);
+
+        Output::success(sprintf('Created Service "%s"', $service->getPath()));
 
         return $service;
     }
@@ -117,6 +113,11 @@ BODY);
                 new Parameter('params', 'array')
             )
             ->setReturnType($this->context->isApi() ? 'QueryBuilder' : 'array')
+            ->setComment(<<<COMM
+/**
+     * @param array<non-empty-string, mixed> \$params
+     */
+COMM)
             ->setBody(<<<BODY
         \$filters = \$params['filters'] ?? [];
         \$params  = Paginator::getParams(\$params, '{$entity->toCamelCase()}.created');
@@ -162,6 +163,11 @@ BODY);
             ->addParameter(
                 new Parameter($entity->toCamelCase(), $entity->getClassName(), true, 'null')
             )
+            ->setComment(<<<COMM
+/**
+     * @param array<non-empty-string, mixed> \$data
+     */
+COMM)
             ->setBody(<<<BODY
         if (! {$entity->getVariable()} instanceof {$entity->getClassName()}) {
             {$entity->getVariable()} = new {$entity->getClassName()}();

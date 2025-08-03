@@ -33,7 +33,7 @@ class DeleteResourceInputFilter extends AbstractType implements FileInterface
 
             try {
                 $this->create($name);
-                $this->initComponent(TypeEnum::Input)->create('Confirmation');
+                $this->component(TypeEnum::Input)->create('Confirmation');
                 break;
             } catch (Throwable $exception) {
                 Output::error($exception->getMessage());
@@ -72,12 +72,9 @@ class DeleteResourceInputFilter extends AbstractType implements FileInterface
             );
         }
 
-        try {
-            $inputFilter->create($content);
-            Output::info(sprintf('Created InputFilter "%s"', $inputFilter->getPath()));
-        } catch (RuntimeException $exception) {
-            Output::error($exception->getMessage());
-        }
+        $inputFilter->create($content);
+
+        Output::success(sprintf('Created InputFilter "%s"', $inputFilter->getPath()));
 
         return $inputFilter;
     }

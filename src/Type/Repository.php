@@ -33,7 +33,7 @@ class Repository extends AbstractType implements FileInterface
 
             try {
                 $this->create($name);
-                $this->initComponent(TypeEnum::Entity)->create($name);
+                $this->component(TypeEnum::Entity)->create($name);
             } catch (Throwable $exception) {
                 Output::error($exception->getMessage());
             }
@@ -61,12 +61,9 @@ class Repository extends AbstractType implements FileInterface
             $this->fileSystem->entity($name)->getComponent(),
         );
 
-        try {
-            $repository->create($content);
-            Output::info(sprintf('Created Repository "%s"', $repository->getPath()));
-        } catch (RuntimeException $exception) {
-            Output::error($exception->getMessage());
-        }
+        $repository->create($content);
+
+        Output::success(sprintf('Created Repository "%s"', $repository->getPath()));
 
         return $repository;
     }
@@ -84,13 +81,19 @@ class Repository extends AbstractType implements FileInterface
             );
 
         $getResources = (new Method($entity->getCollectionMethodName()))
+            ->setReturnType('QueryBuilder')
             ->addParameter(
                 new Parameter('params', 'array', false, '[]')
             )
             ->addParameter(
                 new Parameter('filters', 'array', false, '[]')
             )
-            ->setReturnType('QueryBuilder')
+            ->setComment(<<<COMM
+/**
+     * @param array<non-empty-string, mixed> \$params
+     * @param array<non-empty-string, mixed> \$filters
+     */
+COMM)
             ->setBody(<<<BODY
         \$queryBuilder = \$this
             ->getQueryBuilder()

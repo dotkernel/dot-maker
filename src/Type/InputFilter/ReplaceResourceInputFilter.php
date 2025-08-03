@@ -61,12 +61,9 @@ class ReplaceResourceInputFilter extends AbstractType implements FileInterface
             $this->fileSystem->entity($this->fileSystem->getModuleName())->getComponent(),
         );
 
-        try {
-            $inputFilter->create($content);
-            Output::info(sprintf('Created InputFilter "%s"', $inputFilter->getPath()));
-        } catch (RuntimeException $exception) {
-            Output::error($exception->getMessage());
-        }
+        $inputFilter->create($content);
+
+        Output::success(sprintf('Created InputFilter "%s"', $inputFilter->getPath()));
 
         return $inputFilter;
     }

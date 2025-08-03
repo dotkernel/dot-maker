@@ -9,7 +9,6 @@ use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
 use Dot\Maker\Component\Method;
-use Dot\Maker\Component\Method\Constructor;
 use Dot\Maker\Component\Parameter;
 use Dot\Maker\Exception\BadRequestException;
 use Dot\Maker\Exception\DuplicateFileException;
@@ -65,12 +64,9 @@ class GetResourceHandler extends AbstractType implements FileInterface
             $this->fileSystem->entity($this->fileSystem->getModuleName())->getComponent(),
         );
 
-        try {
-            $handler->create($content);
-            Output::info(sprintf('Created Handler "%s"', $handler->getPath()));
-        } catch (RuntimeException $exception) {
-            Output::error($exception->getMessage());
-        }
+        $handler->create($content);
+
+        Output::success(sprintf('Created Handler "%s"', $handler->getPath()));
 
         return $handler;
     }
@@ -81,18 +77,9 @@ class GetResourceHandler extends AbstractType implements FileInterface
             ->setExtends('AbstractHandler')
             ->useClass($this->import->getAbstractHandlerFqcn())
             ->useClass($this->import->getResourceAttributeFqcn())
-            ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
             ->useClass(Import::PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE)
             ->useClass(Import::PSR_HTTP_MESSAGE_RESPONSEINTERFACE)
-            ->useClass($serviceInterface->getFqcn())
             ->useClass($entity->getFqcn());
-
-        $constructor = (new Constructor())
-            ->addPromotedPropertyFromComponent($serviceInterface)
-            ->addInject(
-                (new Inject())->addArgument($serviceInterface->getClassString())
-            );
-        $class->addMethod($constructor);
 
         $handle = (new Method('handle'))
             ->setReturnType('ResponseInterface')

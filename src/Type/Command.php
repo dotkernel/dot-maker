@@ -21,13 +21,8 @@ use Dot\Maker\IO\Output;
 use Dot\Maker\VisibilityEnum;
 use Throwable;
 
-use function array_shift;
-use function count;
-use function implode;
-use function preg_replace;
-use function preg_split;
 use function sprintf;
-use function strtolower;
+use function str_replace;
 use function ucfirst;
 
 class Command extends AbstractType implements FileInterface
@@ -73,19 +68,16 @@ class Command extends AbstractType implements FileInterface
             $this->fileSystem->serviceInterface($this->fileSystem->getModuleName())->getComponent(),
         );
 
-        try {
-            $command->create($content);
-            Output::info(sprintf('Created Command "%s"', $command->getPath()));
-        } catch (RuntimeException $exception) {
-            Output::error($exception->getMessage());
-        }
+        $command->create($content);
+
+        Output::success(sprintf('Created Command "%s"', $command->getPath()));
 
         return $command;
     }
 
     public function render(Component $command, Component $serviceInterface): string
     {
-        $defaultName = $this->getDefaultName($command->getClassName());
+        $defaultName = $this->getDefaultName($command);
 
         $class = (new ClassFile($command->getNamespace(), $command->getClassName()))
             ->setExtends('Command')
@@ -145,17 +137,10 @@ BODY);
         return $class->render();
     }
 
-    public function getDefaultName(string $className): string
+    public function getDefaultName(Component $command): string
     {
-        $className = preg_replace('/Command$/', '', $className);
+        $defaultName = sprintf('%s:command', $command->toKebabCase());
 
-        $parts  = preg_split('/(?<!^)(?=[A-Z])/', $className);
-        $module = array_shift($parts);
-
-        if (count($parts) === 0) {
-            $parts[] = 'action';
-        }
-
-        return strtolower(sprintf('%s:%s', $module, implode('-', $parts)));
+        return str_replace('-command', '', $defaultName);
     }
 }

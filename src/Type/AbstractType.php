@@ -50,7 +50,7 @@ abstract class AbstractType implements TypeInterface
         return $this->module instanceof Module;
     }
 
-    public function initComponent(TypeEnum $typeEnum): FileInterface
+    public function component(TypeEnum $typeEnum): FileInterface
     {
         return new ($typeEnum->value)(
             $this->fileSystem,

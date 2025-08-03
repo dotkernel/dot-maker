@@ -32,7 +32,7 @@ class ServiceInterface extends AbstractType implements FileInterface
 
             try {
                 $this->create($name);
-                $this->initComponent(TypeEnum::Service)->create($name);
+                $this->component(TypeEnum::Service)->create($name);
                 break;
             } catch (Throwable $exception) {
                 Output::error($exception->getMessage());
@@ -62,12 +62,9 @@ class ServiceInterface extends AbstractType implements FileInterface
             $this->fileSystem->entity($name)->getComponent(),
         );
 
-        try {
-            $serviceInterface->create($content);
-            Output::info(sprintf('Created ServiceInterface "%s"', $serviceInterface->getPath()));
-        } catch (RuntimeException $exception) {
-            Output::error($exception->getMessage());
-        }
+        $serviceInterface->create($content);
+
+        Output::success(sprintf('Created ServiceInterface "%s"', $serviceInterface->getPath()));
 
         return $serviceInterface;
     }
@@ -93,6 +90,11 @@ class ServiceInterface extends AbstractType implements FileInterface
                     ->addParameter(
                         new Parameter('params', 'array')
                     )
+                    ->setComment(<<<COMM
+/**
+     * @param array<non-empty-string, mixed> \$params
+     */
+COMM)
             )
             ->addDeclaration(
                 (new Declaration($entity->getSaveMethodName()))
@@ -108,6 +110,11 @@ class ServiceInterface extends AbstractType implements FileInterface
                             'null'
                         )
                     )
+                    ->setComment(<<<COMM
+/**
+     * @param array<non-empty-string, mixed> \$data
+     */
+COMM)
             );
 
         if (! $this->context->isApi()) {

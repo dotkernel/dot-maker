@@ -8,6 +8,7 @@ use Dot\Maker\Component;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
+use Throwable;
 
 use function preg_replace;
 use function sprintf;
@@ -22,20 +23,15 @@ class Form extends AbstractType implements FileInterface
             return;
         }
 
-        while (true) {
-            $name = ucfirst(Input::prompt('Enter new Form name: '));
-            if ($name === '') {
-                break;
-            }
+        $name = ucfirst(Input::prompt('Enter new Form name: '));
+        if ($name === '') {
+            return;
+        }
 
-            if (! $this->isValid($name)) {
-                Output::error(sprintf('Invalid Form name: "%s"', $name));
-                continue;
-            }
-
+        try {
             $this->create($name);
-
-            break;
+        } catch (Throwable $exception) {
+            Output::error($exception->getMessage());
         }
     }
 
@@ -46,13 +42,13 @@ class Form extends AbstractType implements FileInterface
         if (! $this->context->isApi()) {
             $plural = Component::pluralize($name);
             if (Input::confirm(sprintf('Allow creating %s?', $plural))) {
-                $this->initComponent(TypeEnum::FormCreateResource)->create($name);
+                $this->component(TypeEnum::FormCreateResource)->create($name);
             }
             if (Input::confirm(sprintf('Allow deleting %s?', $plural))) {
-                $this->initComponent(TypeEnum::FormDeleteResource)->create($name);
+                $this->component(TypeEnum::FormDeleteResource)->create($name);
             }
             if (Input::confirm(sprintf('Allow editing %s?', $plural))) {
-                $this->initComponent(TypeEnum::FormEditResource)->create($name);
+                $this->component(TypeEnum::FormEditResource)->create($name);
             }
         }
 

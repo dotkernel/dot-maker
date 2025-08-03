@@ -34,7 +34,7 @@ class Entity extends AbstractType implements FileInterface
 
             try {
                 $this->create($name);
-                $this->initComponent(TypeEnum::Repository)->create($name);
+                $this->component(TypeEnum::Repository)->create($name);
             } catch (Throwable $exception) {
                 Output::error($exception->getMessage());
             }
@@ -62,12 +62,9 @@ class Entity extends AbstractType implements FileInterface
             $this->fileSystem->repository($name)->getComponent(),
         );
 
-        try {
-            $entity->create($content);
-            Output::info(sprintf('Created Entity "%s"', $entity->getPath()));
-        } catch (RuntimeException $exception) {
-            Output::error($exception->getMessage());
-        }
+        $entity->create($content);
+
+        Output::success(sprintf('Created Entity "%s"', $entity->getPath()));
 
         return $entity;
     }
@@ -79,6 +76,7 @@ class Entity extends AbstractType implements FileInterface
             ->useClass($this->getAbstractEntityFqcn())
             ->useClass($this->getTimestampsTraitFqcn())
             ->useClass($repository->getFqcn())
+            ->useClass(Import::DATETIMEIMMUTABLE)
             ->useClass(Import::DOCTRINE_ORM_MAPPING, 'ORM')
             ->addInject(
                 (new Inject('ORM\Entity'))->addArgument($repository->getClassString(), 'repositoryClass')
@@ -101,6 +99,15 @@ BODY);
 
         $getArrayCopy = (new Method('getArrayCopy'))
             ->setReturnType('array')
+            ->setComment(<<<COMM
+/**
+     * @return array{
+     *      uuid: non-empty-string,
+     *      created: DateTimeImmutable,
+     *      updated: DateTimeImmutable|null,
+     * }
+     */
+COMM)
             ->setBody(<<<BODY
         return [
             'uuid'    => \$this->uuid->toString(),

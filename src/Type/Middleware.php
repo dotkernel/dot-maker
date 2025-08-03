@@ -34,7 +34,6 @@ class Middleware extends AbstractType implements FileInterface
 
             try {
                 $this->create($name);
-                break;
             } catch (Throwable $exception) {
                 Output::error($exception->getMessage());
             }
@@ -59,15 +58,12 @@ class Middleware extends AbstractType implements FileInterface
 
         $content = $this->render(
             $middleware->getComponent(),
-            $this->fileSystem->serviceInterface($name)->getComponent(),
+            $this->fileSystem->serviceInterface($this->fileSystem->getModuleName())->getComponent(),
         );
 
-        try {
-            $middleware->create($content);
-            Output::info(sprintf('Created Middleware "%s"', $middleware->getPath()));
-        } catch (RuntimeException $exception) {
-            Output::error($exception->getMessage());
-        }
+        $middleware->create($content);
+
+        Output::success(sprintf('Created Middleware "%s"', $middleware->getPath()));
 
         return $middleware;
     }

@@ -83,12 +83,9 @@ class ConfigProvider extends AbstractType implements FileInterface
             );
         }
 
-        try {
-            $configProvider->create($content);
-            Output::info(sprintf('Created ConfigProvider "%s"', $configProvider->getPath()));
-        } catch (RuntimeException $exception) {
-            Output::error($exception->getMessage());
-        }
+        $configProvider->create($content);
+
+        Output::success(sprintf('Created ConfigProvider "%s"', $configProvider->getPath()));
 
         return $configProvider;
     }

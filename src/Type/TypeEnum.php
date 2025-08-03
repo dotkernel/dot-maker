@@ -71,17 +71,17 @@ enum TypeEnum: string
     public static function getClass(string $name): ?string
     {
         return match (strtolower($name)) {
-            'col', 'coll', 'collection'              => Collection::class,
-            'com', 'command', 'comm'                 => Command::class,
-            'e', 'ent', 'entity'                     => Entity::class,
-            'f', 'frm', 'form'                       => Form::class,
-            'h', 'handler'                           => Handler::class,
-            'i', 'if', 'inputfilter', 'input-filter' => InputFilter::class,
-            'mi', 'mid', 'middleware'                => Middleware::class,
-            'mo', 'mod', 'module'                    => Module::class,
-            'r', 'rep', 'repository'                 => Repository::class,
-            's', 'srv', 'service'                    => Service::class,
-            default                                  => null,
+            'collection'   => Collection::class,
+            'command'      => Command::class,
+            'entity'       => Entity::class,
+            'form'         => Form::class,
+            'handler'      => Handler::class,
+            'input-filter' => InputFilter::class,
+            'middleware'   => Middleware::class,
+            'module'       => Module::class,
+            'repository'   => Repository::class,
+            'service'      => Service::class,
+            default        => null,
         };
     }
 }

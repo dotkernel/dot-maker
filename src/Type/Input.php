@@ -36,7 +36,6 @@ class Input extends AbstractType implements FileInterface
 
             try {
                 $this->create($name);
-                break;
             } catch (Throwable $exception) {
                 Output::error($exception->getMessage());
             }
@@ -61,12 +60,9 @@ class Input extends AbstractType implements FileInterface
 
         $content = $this->render($input->getComponent());
 
-        try {
-            $input->create($content);
-            Output::info(sprintf('Created Input "%s"', $input->getPath()));
-        } catch (RuntimeException $exception) {
-            Output::error($exception->getMessage());
-        }
+        $input->create($content);
+
+        Output::success(sprintf('Created Input "%s"', $input->getPath()));
 
         return $input;
     }

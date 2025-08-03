@@ -45,12 +45,9 @@ class CoreConfigProvider extends AbstractType implements FileInterface
             $this->fileSystem->entity($name)->getComponent(),
         );
 
-        try {
-            $configProvider->create($content);
-            Output::info(sprintf('Created Core ConfigProvider "%s"', $configProvider->getPath()));
-        } catch (RuntimeException $exception) {
-            Output::error($exception->getMessage());
-        }
+        $configProvider->create($content);
+
+        Output::success(sprintf('Created Core ConfigProvider "%s"', $configProvider->getPath()));
 
         return $configProvider;
     }

@@ -53,12 +53,9 @@ class OpenApi extends AbstractType implements FileInterface
             $this->fileSystem->apiPutResourceHandler($name),
         );
 
-        try {
-            $openApi->create($content);
-            Output::info(sprintf('Created OpenAPI "%s"', $openApi->getPath()));
-        } catch (RuntimeException $exception) {
-            Output::error($exception->getMessage());
-        }
+        $openApi->create($content);
+
+        Output::success(sprintf('Created OpenAPI "%s"', $openApi->getPath()));
 
         return $openApi;
     }

@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Dot\Maker;
 
+use function sprintf;
+
 enum ColorEnum: int
 {
     case Default                 = 0;
@@ -45,12 +47,21 @@ enum ColorEnum: int
         self $foregroundColor = self::Default,
         self $backgroundColor = self::Default,
     ): string {
+        if ($backgroundColor->value !== self::Default->value) {
+            return sprintf(
+                "\033[%d;%dm%s\033[%dm",
+                $foregroundColor->value,
+                $backgroundColor->value,
+                $text,
+                self::Default->value
+            );
+        }
+
         return sprintf(
-            "\033[%d;%dm%s\033[%d;0m",
+            "\033[%dm%s\033[%dm",
             $foregroundColor->value,
-            $backgroundColor->value,
             $text,
-            self::Default->value,
+            self::Default->value
         );
     }
 }

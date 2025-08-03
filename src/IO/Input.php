@@ -9,13 +9,14 @@ use function sprintf;
 use function strtolower;
 use function trim;
 
+use const PHP_EOL;
 use const STDIN;
 
 class Input
 {
     public static function prompt(string $prompt): string
     {
-        echo $prompt;
+        echo PHP_EOL . $prompt;
         return trim(fgets(STDIN));
     }
 

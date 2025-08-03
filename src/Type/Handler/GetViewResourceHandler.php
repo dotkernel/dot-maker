@@ -66,12 +66,9 @@ class GetViewResourceHandler extends AbstractType implements FileInterface
             $this->fileSystem->entity($this->fileSystem->getModuleName())->getComponent(),
         );
 
-        try {
-            $handler->create($content);
-            Output::info(sprintf('Created Handler "%s"', $handler->getPath()));
-        } catch (RuntimeException $exception) {
-            Output::error($exception->getMessage());
-        }
+        $handler->create($content);
+
+        Output::success(sprintf('Created Handler "%s"', $handler->getPath()));
 
         return $handler;
     }

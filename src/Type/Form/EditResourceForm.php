@@ -36,7 +36,7 @@ class EditResourceForm extends AbstractType implements FileInterface
 
             try {
                 $this->create($name);
-                $this->initComponent(TypeEnum::InputFilterEditResource)->create($name);
+                $this->component(TypeEnum::InputFilterEditResource)->create($name);
                 break;
             } catch (Throwable $exception) {
                 Output::error($exception->getMessage());
@@ -66,12 +66,9 @@ class EditResourceForm extends AbstractType implements FileInterface
             $this->fileSystem->editResourceInputFilter($name)->getComponent(),
         );
 
-        try {
-            $form->create($content);
-            Output::info(sprintf('Created Form "%s"', $form->getPath()));
-        } catch (RuntimeException $exception) {
-            Output::error($exception->getMessage());
-        }
+        $form->create($content);
+
+        Output::success(sprintf('Created Form "%s"', $form->getPath()));
 
         return $form;
     }
