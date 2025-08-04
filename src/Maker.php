@@ -51,6 +51,8 @@ final readonly class Maker
         $instance   = new ($component)($fileSystem, $context, $config);
         assert($instance instanceof TypeInterface);
 
+        Output::info(sprintf('Detected project type: %s', $context->getProjectType()));
+
         if (! $instance->isModule()) {
             $instance->setModule((new Module($fileSystem, $context, $config))->initExisting());
         } else {

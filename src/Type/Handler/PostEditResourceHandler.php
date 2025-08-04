@@ -62,9 +62,9 @@ class PostEditResourceHandler extends AbstractType implements FileInterface
 
         $content = $this->render(
             $handler->getComponent(),
-            $this->fileSystem->serviceInterface($this->fileSystem->getModuleName())->getComponent(),
-            $this->fileSystem->entity($this->fileSystem->getModuleName())->getComponent(),
-            $this->fileSystem->editResourceForm($this->fileSystem->getModuleName())->getComponent(),
+            $this->fileSystem->entity($name)->getComponent(),
+            $this->fileSystem->editResourceForm($name)->getComponent(),
+            $this->fileSystem->serviceInterface($name)->getComponent(),
         );
 
         $handler->create($content);
@@ -74,7 +74,7 @@ class PostEditResourceHandler extends AbstractType implements FileInterface
         return $handler;
     }
 
-    public function render(Component $handler, Component $serviceInterface, Component $entity, Component $form): string
+    public function render(Component $handler, Component $entity, Component $form, Component $serviceInterface): string
     {
         $class = (new ClassFile($handler->getNamespace(), $handler->getClassName()))
             ->addInterface('RequestHandlerInterface')

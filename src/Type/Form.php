@@ -43,12 +43,16 @@ class Form extends AbstractType implements FileInterface
             $plural = Component::pluralize($name);
             if (Input::confirm(sprintf('Allow creating %s?', $plural))) {
                 $this->component(TypeEnum::FormCreateResource)->create($name);
+                $this->component(TypeEnum::InputFilterCreateResource)->create($name);
             }
             if (Input::confirm(sprintf('Allow deleting %s?', $plural))) {
                 $this->component(TypeEnum::FormDeleteResource)->create($name);
+                $this->component(TypeEnum::InputFilterDeleteResource)->create($name);
+                $this->component(TypeEnum::Input)->create(sprintf('%sConfirmation', $name));
             }
             if (Input::confirm(sprintf('Allow editing %s?', $plural))) {
                 $this->component(TypeEnum::FormEditResource)->create($name);
+                $this->component(TypeEnum::InputFilterEditResource)->create($name);
             }
         }
 

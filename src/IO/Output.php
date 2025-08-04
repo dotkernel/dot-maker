@@ -21,7 +21,7 @@ class Output
     {
         $message = ColorEnum::colorize($message, ColorEnum::ForegroundBrightRed);
 
-        fwrite(STDERR, $message . PHP_EOL);
+        fwrite(STDERR, '❌  ' . $message . PHP_EOL);
         $exit && exit(self::FAILURE);
     }
 
@@ -29,7 +29,7 @@ class Output
     {
         $message = ColorEnum::colorize($message, ColorEnum::ForegroundBrightBlue);
 
-        fwrite(STDOUT, $message . PHP_EOL);
+        fwrite(STDOUT, 'ℹ️ ' . $message . PHP_EOL);
         $exit && exit(self::SUCCESS);
     }
 
@@ -37,13 +37,13 @@ class Output
     {
         $message = ColorEnum::colorize($message, ColorEnum::ForegroundBrightGreen);
 
-        fwrite(STDOUT, $message . PHP_EOL);
+        fwrite(STDOUT, '✅  ' . $message . PHP_EOL);
         $exit && exit(self::SUCCESS);
     }
 
     public static function write(string $message, bool $exit = false): void
     {
-        fwrite(STDOUT, $message . PHP_EOL);
+        fwrite(STDOUT, $message);
         $exit && exit(self::SUCCESS);
     }
 

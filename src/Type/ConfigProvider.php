@@ -15,6 +15,7 @@ use Dot\Maker\IO\Output;
 use Dot\Maker\VisibilityEnum;
 use Throwable;
 
+use function count;
 use function sprintf;
 
 class ConfigProvider extends AbstractType implements FileInterface
@@ -46,6 +47,7 @@ class ConfigProvider extends AbstractType implements FileInterface
                 $this->fileSystem->command($name),
                 $this->fileSystem->entity($name),
                 $this->fileSystem->middleware($name),
+                $this->fileSystem->routesDelegator($name),
                 $this->fileSystem->service($name),
                 $this->fileSystem->serviceInterface($name),
                 [
@@ -268,15 +270,13 @@ BODY);
         File $command,
         File $entity,
         File $middleware,
+        File $routesDelegator,
         File $service,
         File $serviceInterface,
         array $handlers,
     ): string {
         $class = (new ClassFile($configProvider->getNamespace(), $configProvider->getClassName()))
             ->useClass($this->import->getConfigProviderFqcn(), 'AppConfigProvider')
-            ->useClass($this->import->getHandlerDelegatorFactoryFqcn())
-            ->useClass(Import::DOT_DEPENDENCYINJECTION_FACTORY_ATTRIBUTEDSERVICEFACTORY)
-            ->useClass(Import::MEZZIO_APPLICATION)
             ->useClass(Import::MEZZIO_HAL_METADATA_METADATAMAP)
             ->setComment(<<<COMM
 /**
@@ -316,22 +316,32 @@ BODY);
      */
 COMM)
             ->appendBody('return [')
-            ->appendBody('\'delegators\' => [', 12)
-            ->appendBody('Application::class => [RoutesDelegator::class],', 16);
+            ->appendBody('\'delegators\' => [', 12);
 
-        foreach ($handlers as $handler) {
-            if (! $handler->exists()) {
-                continue;
+        if ($routesDelegator->exists()) {
+            $class->useClass(Import::MEZZIO_APPLICATION);
+
+            $getDependencies->appendBody('Application::class => [RoutesDelegator::class],', 16);
+        }
+
+        if (count($handlers) > 0) {
+            foreach ($handlers as $handler) {
+                if (! $handler->exists()) {
+                    continue;
+                }
+
+                $class
+                    ->useClass($this->import->getHandlerDelegatorFactoryFqcn())
+                    ->useClass($handler->getComponent()->getFqcn());
+
+                $getDependencies->appendBody(
+                    sprintf(
+                        '%s => [HandlerDelegatorFactory::class],',
+                        $handler->getComponent()->getClassString()
+                    ),
+                    16
+                );
             }
-            $class->useClass($handler->getComponent()->getFqcn());
-
-            $getDependencies->appendBody(
-                sprintf(
-                    '%s => [HandlerDelegatorFactory::class],',
-                    $handler->getComponent()->getClassString()
-                ),
-                16
-            );
         }
 
         $getDependencies
@@ -339,7 +349,9 @@ COMM)
             ->appendBody('\'factories\'  => [', 12);
 
         if ($command->exists()) {
-            $class->useClass($command->getComponent()->getFqcn());
+            $class
+                ->useClass($command->getComponent()->getFqcn())
+                ->useClass(Import::DOT_DEPENDENCYINJECTION_FACTORY_ATTRIBUTEDSERVICEFACTORY);
 
             $getDependencies->appendBody(
                 sprintf(
@@ -354,7 +366,9 @@ COMM)
             if (! $handler->exists()) {
                 continue;
             }
-            $class->useClass($handler->getComponent()->getFqcn());
+            $class
+                ->useClass($handler->getComponent()->getFqcn())
+                ->useClass(Import::DOT_DEPENDENCYINJECTION_FACTORY_ATTRIBUTEDSERVICEFACTORY);
 
             $getDependencies->appendBody(
                 sprintf(
@@ -366,7 +380,9 @@ COMM)
         }
 
         if ($middleware->exists()) {
-            $class->useClass($middleware->getComponent()->getFqcn());
+            $class
+                ->useClass($middleware->getComponent()->getFqcn())
+                ->useClass(Import::DOT_DEPENDENCYINJECTION_FACTORY_ATTRIBUTEDSERVICEFACTORY);
 
             $getDependencies->appendBody(
                 sprintf(
@@ -378,7 +394,9 @@ COMM)
         }
 
         if ($service->exists()) {
-            $class->useClass($service->getComponent()->getFqcn());
+            $class
+                ->useClass($service->getComponent()->getFqcn())
+                ->useClass(Import::DOT_DEPENDENCYINJECTION_FACTORY_ATTRIBUTEDSERVICEFACTORY);
 
             $getDependencies->appendBody(
                 sprintf(
@@ -391,7 +409,9 @@ COMM)
 
         $getDependencies->appendBody('],', 12);
         if ($serviceInterface->exists()) {
-            $class->useClass($serviceInterface->getComponent()->getFqcn());
+            $class
+                ->useClass($serviceInterface->getComponent()->getFqcn())
+                ->useClass(Import::DOT_DEPENDENCYINJECTION_FACTORY_ATTRIBUTEDSERVICEFACTORY);
 
             $getDependencies
                 ->appendBody('\'aliases\'    => [', 12)

@@ -61,13 +61,11 @@ class DeleteResourceInputFilter extends AbstractType implements FileInterface
             $content = $this->renderApi(
                 $name,
                 $inputFilter->getComponent(),
-                $this->fileSystem->entity($name)->getComponent(),
             );
         } else {
             $content = $this->render(
                 $name,
                 $inputFilter->getComponent(),
-                $this->fileSystem->entity($this->fileSystem->getModuleName())->getComponent(),
                 $this->fileSystem->input(sprintf('%sConfirmation', $name))->getComponent(),
             );
         }
@@ -79,9 +77,9 @@ class DeleteResourceInputFilter extends AbstractType implements FileInterface
         return $inputFilter;
     }
 
-    public function render(string $name, Component $form, Component $entity, Component $input): string
+    public function render(string $name, Component $inputFilter, Component $input): string
     {
-        $class = (new ClassFile($form->getNamespace(), $form->getClassName()))
+        $class = (new ClassFile($inputFilter->getNamespace(), $inputFilter->getClassName()))
             ->setExtends('AbstractInputFilter')
             ->useClass($this->import->getAbstractInputFilterFqcn())
             ->useClass($this->import->getCsrfInputFqcn())
@@ -107,9 +105,9 @@ BODY);
         return $class->render();
     }
 
-    public function renderApi(string $name, Component $form, Component $entity): string
+    public function renderApi(string $name, Component $inputFilter): string
     {
-        $class = (new ClassFile($form->getNamespace(), $form->getClassName()))
+        $class = (new ClassFile($inputFilter->getNamespace(), $inputFilter->getClassName()))
             ->setExtends('AbstractInputFilter')
             ->useClass($this->import->getAbstractInputFilterFqcn())
             ->setComment(<<<COMM

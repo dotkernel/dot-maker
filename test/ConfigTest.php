@@ -25,9 +25,7 @@ declare(strict_types=1);
 use Dot\Maker\Maker;
 
 return [
-    Maker::class => [
-        'stub_directory' => getcwd() . '/src/App/resources/stubs',
-    ],
+    Maker::class => [],
 ];
 CFG,
                 ],
@@ -39,7 +37,7 @@ CFG,
 
     public function testWillInstantiate(): void
     {
-        $config = new Config('test', $this->configPath);
+        $config = new Config($this->configPath);
         $this->assertInstanceOf(Config::class, $config);
     }
 }

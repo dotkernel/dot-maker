@@ -58,7 +58,7 @@ class Middleware extends AbstractType implements FileInterface
 
         $content = $this->render(
             $middleware->getComponent(),
-            $this->fileSystem->serviceInterface($this->fileSystem->getModuleName())->getComponent(),
+            $this->fileSystem->serviceInterface($this->fileSystem->getModuleName()),
         );
 
         $middleware->create($content);
@@ -68,23 +68,28 @@ class Middleware extends AbstractType implements FileInterface
         return $middleware;
     }
 
-    public function render(Component $middleware, Component $serviceInterface): string
+    public function render(Component $middleware, File $serviceInterface): string
     {
         $class = (new ClassFile($middleware->getNamespace(), $middleware->getClassName()))
             ->addInterface('MiddlewareInterface')
             ->useClass(Import::PSR_HTTP_MESSAGE_RESPONSEINTERFACE)
             ->useClass(Import::PSR_HTTP_MESSAGE_SERVERREQUESTINTERFACE)
             ->useClass(Import::PSR_HTTP_SERVER_MIDDLEWAREINTERFACE)
-            ->useClass(Import::PSR_HTTP_SERVER_REQUESTHANDLERINTERFACE)
-            ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
-            ->useClass($serviceInterface->getFqcn());
+            ->useClass(Import::PSR_HTTP_SERVER_REQUESTHANDLERINTERFACE);
 
-        $constructor = (new Constructor())
-            ->addInject(
-                (new Inject())->addArgument($serviceInterface->getClassString())
-            )
-            ->addPromotedPropertyFromComponent($serviceInterface);
-        $class->addMethod($constructor);
+        if ($serviceInterface->exists()) {
+            $class
+                ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
+                ->useClass($serviceInterface->getComponent()->getFqcn());
+
+            $constructor = (new Constructor())
+                ->addInject(
+                    (new Inject())->addArgument($serviceInterface->getComponent()->getClassString())
+                )
+                ->addPromotedPropertyFromComponent($serviceInterface->getComponent());
+
+            $class->addMethod($constructor);
+        }
 
         $execute = (new Method('process'))
             ->setReturnType('ResponseInterface')

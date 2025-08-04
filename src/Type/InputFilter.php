@@ -32,7 +32,7 @@ class InputFilter extends AbstractType implements FileInterface
 
     public function create(string $name): File
     {
-        $name = preg_replace('/Form$/', '', $name);
+        $name = preg_replace('/InputFilter$/', '', $name);
 
         $plural = Component::pluralize($name);
         if (Input::confirm(sprintf('Allow creating %s?', $plural))) {

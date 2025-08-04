@@ -400,7 +400,9 @@ class FileSystem
 
     public function service(string $name): File
     {
-        $name = preg_replace('/Service$/', '', $name);
+        if ($name !== 'Service') {
+            $name = preg_replace('/Service$/', '', $name);
+        }
 
         return new File(
             new Directory('Service', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),
@@ -411,7 +413,10 @@ class FileSystem
 
     public function serviceInterface(string $name): File
     {
-        $name = preg_replace('/ServiceInterface$/', '', $name);
+        $name = preg_replace('/Interface$/', '', $name);
+        if ($name !== 'Service') {
+            $name = preg_replace('/Service$/', '', $name);
+        }
 
         return new File(
             new Directory('Service', sprintf('%s/src/%s/src', $this->rootDir, $this->moduleName)),

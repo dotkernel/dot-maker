@@ -15,8 +15,6 @@ class Module extends AbstractType implements ModuleInterface
 {
     public function __invoke(): void
     {
-        Output::info(sprintf('Detected project type: %s', $this->context->getProjectType()));
-
         while (true) {
             $name = ucfirst(Input::prompt('Enter new module name: '));
             if (! $this->isValid($name)) {
@@ -38,12 +36,12 @@ class Module extends AbstractType implements ModuleInterface
             $this->fileSystem->setModuleName($name);
 
             try {
-                if (Input::confirm('Create entity?')) {
+                if (Input::confirm('Create entity and repository?')) {
                     $this->component(TypeEnum::Entity)->create($module->getName());
                     $this->component(TypeEnum::Repository)->create($module->getName());
                 }
 
-                if (Input::confirm('Create service?')) {
+                if (Input::confirm('Create service and service interface?')) {
                     $this->component(TypeEnum::Service)->create($module->getName());
                     $this->component(TypeEnum::ServiceInterface)->create($module->getName());
                 }
@@ -58,6 +56,7 @@ class Module extends AbstractType implements ModuleInterface
 
                 if (Input::confirm('Create handler?')) {
                     $this->component(TypeEnum::Handler)->create($module->getName());
+                    $this->component(TypeEnum::RoutesDelegator)->create($module->getName());
                 }
 
                 if (! $this->context->isApi()) {
@@ -79,7 +78,6 @@ class Module extends AbstractType implements ModuleInterface
                     $this->component(TypeEnum::OpenApi)->create($module->getName());
                 }
 
-                $this->component(TypeEnum::RoutesDelegator)->create($module->getName());
                 $this->component(TypeEnum::ConfigProvider)->create($module->getName());
 
                 if ($this->context->hasCore()) {

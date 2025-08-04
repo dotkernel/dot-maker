@@ -22,6 +22,7 @@ class Collection extends AbstractType implements FileInterface
     public function __invoke(): void
     {
         if (! $this->context->isApi()) {
+            Output::error('Collections can be created only in an API');
             return;
         }
 

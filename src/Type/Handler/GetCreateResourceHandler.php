@@ -62,8 +62,8 @@ class GetCreateResourceHandler extends AbstractType implements FileInterface
 
         $content = $this->render(
             $handler->getComponent(),
-            $this->fileSystem->entity($this->fileSystem->getModuleName())->getComponent(),
-            $this->fileSystem->createResourceForm($this->fileSystem->getModuleName())->getComponent(),
+            $this->fileSystem->entity($name)->getComponent(),
+            $this->fileSystem->createResourceForm($name)->getComponent(),
         );
 
         $handler->create($content);

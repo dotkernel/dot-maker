@@ -15,14 +15,89 @@ Dotkernel library for programmatically generating structured code files.
 Run the following command in your terminal:
 
 ```shell
-compose require-dev dotkernel/dot-maker
+composer require-dev dotkernel/dot-maker
 ```
 
 ## Setup
 
-TODO: document stub publishing and (optional) config creation
+Once installed, `dot-maker` is ready for usage, no need for extra configurations.
+
+### (Optional) Add `dot-maker` to composer.json
+
+Open `composer.json` and locate the `scripts` section.
+If it does not exist, create it at the document's root level.
+
+Register a new script by appending `"alias": "dot-maker"` to the `scripts` section, where **alias** can be any string you want; like, for example **make**.
+
+```json
+{
+    "scripts": {
+        "make": "dot-maker"
+    }
+}
+```
 
 ## Usage
+
+Invoke `dot-maker` by executing:
+
+- the bin file in your vendor directory, located at `./vendor/bin/dot-maker <component>`
+- the (optional) Composer script created at [Setup](#setup): `composer make <component>`
+
+where `<component>` is one of the following strings:
+
+- `collection`: Creates a resource Collection (API only)
+- `command`: Creates a CLI Command
+- `entity`: Creates a Doctrine Entity and the matching Repository
+- `form`: Creates a Laminas Form and the matching InputFilter
+- `handler`: Creates the specified request Handlers (and additional files, based on the project type)
+- `input-filter`: Creates an InputFilter
+- `middleware`: Creates a Middleware
+- `module`: Creates an entire Module
+- `repository`: Creates a Doctrine Repository and the matching Entity
+- `service`: Creates a Service and the matching ServiceInterface
+
+### Create Collection
+
+```shell
+./vendor/bin/dot-maker collection
+```
+
+### Create Command
+
+```shell
+./vendor/bin/dot-maker command
+```
+
+### Create Entity + Repository
+
+```shell
+./vendor/bin/dot-maker entity
+```
+
+### Create Form
+
+```shell
+./vendor/bin/dot-maker form
+```
+
+### Create Handler
+
+```shell
+./vendor/bin/dot-maker handler
+```
+
+### Create InputFilter
+
+```shell
+./vendor/bin/dot-maker input-filter
+```
+
+### Create Middleware
+
+```shell
+./vendor/bin/dot-maker middleware
+```
 
 ### Create Module
 
@@ -30,40 +105,14 @@ TODO: document stub publishing and (optional) config creation
 ./vendor/bin/dot-maker module
 ```
 
-TODO: add documentation for all commands that create types defined in src/Type/TypeEnum.php
+### Create Repository + Entity
 
-Dependency tree:
+```shell
+./vendor/bin/dot-maker repository
+```
 
-- Module
-  - *
-- Collection (API only)
-- Command
-  - Service
-- ConfigProvider
-  - Handler
-  - Service
-  - Entity
-- Entity
-  - Repository
-- Form
-  - InputFilter
-    - Input
-- Handler
-  - Form
-  - Service
-  - config
-- Input (just the directory?)
-  - InputFilter
-- InputFilter
-- Middleware
-  - Service
-- Repository
-  - Entity
-- RoutesDelegator
-  - Handler
-- Service
-  - Repository
-  - config
-- ServiceInterface
-  - Service
-- test (?)
+### Create Service + ServiceInterface
+
+```shell
+./vendor/bin/dot-maker service
+```

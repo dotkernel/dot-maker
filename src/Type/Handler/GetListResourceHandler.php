@@ -62,8 +62,8 @@ class GetListResourceHandler extends AbstractType implements FileInterface
 
         $content = $this->render(
             $handler->getComponent(),
-            $this->fileSystem->serviceInterface($this->fileSystem->getModuleName())->getComponent(),
-            $this->fileSystem->entity($this->fileSystem->getModuleName())->getComponent(),
+            $this->fileSystem->entity($name)->getComponent(),
+            $this->fileSystem->serviceInterface($name)->getComponent(),
         );
 
         $handler->create($content);
@@ -73,7 +73,7 @@ class GetListResourceHandler extends AbstractType implements FileInterface
         return $handler;
     }
 
-    public function render(Component $handler, Component $serviceInterface, Component $entity): string
+    public function render(Component $handler, Component $entity, Component $serviceInterface): string
     {
         $class = (new ClassFile($handler->getNamespace(), $handler->getClassName()))
             ->addInterface('RequestHandlerInterface')

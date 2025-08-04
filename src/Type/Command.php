@@ -65,7 +65,7 @@ class Command extends AbstractType implements FileInterface
 
         $content = $this->render(
             $command->getComponent(),
-            $this->fileSystem->serviceInterface($this->fileSystem->getModuleName())->getComponent(),
+            $this->fileSystem->serviceInterface($this->fileSystem->getModuleName()),
         );
 
         $command->create($content);
@@ -75,7 +75,7 @@ class Command extends AbstractType implements FileInterface
         return $command;
     }
 
-    public function render(Component $command, Component $serviceInterface): string
+    public function render(Component $command, File $serviceInterface): string
     {
         $defaultName = $this->getDefaultName($command);
 
@@ -86,8 +86,6 @@ class Command extends AbstractType implements FileInterface
             ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_INPUT_INPUTINTERFACE)
             ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_OUTPUT_OUTPUTINTERFACE)
             ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_STYLE_SYMFONYSTYLE)
-            ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
-            ->useClass($serviceInterface->getFqcn())
             ->addInject(
                 (new Inject('AsCommand'))
                     ->addArgument(self::wrap($defaultName), 'name')
@@ -101,11 +99,18 @@ class Command extends AbstractType implements FileInterface
             );
 
         $constructor = (new Constructor())
-            ->setBody('        parent::__construct(self::$defaultName);')
-            ->addInject(
-                (new Inject())->addArgument($serviceInterface->getClassString())
-            )
-            ->addPromotedPropertyFromComponent($serviceInterface);
+            ->setBody('        parent::__construct(self::$defaultName);');
+        if ($serviceInterface->exists()) {
+            $class
+                ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
+                ->useClass($serviceInterface->getComponent()->getFqcn());
+
+            $constructor
+                ->addInject(
+                    (new Inject())->addArgument($serviceInterface->getComponent()->getClassString())
+                )
+                ->addPromotedPropertyFromComponent($serviceInterface->getComponent());
+        }
         $class->addMethod($constructor);
 
         $configure = (new Method('configure'))

@@ -76,6 +76,7 @@ enum TypeEnum: string
             'entity'       => Entity::class,
             'form'         => Form::class,
             'handler'      => Handler::class,
+            'help'         => Help::class,
             'input-filter' => InputFilter::class,
             'middleware'   => Middleware::class,
             'module'       => Module::class,

@@ -10,7 +10,6 @@ use function sprintf;
 
 class Import
 {
-    // phpcs:disable Generic.Files.LineLength.TooLong
     public const DATETIMEIMMUTABLE                                           = 'DateTimeImmutable';
     public const DOCTRINE_ORM_MAPPING                                        = 'Doctrine\\ORM\\Mapping';
     public const DOCTRINE_ORM_MAPPING_DRIVER_ATTRIBUTEDRIVER                 = 'Doctrine\\ORM\\Mapping\\Driver\\AttributeDriver';
@@ -69,7 +68,6 @@ class Import
     public const SYMFONY_COMPONENT_CONSOLE_OUTPUT_OUTPUTINTERFACE            = 'Symfony\\Component\\Console\\Output\\OutputInterface';
     public const SYMFONY_COMPONENT_CONSOLE_STYLE_SYMFONYSTYLE                = 'Symfony\\Component\\Console\\Style\\SymfonyStyle';
     public const THROWABLE                                                   = 'Throwable';
-    // phpcs:enable Generic.Files.LineLength.TooLong
 
     public function __construct(
         private ContextInterface $context,
