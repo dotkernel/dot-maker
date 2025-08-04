@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Dot\Maker;
 
 use Dot\Maker\IO\Output;
+use Dot\Maker\Type\Help;
 use Dot\Maker\Type\Module;
 use Dot\Maker\Type\ModuleInterface;
 use Dot\Maker\Type\TypeEnum;
@@ -50,6 +51,11 @@ final readonly class Maker
         $fileSystem = new FileSystem($context);
         $instance   = new ($component)($fileSystem, $context, $config);
         assert($instance instanceof TypeInterface);
+
+        if ($instance instanceof Help) {
+            $instance();
+            exit;
+        }
 
         Output::info(sprintf('Detected project type: %s', $context->getProjectType()));
 
