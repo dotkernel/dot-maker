@@ -63,19 +63,6 @@ class Module extends AbstractType implements ModuleInterface
                     $this->component(TypeEnum::RoutesDelegator)->create($module->getName());
                 }
 
-                if (! $this->context->isApi()) {
-                    $entity = $this->fileSystem->entity($module->getName());
-
-                    $templates = $this->fileSystem->templates();
-                    if (! $templates->exists()) {
-                        $templates->create();
-                    }
-                    $templatesDir = $this->fileSystem->templatesDir($entity->getComponent()->toKebabCase());
-                    if (! $templatesDir->exists()) {
-                        $templatesDir->create();
-                    }
-                }
-
                 Output::writeLine('');
 
                 if ($this->context->isApi()) {

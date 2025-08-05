@@ -15,19 +15,18 @@ class Help extends AbstractType
 
 Usage: ./vendor/bin/dot-maker <component>
 
-Where <component> must be one of the following strings:
-
- - collection
- - command
- - command
- - entity
- - form
- - handler
- - input-filter
- - middleware
- - module
- - repository
- - service
+Where <component> must be replaced with one of the following strings:
+- collection
+- command
+- command
+- entity
+- form
+- handler
+- input-filter
+- middleware
+- module
+- repository
+- service
 HELP);
     }
 }

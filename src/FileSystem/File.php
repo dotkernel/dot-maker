@@ -21,8 +21,9 @@ class File
         private readonly Directory $parentDirectory,
         string $namespace,
         string $className,
+        string $extension = 'php',
     ) {
-        $this->name      = sprintf('%s.php', $className);
+        $this->name      = sprintf('%s.%s', $className, $extension);
         $this->path      = sprintf('%s/%s', $parentDirectory->getPath(), $this->name);
         $this->component = new Component($namespace, $className);
     }

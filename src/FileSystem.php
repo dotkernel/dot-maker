@@ -425,6 +425,16 @@ class FileSystem
         );
     }
 
+    public function templateFile(string $subDirectory, string $name): File
+    {
+        return new File(
+            $this->templatesDir($subDirectory),
+            '',
+            $name,
+            'html.twig'
+        );
+    }
+
     public function templates(string $name = 'templates'): Directory
     {
         return new Directory($name, sprintf('%s/src/%s', $this->rootDir, $this->moduleName));
