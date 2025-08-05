@@ -8,6 +8,8 @@ use Dot\Maker\VisibilityEnum;
 
 interface MethodInterface
 {
+    public function __toString(): string;
+
     public function addInject(Inject $inject): self;
 
     public function addParameter(ParameterInterface $parameter): self;

@@ -63,14 +63,14 @@ class Parameter implements ParameterInterface
         return $parameter;
     }
 
-    public function setDefault(string $default): self
+    public function setDefault(string $default): static
     {
         $this->default = $default;
 
         return $this;
     }
 
-    public function setNullable(bool $nullable): self
+    public function setNullable(bool $nullable): static
     {
         $this->nullable = $nullable;
 

@@ -37,7 +37,7 @@ class Method implements MethodInterface
         return $this->render();
     }
 
-    public function appendBody(string $string, int $spaces = 8, bool $newLine = true): self
+    public function appendBody(string $string, int $spaces = 8, bool $newLine = true): static
     {
         if ($newLine === true) {
             $this->body .= PHP_EOL . str_repeat(' ', $spaces) . $string;
@@ -48,21 +48,21 @@ class Method implements MethodInterface
         return $this;
     }
 
-    public function addInject(Inject $inject): self
+    public function addInject(Inject $inject): static
     {
         $this->injects[] = $inject;
 
         return $this;
     }
 
-    public function addParameter(ParameterInterface $parameter): self
+    public function addParameter(ParameterInterface $parameter): static
     {
         $this->parameters[] = $parameter;
 
         return $this;
     }
 
-    public function commentBody(): self
+    public function commentBody(): static
     {
         $this->body = str_replace("\n", "\n// ", $this->body);
 
@@ -74,7 +74,7 @@ class Method implements MethodInterface
         return $this->name;
     }
 
-    public function prependBody(string $bodyLine, int $spaces = 8): self
+    public function prependBody(string $bodyLine, int $spaces = 8): static
     {
         $this->body = PHP_EOL . str_repeat(' ', $spaces) . $bodyLine . $this->body;
 
@@ -190,35 +190,35 @@ MTD;
         return sprintf(': %s', $this->returnType);
     }
 
-    public function setBody(string $body): self
+    public function setBody(string $body): static
     {
         $this->body = PHP_EOL . $body;
 
         return $this;
     }
 
-    public function setComment(string $comment): self
+    public function setComment(string $comment): static
     {
         $this->comment = $comment;
 
         return $this;
     }
 
-    public function setNullable(bool $nullable): self
+    public function setNullable(bool $nullable): static
     {
         $this->nullable = $nullable;
 
         return $this;
     }
 
-    public function setReturnType(string $returnType): self
+    public function setReturnType(string $returnType): static
     {
         $this->returnType = $returnType;
 
         return $this;
     }
 
-    public function setVisibility(VisibilityEnum $visibility): self
+    public function setVisibility(VisibilityEnum $visibility): static
     {
         $this->visibility = $visibility;
 

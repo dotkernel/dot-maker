@@ -23,7 +23,7 @@ class Getter extends Method
         return <<<GTR
 {$this->visibility->value} function $this->name(): $nullable{$this->returnType}
     {
-        return \$this->{$this->target->name};
+        return \$this->{$this->target->getName()};
     }
 GTR;
     }

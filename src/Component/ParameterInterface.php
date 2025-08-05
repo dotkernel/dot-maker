@@ -9,6 +9,8 @@ use Dot\Maker\Component\Method\Setter;
 
 interface ParameterInterface
 {
+    public function __toString(): string;
+
     public function getGetter(): Getter;
 
     public function getName(): string;

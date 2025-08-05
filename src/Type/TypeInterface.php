@@ -16,7 +16,7 @@ interface TypeInterface
 
     public function getFileSystem(): FileSystem;
 
-    public function getModule(): ?Module;
+    public function getModule(): ?ModuleInterface;
 
     public function hasModule(): bool;
 

@@ -20,7 +20,7 @@ abstract class AbstractType implements TypeInterface
         protected FileSystem $fileSystem,
         protected ContextInterface $context,
         protected Config $config,
-        protected ?Module $module = null,
+        protected ?ModuleInterface $module = null,
     ) {
         $this->import = new Import($context);
     }
@@ -40,14 +40,14 @@ abstract class AbstractType implements TypeInterface
         return $this->fileSystem;
     }
 
-    public function getModule(): ?Module
+    public function getModule(): ?ModuleInterface
     {
         return $this->module;
     }
 
     public function hasModule(): bool
     {
-        return $this->module instanceof Module;
+        return $this->module instanceof ModuleInterface;
     }
 
     public function component(TypeEnum $typeEnum): FileInterface

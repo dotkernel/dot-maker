@@ -38,6 +38,6 @@ CFG,
     public function testWillInstantiate(): void
     {
         $config = new Config($this->configPath);
-        $this->assertInstanceOf(Config::class, $config);
+        $this->assertContainsOnlyInstancesOf(Config::class, [$config]);
     }
 }

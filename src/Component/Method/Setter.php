@@ -23,9 +23,9 @@ class Setter extends Method
         $nullable = $this->nullable ? '?' : '';
 
         return <<<STR
-{$this->visibility->value} function $this->name($nullable$this->target->type \$$this->target->name): {$this->returnType}
+{$this->visibility->value} function $this->name($nullable$this->target->getType() \$$this->target->getName()): {$this->returnType}
     {
-        \$this->$this->target->name = \$$this->target->name;
+        \$this->$this->target->getName() = \$$this->target->getName();
 
         return \$this;
     }
