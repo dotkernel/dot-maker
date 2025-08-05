@@ -20,7 +20,7 @@ use function trim;
 
 use const PHP_SAPI;
 
-final readonly class Maker
+final class Maker
 {
     public function __construct(
         private string $composerPath,
