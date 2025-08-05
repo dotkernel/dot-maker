@@ -13,7 +13,6 @@ use Dot\Maker\Type\TypeInterface;
 
 use function array_shift;
 use function assert;
-use function count;
 use function is_callable;
 use function sprintf;
 use function strtolower;
@@ -36,14 +35,11 @@ final readonly class Maker
         }
 
         array_shift($arguments);
-        if (count($arguments) === 0) {
-            Output::error('dot-maker must be called with at least one parameter', true);
-        }
 
-        $argument  = trim(strtolower(array_shift($arguments)));
+        $argument  = trim(strtolower((string) array_shift($arguments)));
         $component = TypeEnum::getClass($argument);
         if ($component === null) {
-            Output::error(sprintf('unknown component: "%s"', $argument), true);
+            Output::error(sprintf('Unknown component: "%s"', $argument), true);
         }
 
         $config     = new Config($this->configPath);

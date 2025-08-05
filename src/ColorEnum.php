@@ -9,6 +9,7 @@ use function sprintf;
 enum ColorEnum: int
 {
     case Default                 = 0;
+    case Bold                    = 1;
     case ForegroundBlack         = 30;
     case ForegroundRed           = 31;
     case ForegroundGreen         = 32;

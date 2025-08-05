@@ -10,6 +10,24 @@ class Help extends AbstractType
 {
     public function __invoke(): void
     {
-        Output::info('WIP');
+        Output::info('dot-maker');
+        Output::writeLine(<<<HELP
+
+Usage: ./vendor/bin/dot-maker <component>
+
+Where <component> must be one of the following strings:
+
+ - collection
+ - command
+ - command
+ - entity
+ - form
+ - handler
+ - input-filter
+ - middleware
+ - module
+ - repository
+ - service
+HELP);
     }
 }

@@ -70,13 +70,16 @@ enum TypeEnum: string
 
     public static function getClass(string $name): ?string
     {
+        if ($name === '') {
+            return Help::class;
+        }
+
         return match (strtolower($name)) {
             'collection'   => Collection::class,
             'command'      => Command::class,
             'entity'       => Entity::class,
             'form'         => Form::class,
             'handler'      => Handler::class,
-            'help'         => Help::class,
             'input-filter' => InputFilter::class,
             'middleware'   => Middleware::class,
             'module'       => Module::class,

@@ -17,6 +17,10 @@ class Module extends AbstractType implements ModuleInterface
     {
         while (true) {
             $name = ucfirst(Input::prompt('Enter new module name: '));
+            if ($name === '') {
+                return;
+            }
+
             if (! $this->isValid($name)) {
                 Output::error(sprintf('Invalid module name: "%s"', $name));
                 continue;
