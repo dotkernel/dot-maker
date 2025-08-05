@@ -22,6 +22,7 @@ class Setter extends Method
     {
         $nullable = $this->nullable ? '?' : '';
 
+        // phpcs:disable Generic.Files.LineLength.TooLong
         return <<<STR
 {$this->visibility->value} function $this->name($nullable$this->target->getType() \$$this->target->getName()): {$this->returnType}
     {
@@ -30,6 +31,7 @@ class Setter extends Method
         return \$this;
     }
 STR;
+        // phpcs:enable Generic.Files.LineLength.TooLong
     }
 
     public function setTarget(ParameterInterface $target): self
