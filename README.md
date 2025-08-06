@@ -2,6 +2,12 @@
 
 Dotkernel library for programmatically generating structured code files.
 
+## Documentation
+
+Documentation is available at: https://docs.dotkernel.org/dot-maker/.
+
+## Badges
+
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-maker)
 ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-maker/1.0)
 
@@ -9,6 +15,10 @@ Dotkernel library for programmatically generating structured code files.
 [![GitHub forks](https://img.shields.io/github/forks/dotkernel/dot-maker)](https://github.com/dotkernel/dot-maker/network)
 [![GitHub stars](https://img.shields.io/github/stars/dotkernel/dot-maker)](https://github.com/dotkernel/dot-maker/stargazers)
 [![GitHub license](https://img.shields.io/github/license/dotkernel/dot-maker)](https://github.com/dotkernel/dot-maker/blob/1.0/LICENSE.md)
+
+[![Build Static](https://github.com/dotkernel/dot-maker/actions/workflows/continuous-integration.yml/badge.svg?branch=1.0)](https://github.com/dotkernel/dot-maker/actions/workflows/continuous-integration.yml)
+[![codecov](https://codecov.io/gh/dotkernel/dot-maker/graph/badge.svg?token=KT9UA402B4)](https://codecov.io/gh/dotkernel/dot-maker)
+[![PHPStan](https://github.com/dotkernel/dot-maker/actions/workflows/static-analysis.yml/badge.svg?branch=1.0)](https://github.com/dotkernel/dot-maker/actions/workflows/static-analysis.yml)
 
 ## Installation
 
@@ -46,10 +56,10 @@ Invoke `dot-maker` by executing:
 
 where `<component>` is one of the following strings:
 
-- `collection`: Creates a resource Collection (API only)
+- `collection`: Creates a resource Collection (only when API)
 - `command`: Creates a CLI Command
 - `entity`: Creates a Doctrine Entity and the matching Repository
-- `form`: Creates a Laminas Form and the matching InputFilter
+- `form`: Creates a Laminas Form and the matching InputFilter (except when API)
 - `handler`: Creates the specified request Handlers (and additional files, based on the project type)
 - `input-filter`: Creates an InputFilter
 - `middleware`: Creates a Middleware
