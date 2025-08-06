@@ -137,7 +137,7 @@ COMM)
             'driver' => [
                 'orm_default' => [
                     'drivers' => [
-                        'Core\\{$entity->getClassName()}\\Entity' => '{$entity->getClassName()}Entities',
+                        '{$entity->getNamespace()}' => '{$entity->getClassName()}Entities',
                     ],
                 ],
                 '{$entity->getClassName()}Entities' => [
