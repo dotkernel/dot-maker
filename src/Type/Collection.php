@@ -60,7 +60,7 @@ class Collection extends AbstractType implements FileInterface
 
         $collection->create($content);
 
-        Output::success(sprintf('Created Collection "%s"', $collection->getPath()));
+        Output::success(sprintf('Created Collection: %s', $collection->getPath()));
 
         return $collection;
     }

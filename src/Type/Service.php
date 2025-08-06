@@ -67,7 +67,7 @@ class Service extends AbstractType implements FileInterface
 
         $service->create($content);
 
-        Output::success(sprintf('Created Service "%s"', $service->getPath()));
+        Output::success(sprintf('Created Service: %s', $service->getPath()));
 
         return $service;
     }

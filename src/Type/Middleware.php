@@ -66,7 +66,7 @@ class Middleware extends AbstractType implements FileInterface
 
         $this->addMessage(Message::addMiddlewareToPipeline($middleware->getComponent()->getFqcn()));
 
-        Output::success(sprintf('Created Middleware "%s"', $middleware->getPath()));
+        Output::success(sprintf('Created Middleware: %s', $middleware->getPath()));
 
         return $middleware;
     }

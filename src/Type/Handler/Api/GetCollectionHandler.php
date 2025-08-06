@@ -68,7 +68,7 @@ class GetCollectionHandler extends AbstractType implements FileInterface
 
         $handler->create($content);
 
-        Output::success(sprintf('Created Handler "%s"', $handler->getPath()));
+        Output::success(sprintf('Created Handler: %s', $handler->getPath()));
 
         return $handler;
     }

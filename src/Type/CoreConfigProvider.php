@@ -52,7 +52,7 @@ class CoreConfigProvider extends AbstractType implements FileInterface
             ->addMessage(Message::addCoreConfigProviderToConfig($configProvider->getComponent()->getFqcn()))
             ->addMessage(Message::addCoreModuleToComposer($this->fileSystem->getModuleName()));
 
-        Output::success(sprintf('Created Core ConfigProvider "%s"', $configProvider->getPath()));
+        Output::success(sprintf('Created Core ConfigProvider: %s', $configProvider->getPath()));
 
         return $configProvider;
     }

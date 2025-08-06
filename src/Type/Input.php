@@ -62,7 +62,7 @@ class Input extends AbstractType implements FileInterface
 
         $input->create($content);
 
-        Output::success(sprintf('Created Input "%s"', $input->getPath()));
+        Output::success(sprintf('Created Input: %s', $input->getPath()));
 
         return $input;
     }

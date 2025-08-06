@@ -60,18 +60,17 @@ class GetResourceHandler extends AbstractType implements FileInterface
 
         $content = $this->render(
             $handler->getComponent(),
-            $this->fileSystem->serviceInterface($name)->getComponent(),
             $this->fileSystem->entity($name)->getComponent(),
         );
 
         $handler->create($content);
 
-        Output::success(sprintf('Created Handler "%s"', $handler->getPath()));
+        Output::success(sprintf('Created Handler: %s', $handler->getPath()));
 
         return $handler;
     }
 
-    public function render(Component $handler, Component $serviceInterface, Component $entity): string
+    public function render(Component $handler, Component $entity): string
     {
         $class = (new ClassFile($handler->getNamespace(), $handler->getClassName()))
             ->setExtends('AbstractHandler')

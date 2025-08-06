@@ -67,7 +67,7 @@ class Entity extends AbstractType implements FileInterface
 
         $this->addMessage(Message::generateMigration());
 
-        Output::success(sprintf('Created Entity "%s"', $entity->getPath()));
+        Output::success(sprintf('Created Entity: %s', $entity->getPath()));
 
         return $entity;
     }

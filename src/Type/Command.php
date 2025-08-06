@@ -73,7 +73,7 @@ class Command extends AbstractType implements FileInterface
 
         $this->addMessage(Message::addCommandToConfig($command->getComponent()->getFqcn()));
 
-        Output::success(sprintf('Created Command "%s"', $command->getPath()));
+        Output::success(sprintf('Created Command: %s', $command->getPath()));
 
         return $command;
     }

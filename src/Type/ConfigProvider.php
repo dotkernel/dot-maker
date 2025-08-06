@@ -94,7 +94,7 @@ class ConfigProvider extends AbstractType implements FileInterface
                 Message::addModuleToComposer($this->context->getRootNamespace(), $this->fileSystem->getModuleName())
             );
 
-        Output::success(sprintf('Created ConfigProvider "%s"', $configProvider->getPath()));
+        Output::success(sprintf('Created ConfigProvider: %s', $configProvider->getPath()));
 
         return $configProvider;
     }

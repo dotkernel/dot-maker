@@ -63,7 +63,7 @@ class CreateResourceInputFilter extends AbstractType implements FileInterface
 
         $inputFilter->create($content);
 
-        Output::success(sprintf('Created InputFilter "%s"', $inputFilter->getPath()));
+        Output::success(sprintf('Created InputFilter: %s', $inputFilter->getPath()));
 
         return $inputFilter;
     }

@@ -68,7 +68,7 @@ class DeleteResourceForm extends AbstractType implements FileInterface
 
         $form->create($content);
 
-        Output::success(sprintf('Created Form "%s"', $form->getPath()));
+        Output::success(sprintf('Created Form: %s', $form->getPath()));
 
         return $form;
     }

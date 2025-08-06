@@ -63,7 +63,7 @@ class Repository extends AbstractType implements FileInterface
 
         $repository->create($content);
 
-        Output::success(sprintf('Created Repository "%s"', $repository->getPath()));
+        Output::success(sprintf('Created Repository: %s', $repository->getPath()));
 
         return $repository;
     }

@@ -63,7 +63,7 @@ class RoutesDelegator extends AbstractType implements FileInterface
 
         $routesDelegator->create($content);
 
-        Output::success(sprintf('Created RoutesDelegator "%s"', $routesDelegator->getPath()));
+        Output::success(sprintf('Created RoutesDelegator: %s', $routesDelegator->getPath()));
 
         return $routesDelegator;
     }

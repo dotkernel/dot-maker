@@ -40,7 +40,7 @@ class Module extends AbstractType implements ModuleInterface
             if (! $module->create()) {
                 Output::error(sprintf('Could not create directory "%s"', $module->getPath()), true);
             }
-            Output::success(sprintf('Created directory: "%s"', $module->getPath()));
+            Output::success(sprintf('Created directory: %s', $module->getPath()));
 
             $this->fileSystem->setModuleName($name);
 
