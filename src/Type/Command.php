@@ -31,7 +31,7 @@ class Command extends AbstractType implements FileInterface
     public function __invoke(): void
     {
         while (true) {
-            $name = ucfirst(Input::prompt('Enter new Command name: '));
+            $name = ucfirst(Input::prompt('Command name: '));
             if ($name === '') {
                 return;
             }

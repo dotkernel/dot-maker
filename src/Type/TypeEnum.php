@@ -75,18 +75,19 @@ enum TypeEnum: string
         }
 
         return match (strtolower($name)) {
-            'collection'   => Collection::class,
-            'command'      => Command::class,
-            'entity'       => Entity::class,
-            'form'         => Form::class,
-            'handler'      => Handler::class,
-            'input'        => Input::class,
-            'input-filter' => InputFilter::class,
-            'middleware'   => Middleware::class,
-            'module'       => Module::class,
-            'repository'   => Repository::class,
-            'service'      => Service::class,
-            default        => null,
+            'collection'        => Collection::class,
+            'command'           => Command::class,
+            'entity'            => Entity::class,
+            'form'              => Form::class,
+            'handler'           => Handler::class,
+            'input'             => Input::class,
+            'input-filter'      => InputFilter::class,
+            'middleware'        => Middleware::class,
+            'module'            => Module::class,
+            'repository'        => Repository::class,
+            'service'           => Service::class,
+            'service-interface' => ServiceInterface::class,
+            default             => null,
         };
     }
 }

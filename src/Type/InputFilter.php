@@ -18,7 +18,7 @@ class InputFilter extends AbstractType implements FileInterface
 {
     public function __invoke(): void
     {
-        $name = ucfirst(Input::prompt('Enter new InputFilter name: '));
+        $name = ucfirst(Input::prompt('InputFilter name: '));
         if ($name === '') {
             return;
         }

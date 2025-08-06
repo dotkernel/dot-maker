@@ -23,7 +23,7 @@ class Form extends AbstractType implements FileInterface
             return;
         }
 
-        $name = ucfirst(Input::prompt('Enter new Form name: '));
+        $name = ucfirst(Input::prompt('Form name: '));
         if ($name === '') {
             return;
         }

@@ -49,13 +49,13 @@ class Output
         $exit && exit(self::SUCCESS);
     }
 
-    public static function write(string $message, bool $exit = false): void
+    public static function write(string $message = '', bool $exit = false): void
     {
         fwrite(STDOUT, $message);
         $exit && exit(self::SUCCESS);
     }
 
-    public static function writeLine(string $message, bool $exit = false): void
+    public static function writeLine(string $message = '', bool $exit = false): void
     {
         fwrite(STDOUT, $message . PHP_EOL);
         $exit && exit(self::SUCCESS);

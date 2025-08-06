@@ -17,6 +17,7 @@ nav:
           - Create Command: v1/component/command.md
           - Create Entity: v1/component/entity.md
           - Create Form: v1/component/form.md
+          - Create Handler: v1/component/handler.md
           - Create Input: v1/component/input.md
           - Create InputFilter: v1/component/input-filter.md
           - Create Middleware: v1/component/middleware.md

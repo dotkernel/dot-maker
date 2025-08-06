@@ -28,7 +28,7 @@ class Service extends AbstractType implements FileInterface
     public function __invoke(): void
     {
         while (true) {
-            $name = ucfirst(Input::prompt('Enter new Service name: '));
+            $name = ucfirst(Input::prompt('Service name: '));
             if ($name === '') {
                 break;
             }

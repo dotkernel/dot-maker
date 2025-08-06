@@ -19,7 +19,7 @@ class Handler extends AbstractType implements FileInterface
     public function __invoke(): void
     {
         while (true) {
-            $name = ucfirst(Input::prompt('Enter new Handler name: '));
+            $name = ucfirst(Input::prompt('Handler name: '));
             if ($name === '') {
                 break;
             }

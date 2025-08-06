@@ -28,7 +28,7 @@ class Middleware extends AbstractType implements FileInterface
     public function __invoke(): void
     {
         while (true) {
-            $name = ucfirst(Input::prompt('Enter new Middleware name: '));
+            $name = ucfirst(Input::prompt('Middleware name: '));
             if ($name === '') {
                 return;
             }

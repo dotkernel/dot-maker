@@ -26,7 +26,7 @@ class Repository extends AbstractType implements FileInterface
     public function __invoke(): void
     {
         while (true) {
-            $name = ucfirst(Input::prompt('Enter new Repository name: '));
+            $name = ucfirst(Input::prompt('Repository name: '));
             if ($name === '') {
                 return;
             }

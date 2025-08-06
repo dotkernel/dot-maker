@@ -27,7 +27,7 @@ class Collection extends AbstractType implements FileInterface
         }
 
         while (true) {
-            $name = ucfirst(Input::prompt('Enter new Collection name: '));
+            $name = ucfirst(Input::prompt('Collection name: '));
             if ($name === '') {
                 return;
             }

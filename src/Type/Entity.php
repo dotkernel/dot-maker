@@ -28,7 +28,7 @@ class Entity extends AbstractType implements FileInterface
     public function __invoke(): void
     {
         while (true) {
-            $name = ucfirst(Input::prompt('Enter new Entity name: '));
+            $name = ucfirst(Input::prompt('Entity name: '));
             if ($name === '') {
                 return;
             }

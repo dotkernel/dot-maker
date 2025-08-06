@@ -21,7 +21,7 @@ class Module extends AbstractType implements ModuleInterface
     public function __invoke(): void
     {
         while (true) {
-            $name = ucfirst(Input::prompt('Enter new module name: '));
+            $name = ucfirst(Input::prompt('New module name: '));
             if ($name === '') {
                 return;
             }
@@ -103,7 +103,7 @@ class Module extends AbstractType implements ModuleInterface
     public function initExisting(): self
     {
         while (true) {
-            $name = ucfirst(Input::prompt('Enter existing module name: '));
+            $name = ucfirst(Input::prompt('Existing module name: '));
             if (! $this->isValid($name)) {
                 Output::error(sprintf('Invalid module name: "%s"', $name));
                 continue;
