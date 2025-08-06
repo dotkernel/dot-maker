@@ -1,6 +1,6 @@
 # dot-maker
 
-Dotkernel library for programmatically generating structured code files.
+Programmatically generate Dotkernel projects files and directories.
 
 ## Documentation
 
@@ -32,12 +32,12 @@ composer require-dev dotkernel/dot-maker
 
 Once installed, `dot-maker` is ready for usage, no need for extra configurations.
 
-### (Optional) Add `dot-maker` to composer.json
+### (Optional) Add dot-maker to composer.json
 
-Open `composer.json` and locate the `scripts` section.
+Open your project's `composer.json` and locate the `scripts` section.
 If it does not exist, create it at the document's root level.
 
-Register a new script by appending `"alias": "dot-maker"` to the `scripts` section, where **alias** can be any string you want; like, for example **make**.
+Register a new script by appending `"alias": "dot-maker"` to the `scripts` section, where **alias** can be any string you want; like, for example, **make**.
 
 ```json
 {
@@ -51,78 +51,7 @@ Register a new script by appending `"alias": "dot-maker"` to the `scripts` secti
 
 Invoke `dot-maker` by executing:
 
-- the bin file in your vendor directory, located at `./vendor/bin/dot-maker <component>`
-- the (optional) Composer script created at [Setup](#setup): `composer make <component>`
+- the bin file in your vendor directory `./vendor/bin/dot-maker`
+- the (optional) Composer script created during [Setup](#setup): `composer make`
 
-where `<component>` is one of the following strings:
-
-- `collection`: Creates a resource Collection (only when API)
-- `command`: Creates a CLI Command
-- `entity`: Creates a Doctrine Entity and the matching Repository
-- `form`: Creates a Laminas Form and the matching InputFilter (except when API)
-- `handler`: Creates the specified request Handlers (and additional files, based on the project type)
-- `input-filter`: Creates an InputFilter
-- `middleware`: Creates a Middleware
-- `module`: Creates an entire Module
-- `repository`: Creates a Doctrine Repository and the matching Entity
-- `service`: Creates a Service and the matching ServiceInterface
-
-### Create Collection
-
-```shell
-./vendor/bin/dot-maker collection
-```
-
-### Create Command
-
-```shell
-./vendor/bin/dot-maker command
-```
-
-### Create Entity + Repository
-
-```shell
-./vendor/bin/dot-maker entity
-```
-
-### Create Form
-
-```shell
-./vendor/bin/dot-maker form
-```
-
-### Create Handler
-
-```shell
-./vendor/bin/dot-maker handler
-```
-
-### Create InputFilter
-
-```shell
-./vendor/bin/dot-maker input-filter
-```
-
-### Create Middleware
-
-```shell
-./vendor/bin/dot-maker middleware
-```
-
-### Create Module
-
-```shell
-./vendor/bin/dot-maker module
-```
-
-### Create Repository + Entity
-
-```shell
-./vendor/bin/dot-maker repository
-```
-
-### Create Service + ServiceInterface
-
-```shell
-./vendor/bin/dot-maker service
-```
+Follow the instructions on the screen to create a specific Dotkernel project component.

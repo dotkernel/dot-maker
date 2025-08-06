@@ -80,6 +80,7 @@ enum TypeEnum: string
             'entity'       => Entity::class,
             'form'         => Form::class,
             'handler'      => Handler::class,
+            'input'        => Input::class,
             'input-filter' => InputFilter::class,
             'middleware'   => Middleware::class,
             'module'       => Module::class,

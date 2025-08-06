@@ -3,5 +3,5 @@
 Install `dotkernel/dot-maker` by executing the following Composer command:
 
 ```shell
-composer require dotkernel/dot-maker
+composer require-dev dotkernel/dot-maker
 ```

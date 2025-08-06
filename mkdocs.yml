@@ -10,8 +10,22 @@ nav:
   - v1:
       - Overview: v1/overview.md
       - Installation: v1/installation.md
+      - Setup: v1/setup.md
+      - Usage: v1/usage.md
+      - Component:
+          - Create Collection: v1/component/collection.md
+          - Create Command: v1/component/command.md
+          - Create Entity: v1/component/entity.md
+          - Create Form: v1/component/form.md
+          - Create Input: v1/component/input.md
+          - Create InputFilter: v1/component/input-filter.md
+          - Create Middleware: v1/component/middleware.md
+          - Create Module: v1/component/module.md
+          - Create Repository: v1/component/repository.md
+          - Create Service: v1/component/service.md
+          - Create ServiceInterface: v1/component/service-interface.md
 site_name: dot-maker
-site_description: "Dotkernel library for programmatically generating structured code files"
+site_description: "Programmatically generate Dotkernel projects files and directories."
 repo_url: "https://github.com/dotkernel/dot-maker"
 plugins:
   - search
