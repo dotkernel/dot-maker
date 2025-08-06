@@ -137,7 +137,7 @@ COMM)
             'driver' => [
                 'orm_default' => [
                     'drivers' => [
-                        '{$this->fileSystem->getModuleName()}\\{$entity->getClassName()}\\Entity' => '{$entity->getClassName()}Entities',
+                        'Core\\{$entity->getClassName()}\\Entity' => '{$entity->getClassName()}Entities',
                     ],
                 ],
                 '{$entity->getClassName()}Entities' => [
