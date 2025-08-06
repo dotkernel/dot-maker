@@ -2,7 +2,7 @@
 
 > Collections can be created only in APIs.
 
-To create a collection, use either of the following commands:
+To create a Collection, use either of the following commands:
 
 ```shell
 composer make collection
@@ -14,12 +14,12 @@ OR
 ./vendor/bin/dot-maker collection
 ```
 
-The command must identify in which module you want to create the new collection.
+`dot-maker` needs to determine in which module you want to create the new Collection.
 To determine this, it will prompt you to enter the name of an existing module:
 
 > Existing module name:
 
-If you input a module name which does not exist (like, "NonExistentModule"), the command throws an error:
+If you input a module name which does not exist (like, "NonExistentModule"), an error will be thrown:
 
 > Module "NonExistentModule" not found
 
@@ -27,24 +27,24 @@ and will keep prompting for a valid module name until you provide one.
 
 ---
 
-Once the target module has been identified, the command will prompt you to input a name for the collection:
+Once the target module has been identified, you will be prompted to input a name for the Collection:
 
 > Collection name:
 
 **The name must contain only letters and numbers.**
 
-If you leave the name blank, the command will exit.
+If you leave the name blank, the process will exit.
 
-If you input an invalid name (like, "."), the command throws an error:
+If you input an invalid name (like, "."), an error will be thrown:
 
 > Invalid Collection name: "."
 
-If you input the name of an existing collection (like, "ExistingCollection"), the command throws an error:
+If you input the name of an existing Collection (like, "ExistingCollection"), an error will be thrown:
 
 > Class "ExistingCollection" already exists at /path/to/project/src/ExistingModule/src/Collection/ExistingCollection.php
 
-If you input a valid name, the command will create the collection and output a success message:
+If you input a valid name, `dot-maker` will create the Collection and output a success message:
 
 > Created Collection: /path/to/project/src/ExistingModule/src/Collection/NewCollection.php
 
-To allow the creation of multiple collections, the command will loop until you leave the name blank.
+To allow the creation of multiple Collections, the process will loop until you leave the name blank.
