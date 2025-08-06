@@ -6,13 +6,18 @@ namespace Dot\Maker\Type;
 
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
+use Dot\Maker\Message;
 use Throwable;
 
+use function count;
+use function ksort;
 use function sprintf;
 use function ucfirst;
 
 class Module extends AbstractType implements ModuleInterface
 {
+    protected array $messages = [];
+
     public function __invoke(): void
     {
         while (true) {
@@ -50,12 +55,12 @@ class Module extends AbstractType implements ModuleInterface
                     $this->component(TypeEnum::ServiceInterface)->create($module->getName());
                 }
 
-                if (Input::confirm('Create middleware?')) {
-                    $this->component(TypeEnum::Middleware)->create($module->getName());
-                }
-
                 if (Input::confirm('Create command?')) {
                     $this->component(TypeEnum::Command)->create($module->getName());
+                }
+
+                if (Input::confirm('Create middleware?')) {
+                    $this->component(TypeEnum::Middleware)->create($module->getName());
                 }
 
                 if (Input::confirm('Create handler?')) {
@@ -74,12 +79,25 @@ class Module extends AbstractType implements ModuleInterface
                 if ($this->context->hasCore()) {
                     $this->component(TypeEnum::CoreConfigProvider)->create($module->getName());
                 }
+
+                $this
+                    ->addMessage(Message::dumpComposerAutoloader())
+                    ->addMessage(new Message('Start adding logic to the new module files.'));
+
+                $this->renderMessages();
             } catch (Throwable $exception) {
                 Output::error($exception->getMessage());
             }
 
             break;
         }
+    }
+
+    public function addMessage(Message $message): static
+    {
+        $this->messages[$message->getPriority()] = (string) $message;
+
+        return $this;
     }
 
     public function initExisting(): self
@@ -108,5 +126,21 @@ class Module extends AbstractType implements ModuleInterface
     public function isModule(): bool
     {
         return true;
+    }
+
+    public function renderMessages(): void
+    {
+        if (count($this->messages) === 0) {
+            return;
+        }
+
+        Output::writeLine('');
+        Output::warning('Next steps:');
+        Output::warning('===========');
+
+        ksort($this->messages);
+        foreach ($this->messages as $message) {
+            Output::writeLine(sprintf('- %s', $message));
+        }
     }
 }

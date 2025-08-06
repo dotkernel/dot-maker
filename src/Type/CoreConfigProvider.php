@@ -12,6 +12,7 @@ use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Output;
+use Dot\Maker\Message;
 use Dot\Maker\VisibilityEnum;
 use Throwable;
 
@@ -46,6 +47,10 @@ class CoreConfigProvider extends AbstractType implements FileInterface
         );
 
         $configProvider->create($content);
+
+        $this
+            ->addMessage(Message::addCoreConfigProviderToConfig($configProvider->getComponent()->getFqcn()))
+            ->addMessage(Message::addCoreModuleToComposer($this->fileSystem->getModuleName()));
 
         Output::success(sprintf('Created Core ConfigProvider "%s"', $configProvider->getPath()));
 

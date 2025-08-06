@@ -17,6 +17,7 @@ use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
+use Dot\Maker\Message;
 use Throwable;
 
 use function sprintf;
@@ -62,6 +63,8 @@ class Middleware extends AbstractType implements FileInterface
         );
 
         $middleware->create($content);
+
+        $this->addMessage(Message::addMiddlewareToPipeline($middleware->getComponent()->getFqcn()));
 
         Output::success(sprintf('Created Middleware "%s"', $middleware->getPath()));
 

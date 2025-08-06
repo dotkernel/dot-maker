@@ -8,6 +8,7 @@ use Dot\Maker\Component\Import;
 use Dot\Maker\Config;
 use Dot\Maker\ContextInterface;
 use Dot\Maker\FileSystem;
+use Dot\Maker\Message;
 
 use function preg_match;
 use function sprintf;
@@ -23,6 +24,13 @@ abstract class AbstractType implements TypeInterface
         protected ?ModuleInterface $module = null,
     ) {
         $this->import = new Import($context);
+    }
+
+    public function addMessage(Message $message): static
+    {
+        $this->module->addMessage($message);
+
+        return $this;
     }
 
     public function getConfig(): Config
@@ -70,7 +78,7 @@ abstract class AbstractType implements TypeInterface
         return (bool) preg_match('/^[a-z0-9]+$/i', $name);
     }
 
-    public function setModule(?ModuleInterface $module): self
+    public function setModule(?ModuleInterface $module): static
     {
         $this->module = $module;
 

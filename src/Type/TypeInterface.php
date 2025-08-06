@@ -7,9 +7,12 @@ namespace Dot\Maker\Type;
 use Dot\Maker\Config;
 use Dot\Maker\ContextInterface;
 use Dot\Maker\FileSystem;
+use Dot\Maker\Message;
 
 interface TypeInterface
 {
+    public function addMessage(Message $message): static;
+
     public function getConfig(): Config;
 
     public function getContext(): ContextInterface;

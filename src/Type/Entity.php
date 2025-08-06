@@ -17,6 +17,7 @@ use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
+use Dot\Maker\Message;
 use Throwable;
 
 use function sprintf;
@@ -63,6 +64,8 @@ class Entity extends AbstractType implements FileInterface
         );
 
         $entity->create($content);
+
+        $this->addMessage(Message::generateMigration());
 
         Output::success(sprintf('Created Entity "%s"', $entity->getPath()));
 

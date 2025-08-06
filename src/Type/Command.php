@@ -18,6 +18,7 @@ use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
+use Dot\Maker\Message;
 use Dot\Maker\VisibilityEnum;
 use Throwable;
 
@@ -69,6 +70,8 @@ class Command extends AbstractType implements FileInterface
         );
 
         $command->create($content);
+
+        $this->addMessage(Message::addCommandToConfig($command->getComponent()->getFqcn()));
 
         Output::success(sprintf('Created Command "%s"', $command->getPath()));
 

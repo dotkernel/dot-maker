@@ -12,6 +12,7 @@ use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Output;
+use Dot\Maker\Message;
 use Dot\Maker\VisibilityEnum;
 use Throwable;
 
@@ -86,6 +87,12 @@ class ConfigProvider extends AbstractType implements FileInterface
         }
 
         $configProvider->create($content);
+
+        $this
+            ->addMessage(Message::addConfigProviderToConfig($configProvider->getComponent()->getFqcn()))
+            ->addMessage(
+                Message::addModuleToComposer($this->context->getRootNamespace(), $this->fileSystem->getModuleName())
+            );
 
         Output::success(sprintf('Created ConfigProvider "%s"', $configProvider->getPath()));
 
@@ -277,6 +284,7 @@ BODY);
     ): string {
         $class = (new ClassFile($configProvider->getNamespace(), $configProvider->getClassName()))
             ->useClass($this->import->getConfigProviderFqcn(), 'AppConfigProvider')
+            ->useClass(Import::MEZZIO_APPLICATION)
             ->useClass(Import::MEZZIO_HAL_METADATA_METADATAMAP)
             ->setComment(<<<COMM
 /**
@@ -316,13 +324,8 @@ BODY);
      */
 COMM)
             ->appendBody('return [')
-            ->appendBody('\'delegators\' => [', 12);
-
-        if ($routesDelegator->exists()) {
-            $class->useClass(Import::MEZZIO_APPLICATION);
-
-            $getDependencies->appendBody('Application::class => [RoutesDelegator::class],', 16);
-        }
+            ->appendBody('\'delegators\' => [', 12)
+            ->appendBody('Application::class => [RoutesDelegator::class],', 16);
 
         if (count($handlers) > 0) {
             foreach ($handlers as $handler) {
