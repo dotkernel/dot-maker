@@ -2,7 +2,9 @@
 
 Once installed, `dot-maker` is ready for usage, no need for extra configurations.
 
-## (Optional) Add dot-maker to composer.json
+## Add dot-maker to composer.json
+
+> This step is optional but recommended.
 
 Open your project's `composer.json` and locate the `scripts` section.
 If it does not exist, create it at the document's root level.

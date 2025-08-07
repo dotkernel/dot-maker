@@ -1,6 +1,6 @@
 # Create Middleware
 
-> This page assumes that you have created a Composer "make" script as described on the [Setup page](../setup.md#optional-add-dot-maker-to-composerjson).
+> This page assumes that you have created a Composer "make" script as described on the [Setup page](../setup.md#add-dot-maker-to-composerjson).
 
 To create a Middleware, use either of the following commands:
 

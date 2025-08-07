@@ -1,6 +1,6 @@
 # Create Command
 
-> This page assumes that you have created a Composer "make" script as described on the [Setup page](../setup.md#optional-add-dot-maker-to-composerjson).
+> This page assumes that you have created a Composer "make" script as described on the [Setup page](../setup.md#add-dot-maker-to-composerjson).
 
 > `dot-maker` will look for a matching ServiceInterface in the module (e.g.: BookServiceInterface — BookCommand).
 > If it finds one, it will automatically inject it into the Command.
