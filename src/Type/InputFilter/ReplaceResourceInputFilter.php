@@ -78,9 +78,7 @@ COMM);
 
         $init = (new Constructor())
             ->setBody(<<<BODY
-        // chain inputs below
-
-        return \$this;
+        // chain inputs here
 BODY);
         $class->addMethod($init);
 
