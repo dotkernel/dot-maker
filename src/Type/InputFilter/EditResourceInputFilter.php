@@ -6,7 +6,6 @@ namespace Dot\Maker\Type\InputFilter;
 
 use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
-use Dot\Maker\Component\Method;
 use Dot\Maker\Component\Method\Constructor;
 use Dot\Maker\Exception\BadRequestException;
 use Dot\Maker\Exception\DuplicateFileException;
