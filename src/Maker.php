@@ -54,6 +54,7 @@ final class Maker
         }
 
         Output::info(sprintf('Detected project type: %s', $context->getProjectType()));
+        Output::info(sprintf('Core architecture: %s', $context->hasCore() ? 'Yes' : 'No'));
 
         if (! $instance->isModule()) {
             $instance->setModule((new Module($fileSystem, $context, $config))->initExisting());

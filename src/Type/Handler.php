@@ -118,7 +118,7 @@ class Handler extends AbstractType implements FileInterface
                 $this->component(TypeEnum::HandlerPostDeleteResource)->create($name);
                 $this->component(TypeEnum::FormDeleteResource)->create($name);
                 $this->component(TypeEnum::InputFilterDeleteResource)->create($name);
-                $this->component(TypeEnum::Input)->create(sprintf('%sConfirmation', $name));
+                $this->component(TypeEnum::Input)->create('Confirmation');
 
                 $template = $this->fileSystem
                     ->templateFile(

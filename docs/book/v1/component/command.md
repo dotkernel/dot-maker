@@ -1,6 +1,13 @@
 # Create Command
 
+> This page assumes that you have created a Composer "make" script as described on the [Setup page](../setup.md#optional-add-dot-maker-to-composerjson).
+
+> `dot-maker` will look for a matching ServiceInterface in the module (e.g.: BookServiceInterface — BookCommand).
+> If it finds one, it will automatically inject it into the Command.
+
 To create a Command, use either of the following commands:
+
+## Run the command
 
 ```shell
 composer make command
@@ -12,7 +19,9 @@ OR
 ./vendor/bin/dot-maker command
 ```
 
-`dot-maker` needs to determine in which module you want to create the new Command.
+## Identify the target module
+
+`dot-maker` needs to know in which module you want to create the new Command.
 To determine this, it will prompt you to enter the name of an existing module:
 
 > Existing module name:
@@ -23,7 +32,7 @@ If you input a module name which does not exist (like, "NonExistentModule"), an 
 
 and will keep prompting for a valid module name until you provide one.
 
----
+## Name the Command
 
 Once the target module has been identified, you will be prompted to input a name for the Command:
 
@@ -41,11 +50,11 @@ If you input the name of an existing Command (like, "ExistingCommand"), an error
 
 > Class "ExistingCommand" already exists at /path/to/project/src/ExistingModule/src/Command/ExistingCommand.php
 
-If you input a valid name, `dot-maker` will create the Command and output a success message:
+If you input a valid name (like, "NewCommand"), `dot-maker` will create the Command and output a success message:
 
-> Created Collection: /path/to/project/src/ExistingModule/src/Command/NewCommand.php
+> Created Command: /path/to/project/src/ExistingModule/src/Command/NewCommand.php
+
+## Create multiple Commands
 
 To allow the creation of multiple Commands, the process will loop until you leave the name blank.
-
-> dot-maker will look for a matching ServiceInterface in the module (e.g.: BookServiceInterface — BookCommand).
-> If it finds one, it will automatically inject it into the Command.
+Each iteration creates a new Command under the same module.

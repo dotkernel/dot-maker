@@ -25,6 +25,8 @@ nav:
           - Create Repository: v1/component/repository.md
           - Create Service: v1/component/service.md
           - Create ServiceInterface: v1/component/service-interface.md
+      - IO:
+          - Input: v1/io/input.md
 site_name: dot-maker
 site_description: "Programmatically generate Dotkernel projects files and directories."
 repo_url: "https://github.com/dotkernel/dot-maker"

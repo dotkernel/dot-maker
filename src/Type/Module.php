@@ -65,10 +65,11 @@ class Module extends AbstractType implements ModuleInterface
 
                 if (Input::confirm('Create handler?')) {
                     $this->component(TypeEnum::Handler)->create($module->getName());
+                    Output::writeLine();
                     $this->component(TypeEnum::RoutesDelegator)->create($module->getName());
                 }
 
-                Output::writeLine('');
+                Output::writeLine();
 
                 if ($this->context->isApi()) {
                     $this->component(TypeEnum::OpenApi)->create($module->getName());
@@ -134,7 +135,7 @@ class Module extends AbstractType implements ModuleInterface
             return;
         }
 
-        Output::writeLine('');
+        Output::writeLine();
         Output::warning('Next steps:');
         Output::warning('===========');
 
