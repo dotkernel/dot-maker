@@ -129,7 +129,7 @@ On confirmation, depending on the project type, the process will iterate over a 
 
 The prompt asks you whether you want to list resources:
 
-> Allow listing <Resource>s? [Y(es)/n(o)]:
+> Allow listing Resources? [Y(es)/n(o)]:
 
 On confirmation, the process will create the following files:
 
@@ -144,7 +144,7 @@ Without confirmation, the process will skip to the next component.
 
 The prompt asks you whether you want to view resources:
 
-> Allow viewing <Resource>s? [Y(es)/n(o)]:
+> Allow viewing Resources? [Y(es)/n(o)]:
 
 On confirmation, the process will create the following file:
 
@@ -158,7 +158,7 @@ Without confirmation, the process will skip to the next component.
 
 The prompt asks you whether you want to create resources:
 
-> Allow creating <Resource>s? [Y(es)/n(o)]:
+> Allow creating Resources? [Y(es)/n(o)]:
 
 On confirmation, the process will create the following files:
 
@@ -173,7 +173,7 @@ Without confirmation, the process will skip to the next component.
 
 The prompt asks you whether you want to delete resources:
 
-> Allow deleting <Resource>s? [Y(es)/n(o)]:
+> Allow deleting Resources? [Y(es)/n(o)]:
 
 On confirmation, the process will create the following files:
 
@@ -187,7 +187,7 @@ Without confirmation, the process will skip to the next component.
 
 The prompt asks you whether you want to edit resources:
 
-> Allow editing <Resource>s? [Y(es)/n(o)]:
+> Allow editing Resources? [Y(es)/n(o)]:
 
 On confirmation, the process will create the following files:
 
@@ -202,7 +202,7 @@ Without confirmation, the process will skip to the next component.
 
 The prompt asks you whether you want to replace resources:
 
-> Allow replacing <Resource>s? [Y(es)/n(o)]:
+> Allow replacing Resources? [Y(es)/n(o)]:
 
 On confirmation, the process will create the following files:
 
@@ -219,7 +219,7 @@ Without confirmation, the process will skip to the next component.
 
 The prompt asks you whether you want to list resources:
 
-> Allow listing <Resource>s? [Y(es)/n(o)]:
+> Allow listing Resources? [Y(es)/n(o)]:
 
 On confirmation, the process will create the following files:
 
@@ -234,7 +234,7 @@ Without confirmation, the process will skip to the next component.
 
 The prompt asks you whether you want to view resources:
 
-> Allow viewing <Resource>s? [Y(es)/n(o)]:
+> Allow viewing Resources? [Y(es)/n(o)]:
 
 On confirmation, the process will create the following files:
 
@@ -249,7 +249,7 @@ Without confirmation, the process will skip to the next component.
 
 The prompt asks you whether you want to create resources:
 
-> Allow creating <Resource>s? [Y(es)/n(o)]:
+> Allow creating Resources? [Y(es)/n(o)]:
 
 On confirmation, the process will create the following files:
 
@@ -267,7 +267,7 @@ Without confirmation, the process will skip to the next component.
 
 The prompt asks you whether you want to delete resources:
 
-> Allow deleting <Resource>s? [Y(es)/n(o)]:
+> Allow deleting Resources? [Y(es)/n(o)]:
 
 On confirmation, the process will create the following files:
 
@@ -286,7 +286,7 @@ Without confirmation, the process will skip to the next component.
 
 The prompt asks you whether you want to edit resources:
 
-> Allow editing <Resource>s? [Y(es)/n(o)]:
+> Allow editing Resources? [Y(es)/n(o)]:
 
 On confirmation, the process will create the following files:
 

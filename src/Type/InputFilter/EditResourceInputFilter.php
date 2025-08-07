@@ -7,6 +7,7 @@ namespace Dot\Maker\Type\InputFilter;
 use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Method;
+use Dot\Maker\Component\Method\Constructor;
 use Dot\Maker\Exception\BadRequestException;
 use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
@@ -81,8 +82,7 @@ class EditResourceInputFilter extends AbstractType implements FileInterface
  */
 COMM);
 
-        $init = (new Method('init'))
-            ->setReturnType('self')
+        $init = (new Constructor())
             ->setBody(<<<BODY
         // chain inputs below
 
@@ -106,8 +106,7 @@ BODY);
  */
 COMM);
 
-        $init = (new Method('init'))
-            ->setReturnType('self')
+        $init = (new Constructor())
             ->setBody(<<<BODY
         // chain inputs below
 
