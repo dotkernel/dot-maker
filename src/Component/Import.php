@@ -26,6 +26,8 @@ class Import
     public const FIG_HTTP_MESSAGE_STATUSCODEINTERFACE                        = 'Fig\\Http\\Message\\StatusCodeInterface';
     public const LAMINAS_DIACTOROS_RESPONSE_HTMLRESPONSE                     = 'Laminas\\Diactoros\\Response\\HtmlResponse';
     public const LAMINAS_DIACTOROS_RESPONSE_EMPTYRESPONSE                    = 'Laminas\\Diactoros\\Response\\EmptyResponse';
+    public const LAMINAS_FILTER_STRINGTRIM                                   = 'Laminas\\Filter\\StringTrim';
+    public const LAMINAS_FILTER_STRIPTAGS                                    = 'Laminas\\Filter\\StripTags';
     public const LAMINAS_FORM_ELEMENT_CHECKBOX                               = 'Laminas\\Form\\Element\\Checkbox';
     public const LAMINAS_FORM_ELEMENT_CSRF                                   = 'Laminas\\Form\\Element\\Csrf';
     public const LAMINAS_FORM_ELEMENT_SUBMIT                                 = 'Laminas\\Form\\Element\\Submit';

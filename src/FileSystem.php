@@ -290,6 +290,17 @@ class FileSystem
         );
     }
 
+    public function confirmDeleteInput(string $name): File
+    {
+        $name = preg_replace('/Input$/', '', $name);
+
+        return new File(
+            new Directory('Input', sprintf('%s/src/%s/src/InputFilter', $this->rootDir, $this->moduleName)),
+            sprintf('%s\\%s\\InputFilter\\Input', $this->context->getRootNamespace(), $this->moduleName),
+            sprintf('ConfirmDelete%sInput', $name),
+        );
+    }
+
     public function inputFilter(string $name): File
     {
         $name = preg_replace('/InputFilter$/', '', $name);

@@ -55,7 +55,7 @@ class Form extends AbstractType implements FileInterface
             if (Input::confirm(sprintf('Allow deleting %s?', $plural))) {
                 $this->component(TypeEnum::FormDeleteResource)->create($name);
                 $this->component(TypeEnum::InputFilterDeleteResource)->create($name);
-                $this->component(TypeEnum::Input)->create(sprintf('%sConfirmation', $name));
+                $this->component(TypeEnum::InputConfirmDelete)->create($name);
             }
             if (Input::confirm(sprintf('Allow editing %s?', $plural))) {
                 $this->component(TypeEnum::FormEditResource)->create($name);

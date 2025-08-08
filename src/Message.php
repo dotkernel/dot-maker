@@ -12,16 +12,18 @@ class Message
 {
     public const ADD_CONFIG_PROVIDER_TO_CONFIG      = 1;
     public const ADD_CORE_CONFIG_PROVIDER_TO_CONFIG = 2;
-    public const ADD_MODULE_TO_COMPOSER             = 3;
-    public const ADD_CORE_MODULE_TO_COMPOSER        = 4;
-    public const ADD_COMMAND_TO_CONFIG              = 5;
-    public const ADD_MIDDLEWARE_TO_PIPELINE         = 6;
-    public const DUMP_COMPOSER_AUTOLOADER           = 7;
-    public const GENERATE_MIGRATION                 = 8;
+    public const ADD_COMMAND_TO_CONFIG              = 3;
+    public const ADD_MIDDLEWARE_TO_PIPELINE         = 4;
+    public const ADD_MODULE_TO_COMPOSER             = 5;
+    public const ADD_CORE_MODULE_TO_COMPOSER        = 6;
+    public const ADD_ROUTES_TO_AUTH_CONFIG          = 7;
+    public const DUMP_COMPOSER_AUTOLOADER           = 8;
+    public const GENERATE_MIGRATION                 = 9;
+    public const CHECK_FILES                        = 10;
 
     public function __construct(
-        private string $message = '',
-        private int $priority = 10,
+        private string $message,
+        private int $priority,
     ) {
     }
 
@@ -148,17 +150,35 @@ class Message
             );
     }
 
+    public static function addRoutesToAuthConfig(string $config, string $routesDelegator): self
+    {
+        return (new self('add to ', self::ADD_MIDDLEWARE_TO_PIPELINE))
+            ->append(
+                ColorEnum::colorize($config, ColorEnum::ForegroundBrightWhite)
+            )
+            ->appendLine('  the routes registered in ')
+            ->append(
+                ColorEnum::colorize($routesDelegator, ColorEnum::ForegroundBrightWhite)
+            );
+    }
+
+    public static function checkFiles(): self
+    {
+        return new self(
+            'Run through each new file, verify their content and start adding logic to them.',
+            self::CHECK_FILES
+        );
+    }
+
     public static function dumpComposerAutoloader(): self
     {
-        return (new self('dump Composer autoloader by executing this command:'))
-            ->setPriority(self::DUMP_COMPOSER_AUTOLOADER)
+        return (new self('dump Composer autoloader by executing this command:', self::DUMP_COMPOSER_AUTOLOADER))
             ->appendLine(ColorEnum::colorize('  composer dump', ColorEnum::ForegroundBrightYellow));
     }
 
     public static function generateMigration(): self
     {
-        return (new self('generate Doctrine migration:'))
-            ->setPriority(self::GENERATE_MIGRATION)
+        return (new self('generate Doctrine migration:', self::GENERATE_MIGRATION))
             ->appendLine(
                 ColorEnum::colorize('  php ./vendor/bin/doctrine-migrations diff', ColorEnum::ForegroundBrightYellow)
             );

@@ -44,7 +44,9 @@ Once the target module has been identified, you will be prompted to input a name
 
 **The name must contain only letters and numbers.**
 
-> You don't have to append "Command" to the name. It is automatically appended. See our [Naming Standards](../naming-standards.md) page for more information.
+> You don't have to append "Command" to the name.
+> It is automatically appended when necessary.
+> See our [Naming Standards](../naming-standards.md) page for more information.
 
 If you leave the name blank, the process will exit.
 

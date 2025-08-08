@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dot\Maker\Type;
+namespace Dot\Maker\Type\Input;
 
 use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
@@ -14,29 +14,13 @@ use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Output;
-use Throwable;
+use Dot\Maker\Type\AbstractType;
+use Dot\Maker\Type\FileInterface;
 
 use function sprintf;
-use function ucfirst;
 
-class Input extends AbstractType implements FileInterface
+class ConfirmDeleteInput extends AbstractType implements FileInterface
 {
-    public function __invoke(): void
-    {
-        while (true) {
-            $name = ucfirst(\Dot\Maker\IO\Input::prompt('Enter new Input name: '));
-            if ($name === '') {
-                return;
-            }
-
-            try {
-                $this->create($name);
-            } catch (Throwable $exception) {
-                Output::error($exception->getMessage());
-            }
-        }
-    }
-
     /**
      * @throws BadRequestException
      * @throws DuplicateFileException
@@ -48,7 +32,7 @@ class Input extends AbstractType implements FileInterface
             throw new BadRequestException(sprintf('Input name: "%s"', $name));
         }
 
-        $input = $this->fileSystem->input($name);
+        $input = $this->fileSystem->confirmDeleteInput($name);
         if ($input->exists()) {
             throw DuplicateFileException::create($input);
         }
@@ -66,11 +50,11 @@ class Input extends AbstractType implements FileInterface
     {
         $class = (new ClassFile($input->getNamespace(), $input->getClassName()))
             ->setExtends('Input')
-            ->useClass($this->import->getAppMessageFqcn())
-            ->useClass(Import::LAMINAS_FILTER_STRINGTRIM)
-            ->useClass(Import::LAMINAS_FILTER_STRIPTAGS)
             ->useClass(Import::LAMINAS_INPUTFILTER_INPUT)
+            ->useClass(Import::LAMINAS_VALIDATOR_INARRAY)
             ->useClass(Import::LAMINAS_VALIDATOR_NOTEMPTY);
+
+        $message = sprintf('Please confirm the %s deletion.', $this->fileSystem->getModuleName());
 
         $constructor = (new Constructor())
             ->addParameter(
@@ -82,13 +66,16 @@ class Input extends AbstractType implements FileInterface
         parent::__construct(\$name);
 
         \$this->setRequired(\$isRequired);
-        \$this->getFilterChain()
-            ->attachByName(StringTrim::class)
-            ->attachByName(StripTags::class);
 
         \$this->getValidatorChain()
             ->attachByName(NotEmpty::class, [
-                'message' => Message::VALIDATOR_REQUIRED_FIELD,
+                'message' => '$message',
+            ], true)
+            ->attachByName(InArray::class, [
+                'message'  => '$message',
+                'haystack' => [
+                    'yes',
+                ],
             ], true);
 BODY);
         $class->addMethod($constructor);

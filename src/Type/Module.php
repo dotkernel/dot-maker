@@ -66,7 +66,22 @@ class Module extends AbstractType implements ModuleInterface
                 if (Input::confirm('Create handler?')) {
                     $this->component(TypeEnum::Handler)->create($module->getName());
                     Output::writeLine();
-                    $this->component(TypeEnum::RoutesDelegator)->create($module->getName());
+                    $routesDelegator = $this->component(TypeEnum::RoutesDelegator)->create($module->getName());
+                    if ($this->context->isApi()) {
+                        $this->addMessage(
+                            Message::addRoutesToAuthConfig(
+                                'config/autoload/authorization.global.php',
+                                $routesDelegator->getPath()
+                            )
+                        );
+                    } else {
+                        $this->addMessage(
+                            Message::addRoutesToAuthConfig(
+                                'config/autoload/authorization-guards.global.php',
+                                $routesDelegator->getPath()
+                            )
+                        );
+                    }
                 }
 
                 Output::writeLine();
@@ -83,7 +98,7 @@ class Module extends AbstractType implements ModuleInterface
 
                 $this
                     ->addMessage(Message::dumpComposerAutoloader())
-                    ->addMessage(new Message('Start adding logic to the new module files.'));
+                    ->addMessage(Message::checkFiles());
 
                 $this->renderMessages();
             } catch (Throwable $exception) {

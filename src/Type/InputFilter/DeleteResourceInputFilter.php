@@ -40,7 +40,7 @@ class DeleteResourceInputFilter extends AbstractType implements FileInterface
             $content = $this->render(
                 $name,
                 $inputFilter->getComponent(),
-                $this->fileSystem->input('Confirmation')->getComponent(),
+                $this->fileSystem->confirmDeleteInput($name)->getComponent(),
             );
         }
 

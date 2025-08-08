@@ -263,7 +263,7 @@ On confirmation, the process will create the following files:
 - `src/<ModuleName>/src/Handler/Post<ModuleName>DeleteHandler.php`: handles the resource deletion
 - `src/<ModuleName>/src/Form/Delete<ModuleName>Form.php`: form fields
 - `src/<ModuleName>/src/InputFilter/Delete<ModuleName>InputFilter.php`: form field validators
-- `src/<ModuleName>/src/InputFilter/Input/ConfirmationInput.php`: checkbox input for deletion confirmation
+- `src/<ModuleName>/src/InputFilter/Input/ConfirmDelete<ModuleName>Input.php`: checkbox input for deletion confirmation
 - `src/<ModuleName>/templates/<ModuleName>/<ModuleName>-delete-form.html.twig`: renders the resource deletion form
 
 The matching ServiceInterface will be automatically injected into the Handler.

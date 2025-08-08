@@ -21,6 +21,7 @@ use Dot\Maker\Type\Handler\GetViewResourceHandler;
 use Dot\Maker\Type\Handler\PostCreateResourceHandler;
 use Dot\Maker\Type\Handler\PostDeleteResourceHandler;
 use Dot\Maker\Type\Handler\PostEditResourceHandler;
+use Dot\Maker\Type\Input\ConfirmDeleteInput;
 use Dot\Maker\Type\InputFilter\CreateResourceInputFilter;
 use Dot\Maker\Type\InputFilter\DeleteResourceInputFilter;
 use Dot\Maker\Type\InputFilter\EditResourceInputFilter;
@@ -55,6 +56,7 @@ enum TypeEnum: string
     case HandlerPostDeleteResource  = PostDeleteResourceHandler::class;
     case HandlerPostEditResource    = PostEditResourceHandler::class;
     case Input                      = Input::class;
+    case InputConfirmDelete         = ConfirmDeleteInput::class;
     case InputFilter                = InputFilter::class;
     case InputFilterCreateResource  = CreateResourceInputFilter::class;
     case InputFilterDeleteResource  = DeleteResourceInputFilter::class;
