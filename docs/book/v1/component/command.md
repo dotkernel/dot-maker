@@ -32,6 +32,10 @@ If you input a module name which does not exist (like, "NonExistentModule"), an 
 
 and will keep prompting for a valid module name until you provide one.
 
+Once an existing module name (like, "ExistingModule") is provided, `dot-maker` will output a success message:
+
+> Found Module "ExistingModule"
+
 ## Name the Command
 
 Once the target module has been identified, you will be prompted to input a name for the Command:
@@ -39,6 +43,8 @@ Once the target module has been identified, you will be prompted to input a name
 > Command name:
 
 **The name must contain only letters and numbers.**
+
+> You don't have to append "Command" to the name. It is automatically appended. See our [Naming Standards](../naming-standards.md) page for more information.
 
 If you leave the name blank, the process will exit.
 

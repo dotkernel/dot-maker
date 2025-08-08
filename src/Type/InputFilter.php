@@ -18,15 +18,22 @@ class InputFilter extends AbstractType implements FileInterface
 {
     public function __invoke(): void
     {
-        $name = ucfirst(Input::prompt('InputFilter name: '));
-        if ($name === '') {
-            return;
-        }
+        while (true) {
+            $name = ucfirst(Input::prompt('InputFilter name: '));
+            if ($name === '') {
+                return;
+            }
 
-        try {
-            $this->create($name);
-        } catch (Throwable $exception) {
-            Output::error($exception->getMessage());
+            if (! $this->isValid($name)) {
+                Output::error(sprintf('Invalid InputFilter name: "%s"', $name));
+                continue;
+            }
+
+            try {
+                $this->create($name);
+            } catch (Throwable $exception) {
+                Output::error($exception->getMessage());
+            }
         }
     }
 

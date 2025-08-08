@@ -29,6 +29,10 @@ If you input a module name which does not exist (like, "NonExistentModule"), an 
 
 and will keep prompting for a valid module name until you provide one.
 
+Once an existing module name (like, "ExistingModule") is provided, `dot-maker` will output a success message:
+
+> Found Module "ExistingModule"
+
 ## Name the Middleware
 
 Once the target module has been identified, you will be prompted to input a name for the Middleware:
@@ -36,6 +40,8 @@ Once the target module has been identified, you will be prompted to input a name
 > Middleware name:
 
 **The name must contain only letters and numbers.**
+
+> You don't have to append "Middleware" to the name. It is automatically appended. See our [Naming Standards](../naming-standards.md) page for more information.
 
 If you leave the name blank, the process will exit.
 
@@ -47,7 +53,7 @@ If you input the name of an existing Middleware (like, "ExistingMiddleware"), an
 
 > Class "ExistingMiddleware" already exists at /path/to/project/src/ExistingModule/src/Middleware/ExistingMiddleware.php
 
-If you input a valid name (like, "NewMiddleware"), `dot-maker` will create the Command and output a success message:
+If you input a valid name (like, "NewMiddleware"), `dot-maker` will create the Middleware and output a success message:
 
 > Created Middleware: /path/to/project/src/ExistingModule/src/Middleware/NewMiddleware.php
 

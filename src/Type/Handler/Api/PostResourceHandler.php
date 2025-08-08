@@ -16,34 +16,14 @@ use Dot\Maker\Exception\BadRequestException;
 use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
-use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\AbstractType;
 use Dot\Maker\Type\FileInterface;
-use Throwable;
 
 use function sprintf;
-use function ucfirst;
 
 class PostResourceHandler extends AbstractType implements FileInterface
 {
-    public function __invoke(): void
-    {
-        while (true) {
-            $name = ucfirst(Input::prompt('Enter new Handler name: '));
-            if ($name === '') {
-                break;
-            }
-
-            try {
-                $this->create($name);
-                break;
-            } catch (Throwable $exception) {
-                Output::error($exception->getMessage());
-            }
-        }
-    }
-
     /**
      * @throws BadRequestException
      * @throws DuplicateFileException
@@ -51,10 +31,6 @@ class PostResourceHandler extends AbstractType implements FileInterface
      */
     public function create(string $name): File
     {
-        if (! $this->isValid($name)) {
-            Output::error(sprintf('Invalid Handler name: "%s"', $name), true);
-        }
-
         $handler = $this->fileSystem->apiPostResourceHandler($name);
         if ($handler->exists()) {
             throw DuplicateFileException::create($handler);

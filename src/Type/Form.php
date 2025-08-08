@@ -23,15 +23,22 @@ class Form extends AbstractType implements FileInterface
             return;
         }
 
-        $name = ucfirst(Input::prompt('Form name: '));
-        if ($name === '') {
-            return;
-        }
+        while (true) {
+            $name = ucfirst(Input::prompt('Form name: '));
+            if ($name === '') {
+                return;
+            }
 
-        try {
-            $this->create($name);
-        } catch (Throwable $exception) {
-            Output::error($exception->getMessage());
+            if (! $this->isValid($name)) {
+                Output::error(sprintf('Invalid Form name: "%s"', $name));
+                continue;
+            }
+
+            try {
+                $this->create($name);
+            } catch (Throwable $exception) {
+                Output::error($exception->getMessage());
+            }
         }
     }
 

@@ -116,6 +116,8 @@ class Module extends AbstractType implements ModuleInterface
                 continue;
             }
 
+            Output::success(sprintf('Found Module "%s"', $name));
+
             $this->fileSystem->setModuleName($name);
 
             break;

@@ -1,6 +1,6 @@
 # Overview
 
-Programmatically generate Dotkernel projects files and directories.
+Programmatically generate Dotkernel project files and directories.
 
 ## Badges
 

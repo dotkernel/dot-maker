@@ -16,18 +16,6 @@ OR
 ./vendor/bin/dot-maker module
 ```
 
-## Debug
-
-The first output is an info message confirming the project type, for example:
-
-> Detected project type: Api
-
-The second output is an info message confirming whether the project uses Core architecture, for example:
-
-> Core architecture: Yes
-
-These are detected by looking at the modules registered in `composer.json` under **autoload**.**psr-4**.
-
 ## Name the Module
 
 You will be prompted to input a name for the Module:
@@ -67,7 +55,7 @@ On confirmation, the process will create the following files:
 - for projects compatible with the Core architecture:
     - `src/Core/src/<ModuleName>/src/Entity/<ModuleName>.php`
     - `src/Core/src/<ModuleName>/src/Repository/<ModuleName>Repository.php`
-- for projects which are not compatible with the Core architecture:
+- for projects which are NOT compatible with the Core architecture:
     - `src/<ModuleName>/src/Entity/<ModuleName>.php`
     - `src/<ModuleName>/src/Repository/<ModuleName>Repository.php`
 
@@ -133,8 +121,8 @@ The prompt asks you whether you want to list resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Collection/<ModuleName>Collection.php`
-- `src/<ModuleName>/src/Handler/Get<ModuleName>CollectionHandler.php`
+- `src/<ModuleName>/src/Collection/<ModuleName>Collection.php`: describes a resource-specific collection
+- `src/<ModuleName>/src/Handler/Get<ModuleName>CollectionHandler.php`: handles the resource collection representation
 
 The matching Collection and ServiceInterface will be automatically injected into the Handler.
 
@@ -148,7 +136,7 @@ The prompt asks you whether you want to view resources:
 
 On confirmation, the process will create the following file:
 
-- `src/<ModuleName>/src/Handler/Get<ModuleName>ResourceHandler.php`
+- `src/<ModuleName>/src/Handler/Get<ModuleName>ResourceHandler.php`: handles the resource representation
 
 The matching ServiceInterface will be automatically injected into the Handler.
 
@@ -162,8 +150,8 @@ The prompt asks you whether you want to create resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Post<ModuleName>ResourceHandler.php`
-- `src/<ModuleName>/src/InputFilter/Create<ModuleName>InputFilter.php`
+- `src/<ModuleName>/src/Handler/Post<ModuleName>ResourceHandler.php`: handles the resource creation
+- `src/<ModuleName>/src/InputFilter/Create<ModuleName>InputFilter.php`: request payload validators
 
 The matching InputFilter and ServiceInterface will be automatically injected into the Handler.
 
@@ -177,7 +165,7 @@ The prompt asks you whether you want to delete resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Delete<ModuleName>ResourceHandler.php`
+- `src/<ModuleName>/src/Handler/Delete<ModuleName>ResourceHandler.php`: handles the resource deletion
 
 The matching ServiceInterface will be automatically injected into the Handler.
 
@@ -191,8 +179,8 @@ The prompt asks you whether you want to edit resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Patch<ModuleName>ResourceHandler.php`
-- `src/<ModuleName>/src/InputFilter/Edit<ModuleName>InputFilter.php`
+- `src/<ModuleName>/src/Handler/Patch<ModuleName>ResourceHandler.php`: handles the resource update
+- `src/<ModuleName>/src/InputFilter/Edit<ModuleName>InputFilter.php`: request payload validators
 
 The matching InputFilter and ServiceInterface will be automatically injected into the Handler.
 
@@ -206,8 +194,8 @@ The prompt asks you whether you want to replace resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Put<ModuleName>ResourceHandler.php`
-- `src/<ModuleName>/src/InputFilter/Replace<ModuleName>InputFilter.php`
+- `src/<ModuleName>/src/Handler/Put<ModuleName>ResourceHandler.php`: handles the resource replacement
+- `src/<ModuleName>/src/InputFilter/Replace<ModuleName>InputFilter.php`: request payload validators
 
 The matching InputFilter and ServiceInterface will be automatically injected into the Handler.
 
@@ -223,8 +211,8 @@ The prompt asks you whether you want to list resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Get<ModuleName>ListHandler.php`
-- `src/<ModuleName>/templates/<ModuleName>/<ModuleName>-list.html.twig`
+- `src/<ModuleName>/src/Handler/Get<ModuleName>ListHandler.php`: renders the resource list page
+- `src/<ModuleName>/templates/<ModuleName>/<ModuleName>-list.html.twig`: renders the resource list
 
 The matching ServiceInterface will be automatically injected into the Handler.
 

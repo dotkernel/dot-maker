@@ -24,6 +24,11 @@ class Handler extends AbstractType implements FileInterface
                 break;
             }
 
+            if (! $this->isValid($name)) {
+                Output::error(sprintf('Invalid Handler name: "%s"', $name));
+                continue;
+            }
+
             try {
                 $this->create($name);
             } catch (Throwable $exception) {
