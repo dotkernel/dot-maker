@@ -70,8 +70,8 @@ The prompt asks you whether you want to list resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Collection/<ModuleName>Collection.php`: describes a resource-specific collection
-- `src/<ModuleName>/src/Handler/Get<ModuleName>CollectionHandler.php`: handles the resource collection representation
+- `src/ExistingModule/src/Collection/BookCollection.php`: describes a resource-specific collection
+- `src/ExistingModule/src/Handler/GetBookCollectionHandler.php`: handles the resource collection representation
 
 The matching Collection and ServiceInterface will be automatically injected into the Handler.
 
@@ -85,7 +85,7 @@ The prompt asks you whether you want to view resources:
 
 On confirmation, the process will create the following file:
 
-- `src/<ModuleName>/src/Handler/Get<ModuleName>ResourceHandler.php`: handles the resource representation
+- `src/ExistingModule/src/Handler/GetBookResourceHandler.php`: handles the resource representation
 
 The matching ServiceInterface will be automatically injected into the Handler.
 
@@ -99,8 +99,8 @@ The prompt asks you whether you want to create resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Post<ModuleName>ResourceHandler.php`: handles the resource creation
-- `src/<ModuleName>/src/InputFilter/Create<ModuleName>InputFilter.php`: request payload validators
+- `src/ExistingModule/src/Handler/PostBookResourceHandler.php`: handles the resource creation
+- `src/ExistingModule/src/InputFilter/CreateBookInputFilter.php`: request payload validators
 
 The matching InputFilter and ServiceInterface will be automatically injected into the Handler.
 
@@ -114,7 +114,7 @@ The prompt asks you whether you want to delete resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Delete<ModuleName>ResourceHandler.php`: handles the resource deletion
+- `src/ExistingModule/src/Handler/DeleteBookResourceHandler.php`: handles the resource deletion
 
 The matching ServiceInterface will be automatically injected into the Handler.
 
@@ -128,8 +128,8 @@ The prompt asks you whether you want to edit resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Patch<ModuleName>ResourceHandler.php`: handles the resource update
-- `src/<ModuleName>/src/InputFilter/Edit<ModuleName>InputFilter.php`: request payload validators
+- `src/ExistingModule/src/Handler/PatchBookResourceHandler.php`: handles the resource update
+- `src/ExistingModule/src/InputFilter/EditBookInputFilter.php`: request payload validators
 
 The matching InputFilter and ServiceInterface will be automatically injected into the Handler.
 
@@ -143,8 +143,8 @@ The prompt asks you whether you want to replace resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Put<ModuleName>ResourceHandler.php`: handles the resource replacement
-- `src/<ModuleName>/src/InputFilter/Replace<ModuleName>InputFilter.php`: request payload validators
+- `src/ExistingModule/src/Handler/PutBookResourceHandler.php`: handles the resource replacement
+- `src/ExistingModule/src/InputFilter/ReplaceBookInputFilter.php`: request payload validators
 
 The matching InputFilter and ServiceInterface will be automatically injected into the Handler.
 
@@ -160,8 +160,8 @@ The prompt asks you whether you want to list resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Get<ModuleName>ListHandler.php`: renders the resource list page
-- `src/<ModuleName>/templates/<ModuleName>/<ModuleName>-list.html.twig`: renders the resource list
+- `src/ExistingModule/src/Handler/GetBookListHandler.php`: renders the resource list page
+- `src/ExistingModule/templates/existing-module/book-list.html.twig`: renders the resource list
 
 The matching ServiceInterface will be automatically injected into the Handler.
 
@@ -175,8 +175,8 @@ The prompt asks you whether you want to view resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Get<ModuleName>ViewHandler.php`: renders the resource page
-- `src/<ModuleName>/templates/<ModuleName>/<ModuleName>-view.html.twig`: renders the resource
+- `src/ExistingModule/src/Handler/GetBookViewHandler.php`: renders the resource page
+- `src/ExistingModule/templates/existing-module/book-view.html.twig`: renders the resource
 
 The matching ServiceInterface will be automatically injected into the Handler.
 
@@ -190,11 +190,11 @@ The prompt asks you whether you want to create resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Get<ModuleName>CreateFormHandler.php`: renders the resource creation form page
-- `src/<ModuleName>/src/Handler/Post<ModuleName>CreateHandler.php`: handles the resource creation
-- `src/<ModuleName>/src/Form/Create<ModuleName>Form.php`: form fields
-- `src/<ModuleName>/src/InputFilter/Create<ModuleName>InputFilter.php`: form field validators
-- `src/<ModuleName>/templates/<ModuleName>/<ModuleName>-view.html.twig`: renders the resource creation form
+- `src/ExistingModule/src/Handler/GetBookCreateFormHandler.php`: renders the resource creation form page
+- `src/ExistingModule/src/Handler/PostBookCreateHandler.php`: handles the resource creation
+- `src/ExistingModule/src/Form/CreateBookForm.php`: form fields
+- `src/ExistingModule/src/InputFilter/CreateBookInputFilter.php`: form field validators
+- `src/ExistingModule/templates/existing-module/book-view.html.twig`: renders the resource creation form
 
 The matching Form and ServiceInterface will be automatically injected into the Handler.
 
@@ -208,12 +208,12 @@ The prompt asks you whether you want to delete resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Get<ModuleName>DeleteFormHandler.php`: renders the resource deletion form page
-- `src/<ModuleName>/src/Handler/Post<ModuleName>DeleteHandler.php`: handles the resource deletion
-- `src/<ModuleName>/src/Form/Delete<ModuleName>Form.php`: form fields
-- `src/<ModuleName>/src/InputFilter/Delete<ModuleName>InputFilter.php`: form field validators
-- `src/<ModuleName>/src/InputFilter/Input/ConfirmDelete<ModuleName>Input.php`: checkbox input for deletion confirmation
-- `src/<ModuleName>/templates/<ModuleName>/<ModuleName>-delete-form.html.twig`: renders the resource deletion form
+- `src/ExistingModule/src/Handler/GetBookDeleteFormHandler.php`: renders the resource deletion form page
+- `src/ExistingModule/src/Handler/PostBookDeleteHandler.php`: handles the resource deletion
+- `src/ExistingModule/src/Form/DeleteBookForm.php`: form fields
+- `src/ExistingModule/src/InputFilter/DeleteBookInputFilter.php`: form field validators
+- `src/ExistingModule/src/InputFilter/Input/ConfirmDeleteBookInput.php`: checkbox input for deletion confirmation
+- `src/ExistingModule/templates/existing-module/book-delete-form.html.twig`: renders the resource deletion form
 
 The matching ServiceInterface will be automatically injected into the Handler.
 
@@ -227,11 +227,11 @@ The prompt asks you whether you want to edit resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Get<ModuleName>EditFormHandler.php`: renders the resource edit form page
-- `src/<ModuleName>/src/Handler/Post<ModuleName>EditHandler.php`: handles the resource update
-- `src/<ModuleName>/src/Form/Edit<ModuleName>Form.php`: form fields
-- `src/<ModuleName>/src/InputFilter/Edit<ModuleName>InputFilter.php`: form field validators
-- `src/<ModuleName>/templates/<ModuleName>/<ModuleName>-edit-form.html.twig`: renders the resource creation form
+- `src/ExistingModule/src/Handler/GetBookEditFormHandler.php`: renders the resource edit form page
+- `src/ExistingModule/src/Handler/PostBookEditHandler.php`: handles the resource update
+- `src/ExistingModule/src/Form/EditBookForm.php`: form fields
+- `src/ExistingModule/src/InputFilter/EditBookInputFilter.php`: form field validators
+- `src/ExistingModule/templates/existing-module/book-edit-form.html.twig`: renders the resource creation form
 
 The matching InputFilter and ServiceInterface will be automatically injected into the Handler.
 
