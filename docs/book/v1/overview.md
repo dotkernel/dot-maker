@@ -15,3 +15,5 @@ Programmatically generate Dotkernel project files and directories.
 [![Build Static](https://github.com/dotkernel/dot-maker/actions/workflows/continuous-integration.yml/badge.svg?branch=1.0)](https://github.com/dotkernel/dot-maker/actions/workflows/continuous-integration.yml)
 [![codecov](https://codecov.io/gh/dotkernel/dot-maker/graph/badge.svg?token=KT9UA402B4)](https://codecov.io/gh/dotkernel/dot-maker)
 [![PHPStan](https://github.com/dotkernel/dot-maker/actions/workflows/static-analysis.yml/badge.svg?branch=1.0)](https://github.com/dotkernel/dot-maker/actions/workflows/static-analysis.yml)
+
+Make sure you run through our guides on using the [inputs](./io/input.md) and the [outputs](./io/output.md).
