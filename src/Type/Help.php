@@ -24,10 +24,9 @@ class Help extends AbstractType
                     ColorEnum::colorize('<component>', ColorEnum::ForegroundBrightYellow)
                 )
         );
-        Output::writeLine('OR');
         Output::writeLine(
-            (string) (new Message())
-                ->append(
+            (string) (new Message('OR'))
+                ->appendLine(
                     ColorEnum::colorize('composer make', ColorEnum::ForegroundBrightWhite)
                 )
                 ->append(' ')

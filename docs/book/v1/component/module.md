@@ -337,19 +337,21 @@ Next steps:
   <ProjectType>\<ModuleName>\ConfigProvider,
 - add to config/config.php:
   Core\<ModuleName>\ConfigProvider,
-- add to composer.json under autoload.psr-4:
-  "<ProjectType>\\<ModuleName>\\": "src/<ModuleName>/src/"
-- add to composer.json under autoload.psr-4:
-  "Core\\<ModuleName>\\": "src/Core/src/<ModuleName>/src/"
 - add to config/autoload/cli.global.php under dot_cli.commands:
   <ProjectType>\<ModuleName>\Command\<ModuleName>Command::getDefaultName() => <ProjectType>\<ModuleName>\Command\<ModuleName>Command::class,
 - add to config/pipeline.php:
   $app->pipe(<ProjectType>\<ModuleName>\Middleware\<ModuleName>Middleware);
+- add to config/autoload/authorization.global.php (OR config/autoload/authorization-guards.global.php)
+  the routes registered in /path/to/project/src/<ModuleName>/src/RoutesDelegator.php
+- add to composer.json under autoload.psr-4:
+  "<ProjectType>\\<ModuleName>\\": "src/<ModuleName>/src/"
+- add to composer.json under autoload.psr-4:
+  "Core\\<ModuleName>\\": "src/Core/src/<ModuleName>/src/"
 - dump Composer autoloader by executing this command:
   composer dump
 - generate Doctrine migration:
   php ./vendor/bin/doctrine-migrations diff
-- Start adding logic to the new module files.
+- Run through each new file, verify their content and start adding logic to them.
 ```
 
 where `<ProjectType>` is the project type (**API**, **Admin**, **Frontend**, **Light** or **Queue**) and `<ModuleName>` is the name of the Module.

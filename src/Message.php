@@ -14,16 +14,16 @@ class Message
     public const ADD_CORE_CONFIG_PROVIDER_TO_CONFIG = 2;
     public const ADD_COMMAND_TO_CONFIG              = 3;
     public const ADD_MIDDLEWARE_TO_PIPELINE         = 4;
-    public const ADD_MODULE_TO_COMPOSER             = 5;
-    public const ADD_CORE_MODULE_TO_COMPOSER        = 6;
-    public const ADD_ROUTES_TO_AUTH_CONFIG          = 7;
+    public const ADD_ROUTES_TO_AUTH_CONFIG          = 5;
+    public const ADD_MODULE_TO_COMPOSER             = 6;
+    public const ADD_CORE_MODULE_TO_COMPOSER        = 7;
     public const DUMP_COMPOSER_AUTOLOADER           = 8;
     public const GENERATE_MIGRATION                 = 9;
     public const CHECK_FILES                        = 10;
 
     public function __construct(
         private string $message,
-        private int $priority,
+        private int $priority = 0,
     ) {
     }
 
@@ -152,7 +152,7 @@ class Message
 
     public static function addRoutesToAuthConfig(string $config, string $routesDelegator): self
     {
-        return (new self('add to ', self::ADD_MIDDLEWARE_TO_PIPELINE))
+        return (new self('add to ', self::ADD_ROUTES_TO_AUTH_CONFIG))
             ->append(
                 ColorEnum::colorize($config, ColorEnum::ForegroundBrightWhite)
             )
@@ -165,7 +165,10 @@ class Message
     public static function checkFiles(): self
     {
         return new self(
-            'Run through each new file, verify their content and start adding logic to them.',
+            ColorEnum::colorize(
+                'Run through each new file, verify their content and start adding logic to them.',
+                ColorEnum::ForegroundBrightRed
+            ),
             self::CHECK_FILES
         );
     }
