@@ -122,7 +122,7 @@ The prompt asks you whether you want to list resources:
 On confirmation, the process will create the following files:
 
 - `src/<ModuleName>/src/Collection/<ModuleName>Collection.php`: describes a resource-specific collection
-- `src/<ModuleName>/src/Handler/Get<ModuleName>CollectionHandler.php`: handles the resource collection representation
+- `src/<ModuleName>/src/Handler/<ModuleName>/Get<ModuleName>CollectionHandler.php`: handles the resource collection representation
 
 The matching Collection and ServiceInterface will be automatically injected into the Handler.
 
@@ -136,7 +136,7 @@ The prompt asks you whether you want to view resources:
 
 On confirmation, the process will create the following file:
 
-- `src/<ModuleName>/src/Handler/Get<ModuleName>ResourceHandler.php`: handles the resource representation
+- `src/<ModuleName>/src/Handler/<ModuleName>/Get<ModuleName>ResourceHandler.php`: handles the resource representation
 
 The matching ServiceInterface will be automatically injected into the Handler.
 
@@ -150,7 +150,7 @@ The prompt asks you whether you want to create resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Post<ModuleName>ResourceHandler.php`: handles the resource creation
+- `src/<ModuleName>/src/Handler/<ModuleName>/Post<ModuleName>ResourceHandler.php`: handles the resource creation
 - `src/<ModuleName>/src/InputFilter/Create<ModuleName>InputFilter.php`: request payload validators
 
 The matching InputFilter and ServiceInterface will be automatically injected into the Handler.
@@ -165,7 +165,7 @@ The prompt asks you whether you want to delete resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Delete<ModuleName>ResourceHandler.php`: handles the resource deletion
+- `src/<ModuleName>/src/Handler/<ModuleName>/Delete<ModuleName>ResourceHandler.php`: handles the resource deletion
 
 The matching ServiceInterface will be automatically injected into the Handler.
 
@@ -179,7 +179,7 @@ The prompt asks you whether you want to edit resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Patch<ModuleName>ResourceHandler.php`: handles the resource update
+- `src/<ModuleName>/src/Handler/<ModuleName>/Patch<ModuleName>ResourceHandler.php`: handles the resource update
 - `src/<ModuleName>/src/InputFilter/Edit<ModuleName>InputFilter.php`: request payload validators
 
 The matching InputFilter and ServiceInterface will be automatically injected into the Handler.
@@ -194,7 +194,7 @@ The prompt asks you whether you want to replace resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Put<ModuleName>ResourceHandler.php`: handles the resource replacement
+- `src/<ModuleName>/src/Handler/<ModuleName>/Put<ModuleName>ResourceHandler.php`: handles the resource replacement
 - `src/<ModuleName>/src/InputFilter/Replace<ModuleName>InputFilter.php`: request payload validators
 
 The matching InputFilter and ServiceInterface will be automatically injected into the Handler.
@@ -211,7 +211,7 @@ The prompt asks you whether you want to list resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Get<ModuleName>ListHandler.php`: renders the resource list page
+- `src/<ModuleName>/src/Handler/<ModuleName>/Get<ModuleName>ListHandler.php`: renders the resource list page
 - `src/<ModuleName>/templates/<ModuleName>/<ModuleName>-list.html.twig`: renders the resource list
 
 The matching ServiceInterface will be automatically injected into the Handler.
@@ -226,7 +226,7 @@ The prompt asks you whether you want to view resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Get<ModuleName>ViewHandler.php`: renders the resource page
+- `src/<ModuleName>/src/Handler/<ModuleName>/Get<ModuleName>ViewHandler.php`: renders the resource page
 - `src/<ModuleName>/templates/<ModuleName>/<ModuleName>-view.html.twig`: renders the resource
 
 The matching ServiceInterface will be automatically injected into the Handler.
@@ -241,8 +241,8 @@ The prompt asks you whether you want to create resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Get<ModuleName>CreateFormHandler.php`: renders the resource creation form page
-- `src/<ModuleName>/src/Handler/Post<ModuleName>CreateHandler.php`: handles the resource creation
+- `src/<ModuleName>/src/Handler/<ModuleName>/Get<ModuleName>CreateFormHandler.php`: renders the resource creation form page
+- `src/<ModuleName>/src/Handler/<ModuleName>/Post<ModuleName>CreateHandler.php`: handles the resource creation
 - `src/<ModuleName>/src/Form/Create<ModuleName>Form.php`: form fields
 - `src/<ModuleName>/src/InputFilter/Create<ModuleName>InputFilter.php`: form field validators
 - `src/<ModuleName>/templates/<ModuleName>/<ModuleName>-view.html.twig`: renders the resource creation form
@@ -259,8 +259,8 @@ The prompt asks you whether you want to delete resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Get<ModuleName>DeleteFormHandler.php`: renders the resource deletion form page
-- `src/<ModuleName>/src/Handler/Post<ModuleName>DeleteHandler.php`: handles the resource deletion
+- `src/<ModuleName>/src/Handler/<ModuleName>/Get<ModuleName>DeleteFormHandler.php`: renders the resource deletion form page
+- `src/<ModuleName>/src/Handler/<ModuleName>/Post<ModuleName>DeleteHandler.php`: handles the resource deletion
 - `src/<ModuleName>/src/Form/Delete<ModuleName>Form.php`: form fields
 - `src/<ModuleName>/src/InputFilter/Delete<ModuleName>InputFilter.php`: form field validators
 - `src/<ModuleName>/src/InputFilter/Input/ConfirmDelete<ModuleName>Input.php`: checkbox input for deletion confirmation
@@ -278,8 +278,8 @@ The prompt asks you whether you want to edit resources:
 
 On confirmation, the process will create the following files:
 
-- `src/<ModuleName>/src/Handler/Get<ModuleName>EditFormHandler.php`: renders the resource edit form page
-- `src/<ModuleName>/src/Handler/Post<ModuleName>EditHandler.php`: handles the resource update
+- `src/<ModuleName>/src/Handler/<ModuleName>/Get<ModuleName>EditFormHandler.php`: renders the resource edit form page
+- `src/<ModuleName>/src/Handler/<ModuleName>/Post<ModuleName>EditHandler.php`: handles the resource update
 - `src/<ModuleName>/src/Form/Edit<ModuleName>Form.php`: form fields
 - `src/<ModuleName>/src/InputFilter/Edit<ModuleName>InputFilter.php`: form field validators
 - `src/<ModuleName>/templates/<ModuleName>/<ModuleName>-edit-form.html.twig`: renders the resource creation form
