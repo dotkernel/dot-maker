@@ -2,8 +2,8 @@
 
 Inside the Dotkernel ecosystem, we strictly follow the following standards to make sure that we provide clean and easy-to-follow code:
 
-- [PSR-12](https://www.php-fig.org/psr/psr-12/): the extended coding style—for suggestive file names.
 - [PSR-4](https://www.php-fig.org/psr/psr-4/): the autoloading standard—for easy autoloading of classes.
+- [PSR-12](https://www.php-fig.org/psr/psr-12/): the extended coding style—for suggestive file names.
 
 ## Collections
 
