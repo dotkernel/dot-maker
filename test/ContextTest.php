@@ -45,7 +45,9 @@ class ContextTest extends TestCase
         $fileSystem = vfsStream::setup('root', 0644, [
             'composer.json' => '{"autoload":[]}',
         ]);
-        $this->expectExceptionMessage(sprintf('%s/composer.json: key "autoload"."psr-4" not found', $fileSystem->url()));
+        $this->expectExceptionMessage(
+            sprintf('%s/composer.json: key "autoload"."psr-4" not found', $fileSystem->url())
+        );
 
         new Context($fileSystem->url());
     }
