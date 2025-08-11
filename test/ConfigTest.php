@@ -2,11 +2,13 @@
 
 declare(strict_types=1);
 
-namespace DotTest\Maker\Unit;
+namespace DotTest\Maker;
 
 use Dot\Maker\Config;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
+
+use function sprintf;
 
 class ConfigTest extends TestCase
 {
