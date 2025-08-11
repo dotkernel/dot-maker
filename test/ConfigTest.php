@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dot\test;
+namespace DotTest\Maker\Unit;
 
 use Dot\Maker\Config;
 use org\bovigo\vfs\vfsStream;
@@ -10,34 +10,32 @@ use PHPUnit\Framework\TestCase;
 
 class ConfigTest extends TestCase
 {
-    private string $configPath;
+    public function testWillInstantiateWithoutConfigFile(): void
+    {
+        $config = new Config('/invalid/path');
+        $this->assertContainsOnlyInstancesOf(Config::class, [$config]);
+    }
 
-    protected function setup(): void
+    public function testConfigFileWithoutMakerKeyWillThrowError(): void
     {
         $fileSystem = vfsStream::setup('root', 0644, [
             'config' => [
                 'autoload' => [
-                    'maker.php' => <<<CFG
+                    'maker.local.php' => <<<CFG
 <?php
 
 declare(strict_types=1);
 
-use Dot\Maker\Maker;
-
-return [
-    Maker::class => [],
-];
+return [];
 CFG,
                 ],
             ],
         ]);
 
-        $this->configPath = $fileSystem->url() . '/config/autoload/maker.php';
-    }
-
-    public function testWillInstantiate(): void
-    {
-        $config = new Config($this->configPath);
+        $this->expectExceptionMessage(
+            sprintf('%s/%s: key "Maker::class" not found', $fileSystem->url(), Config::CONFIG_FILE)
+        );
+        $config = new Config($fileSystem->url());
         $this->assertContainsOnlyInstancesOf(Config::class, [$config]);
     }
 }

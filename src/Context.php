@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Maker;
 
-use Dot\Maker\IO\Output;
+use RuntimeException;
 
 use function array_key_exists;
 use function explode;
@@ -14,24 +14,39 @@ use function json_decode;
 use function sprintf;
 use function str_starts_with;
 
-class Context implements ContextInterface
+class Context
 {
+    public const NAMESPACE_ADMIN    = 'Admin';
+    public const NAMESPACE_API      = 'Api';
+    public const NAMESPACE_CORE     = 'Core';
+    public const NAMESPACE_FRONTEND = 'Frontend';
+    public const NAMESPACE_LIGHT    = 'Light';
+    public const NAMESPACE_QUEUE    = 'Queue';
+
     private bool $hasCore          = false;
     private ?string $projectType   = null;
     private ?string $rootNamespace = null;
 
-    public function __construct(string $composerPath)
-    {
+    /**
+     * @throws RuntimeException
+     */
+    public function __construct(
+        private readonly string $projectPath,
+    ) {
+        $composerPath = sprintf('%s/composer.json', $this->projectPath);
         if (! file_exists($composerPath)) {
-            Output::error(sprintf('composer.json not found at "%s"', $composerPath), true);
+            throw new RuntimeException(sprintf('%s: not found', $composerPath));
         }
 
         $composer = json_decode(file_get_contents($composerPath), true);
+        if ($composer === null) {
+            throw new RuntimeException(sprintf('%s: invalid JSON', $composerPath));
+        }
         if (! array_key_exists('autoload', $composer)) {
-            Output::error('composer.json: key "autoload" not found', true);
+            throw new RuntimeException(sprintf('%s: key "autoload" not found', $composerPath));
         }
         if (! array_key_exists('psr-4', $composer['autoload'])) {
-            Output::error('composer.json: key "psr-4" not found in "autoload"', true);
+            throw new RuntimeException(sprintf('%s: key "autoload"."psr-4" not found', $composerPath));
         }
 
         $coreNamespace = sprintf('%s\\', self::NAMESPACE_CORE);
@@ -48,7 +63,12 @@ class Context implements ContextInterface
         }
     }
 
-    public function getProjectType(): string
+    public function getProjectPath(): string
+    {
+        return $this->projectPath;
+    }
+
+    public function getProjectType(): ?string
     {
         return $this->projectType;
     }
@@ -63,8 +83,28 @@ class Context implements ContextInterface
         return $this->hasCore;
     }
 
+    public function isAdmin(): bool
+    {
+        return $this->projectType === self::NAMESPACE_ADMIN;
+    }
+
     public function isApi(): bool
     {
         return $this->projectType === self::NAMESPACE_API;
+    }
+
+    public function isFrontend(): bool
+    {
+        return $this->projectType === self::NAMESPACE_FRONTEND;
+    }
+
+    public function isLight(): bool
+    {
+        return $this->projectType === self::NAMESPACE_LIGHT;
+    }
+
+    public function isQueue(): bool
+    {
+        return $this->projectType === self::NAMESPACE_QUEUE;
     }
 }

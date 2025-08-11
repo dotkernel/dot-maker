@@ -6,7 +6,7 @@ namespace Dot\Maker\Type;
 
 use Dot\Maker\Component\Import;
 use Dot\Maker\Config;
-use Dot\Maker\ContextInterface;
+use Dot\Maker\Context;
 use Dot\Maker\FileSystem;
 use Dot\Maker\Message;
 
@@ -19,7 +19,7 @@ abstract class AbstractType implements TypeInterface
 
     public function __construct(
         protected FileSystem $fileSystem,
-        protected ContextInterface $context,
+        protected Context $context,
         protected Config $config,
         protected ?ModuleInterface $module = null,
     ) {
@@ -38,7 +38,7 @@ abstract class AbstractType implements TypeInterface
         return $this->config;
     }
 
-    public function getContext(): ContextInterface
+    public function getContext(): Context
     {
         return $this->context;
     }

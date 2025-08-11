@@ -13,7 +13,4 @@ if (file_exists($autoload)) {
     exit(1);
 }
 
-(new Maker(
-    sprintf('%s/composer.json', getcwd()),
-    sprintf('%s/config/autoload/maker.php', getcwd()),
-))($argv);
+(new Maker(getcwd()))($argv);

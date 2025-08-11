@@ -10,7 +10,7 @@ use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
 use Dot\Maker\Component\Method;
 use Dot\Maker\Component\Method\Constructor;
-use Dot\Maker\ContextInterface;
+use Dot\Maker\Context;
 use Dot\Maker\Exception\BadRequestException;
 use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
@@ -128,7 +128,7 @@ BODY);
         $format = Import::ROOT_APP_ENTITY_ABSTRACTENTITY;
 
         if ($this->context->hasCore()) {
-            return sprintf($format, ContextInterface::NAMESPACE_CORE);
+            return sprintf($format, Context::NAMESPACE_CORE);
         }
 
         return sprintf($format, $this->context->getRootNamespace());
@@ -139,7 +139,7 @@ BODY);
         $format = Import::ROOT_APP_ENTITY_TIMESTAMPSTRAIT;
 
         if ($this->context->hasCore()) {
-            return sprintf($format, ContextInterface::NAMESPACE_CORE);
+            return sprintf($format, Context::NAMESPACE_CORE);
         }
 
         return sprintf($format, $this->context->getRootNamespace());

@@ -128,9 +128,9 @@ class Message
                 ColorEnum::colorize(
                     sprintf(
                         '  "%s\\\\%s\\\\": "src/%s/src/%s/src/"',
-                        ContextInterface::NAMESPACE_CORE,
+                        Context::NAMESPACE_CORE,
                         $moduleName,
-                        ContextInterface::NAMESPACE_CORE,
+                        Context::NAMESPACE_CORE,
                         $moduleName
                     ),
                     ColorEnum::ForegroundBrightYellow

@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Dot\Maker\Type;
 
 use Dot\Maker\Config;
-use Dot\Maker\ContextInterface;
+use Dot\Maker\Context;
 use Dot\Maker\FileSystem;
 use Dot\Maker\Message;
 
@@ -15,7 +15,7 @@ interface TypeInterface
 
     public function getConfig(): Config;
 
-    public function getContext(): ContextInterface;
+    public function getContext(): Context;
 
     public function getFileSystem(): FileSystem;
 

@@ -8,6 +8,7 @@ use Dot\Maker\Component;
 use Dot\Maker\Exception\RuntimeException;
 
 use function file_exists;
+use function file_get_contents;
 use function file_put_contents;
 use function sprintf;
 
@@ -83,5 +84,10 @@ class File
     public function getPath(): string
     {
         return $this->path;
+    }
+
+    public function read(): false|string
+    {
+        return file_get_contents($this->path);
     }
 }

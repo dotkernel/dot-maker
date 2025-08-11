@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Component;
 
-use Dot\Maker\ContextInterface;
+use Dot\Maker\Context;
 
 use function sprintf;
 
@@ -72,7 +72,7 @@ class Import
     public const THROWABLE                                                   = 'Throwable';
 
     public function __construct(
-        private ContextInterface $context,
+        private Context $context,
     ) {
     }
 
@@ -86,7 +86,7 @@ class Import
         $format = self::ROOT_APP_INPUTFILTER_ABSTRACTINPUTFILTER;
 
         if ($this->context->hasCore()) {
-            return sprintf($format, ContextInterface::NAMESPACE_CORE);
+            return sprintf($format, Context::NAMESPACE_CORE);
         }
 
         return sprintf($format, $this->context->getRootNamespace());
@@ -102,7 +102,7 @@ class Import
         $format = self::ROOT_APP_REPOSITORY_ABSTRACTREPOSITORY;
 
         if ($this->context->hasCore()) {
-            return sprintf($format, ContextInterface::NAMESPACE_CORE);
+            return sprintf($format, Context::NAMESPACE_CORE);
         }
 
         return sprintf($format, $this->context->getRootNamespace());
@@ -113,7 +113,7 @@ class Import
         $format = self::ROOT_APP_HELPER_PAGINATOR;
 
         if ($this->context->hasCore()) {
-            return sprintf($format, ContextInterface::NAMESPACE_CORE);
+            return sprintf($format, Context::NAMESPACE_CORE);
         }
 
         return sprintf($format, $this->context->getRootNamespace());
@@ -124,7 +124,7 @@ class Import
         $format = self::ROOT_APP_MESSAGE;
 
         if ($this->context->hasCore()) {
-            return sprintf($format, ContextInterface::NAMESPACE_CORE);
+            return sprintf($format, Context::NAMESPACE_CORE);
         }
 
         return sprintf($format, $this->context->getRootNamespace());
@@ -138,7 +138,7 @@ class Import
     public function getConfigProviderFqcn(bool $core = false): string
     {
         if ($core && $this->context->hasCore()) {
-            $rootNamespace = ContextInterface::NAMESPACE_CORE;
+            $rootNamespace = Context::NAMESPACE_CORE;
         } else {
             $rootNamespace = $this->context->getRootNamespace();
         }
