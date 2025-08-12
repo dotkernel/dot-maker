@@ -15,7 +15,7 @@ class Help extends AbstractType
         Output::info('dot-maker');
         Output::writeLine();
         Output::writeLine(
-            (string) (new Message('Usage: '))
+            (string) (new Message('Usage:'))
                 ->appendLine(
                     ColorEnum::colorize('./vendor/bin/dot-maker', ColorEnum::ForegroundBrightWhite)
                 )

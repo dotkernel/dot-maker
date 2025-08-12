@@ -14,10 +14,13 @@ use const STDIN;
 
 class Input
 {
+    /** @var resource $stream */
+    private static $stream = STDIN;
+
     public static function prompt(string $prompt): string
     {
-        echo PHP_EOL . $prompt;
-        return trim(fgets(STDIN));
+        Output::write(PHP_EOL . $prompt);
+        return trim((string) fgets(self::$stream));
     }
 
     public static function confirm(string $prompt, string $default = 'yes'): bool
@@ -40,5 +43,13 @@ class Input
                 return true;
             }
         }
+    }
+
+    /**
+     * @param resource $stream
+     */
+    public static function setStream($stream): void
+    {
+        self::$stream = $stream;
     }
 }

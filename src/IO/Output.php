@@ -17,11 +17,16 @@ class Output
     public const SUCCESS = 0;
     public const FAILURE = 1;
 
+    /** @var resource $errorStream */
+    private static $errorStream = STDERR;
+    /** @var resource $outputStream */
+    private static $outputStream = STDOUT;
+
     public static function error(string $message, bool $exit = false): void
     {
         $message = ColorEnum::colorize($message, ColorEnum::ForegroundBrightRed);
 
-        fwrite(STDERR, $message . PHP_EOL);
+        fwrite(self::$errorStream, $message . PHP_EOL);
         $exit && exit(self::FAILURE);
     }
 
@@ -29,7 +34,7 @@ class Output
     {
         $message = ColorEnum::colorize($message, ColorEnum::ForegroundBrightBlue);
 
-        fwrite(STDOUT, $message . PHP_EOL);
+        fwrite(self::$outputStream, $message . PHP_EOL);
         $exit && exit(self::SUCCESS);
     }
 
@@ -37,7 +42,7 @@ class Output
     {
         $message = ColorEnum::colorize($message, ColorEnum::ForegroundBrightGreen);
 
-        fwrite(STDOUT, $message . PHP_EOL);
+        fwrite(self::$outputStream, $message . PHP_EOL);
         $exit && exit(self::SUCCESS);
     }
 
@@ -45,19 +50,35 @@ class Output
     {
         $message = ColorEnum::colorize($message, ColorEnum::ForegroundBrightYellow);
 
-        fwrite(STDOUT, $message . PHP_EOL);
+        fwrite(self::$outputStream, $message . PHP_EOL);
         $exit && exit(self::SUCCESS);
     }
 
     public static function write(string $message = '', bool $exit = false): void
     {
-        fwrite(STDOUT, $message);
+        fwrite(self::$outputStream, $message);
         $exit && exit(self::SUCCESS);
     }
 
     public static function writeLine(string $message = '', bool $exit = false): void
     {
-        fwrite(STDOUT, $message . PHP_EOL);
+        fwrite(self::$outputStream, $message . PHP_EOL);
         $exit && exit(self::SUCCESS);
+    }
+
+    /**
+     * @param resource $stream
+     */
+    public static function setErrorStream($stream): void
+    {
+        self::$errorStream = $stream;
+    }
+
+    /**
+     * @param resource $stream
+     */
+    public static function setOutputStream($stream): void
+    {
+        self::$outputStream = $stream;
     }
 }
