@@ -57,6 +57,6 @@ class InputFilter extends AbstractType implements FileInterface
             }
         }
 
-        return $this->fileSystem->form($name);
+        return $this->fileSystem->inputFilter($name);
     }
 }

@@ -45,7 +45,7 @@ class Input extends AbstractType implements FileInterface
     public function create(string $name): File
     {
         if (! $this->isValid($name)) {
-            throw new BadRequestException(sprintf('Input name: "%s"', $name));
+            throw new BadRequestException(sprintf('Invalid Input name: "%s"', $name));
         }
 
         $input = $this->fileSystem->input($name);
@@ -85,6 +85,8 @@ class Input extends AbstractType implements FileInterface
         \$this->getFilterChain()
             ->attachByName(StringTrim::class)
             ->attachByName(StripTags::class);
+
+        // chain more validators below
 
         \$this->getValidatorChain()
             ->attachByName(NotEmpty::class, [

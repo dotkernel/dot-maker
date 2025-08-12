@@ -57,11 +57,7 @@ class Command extends AbstractType implements FileInterface
 
         $command = $this->fileSystem->command($name);
         if ($command->exists()) {
-            throw new DuplicateFileException(sprintf(
-                'Command "%s" already exists at %s',
-                $command->getComponent()->getClassName(),
-                $command->getPath()
-            ));
+            throw DuplicateFileException::create($command);
         }
 
         $content = $this->render(

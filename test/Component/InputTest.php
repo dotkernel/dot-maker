@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DotTest\Maker\Component;
+namespace Component;
 
 use Dot\Maker\Component\Import;
 use Dot\Maker\Config;
@@ -10,7 +10,7 @@ use Dot\Maker\Context;
 use Dot\Maker\FileSystem;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
-use Dot\Maker\Type\Collection;
+use Dot\Maker\Type\Input as InputType;
 use Dot\Maker\Type\Module;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
@@ -18,13 +18,14 @@ use PHPUnit\Framework\TestCase;
 use function fclose;
 use function fopen;
 use function fwrite;
+use function implode;
 use function rewind;
 use function sprintf;
 use function stream_get_contents;
 
 use const PHP_EOL;
 
-class CollectionTest extends TestCase
+class InputTest extends TestCase
 {
     private Config $config;
     private Context $context;
@@ -78,13 +79,13 @@ class CollectionTest extends TestCase
 
     public function testCallToCreateWillFailWhenNameIsInvalid(): void
     {
-        $file = $this->fileSystem->collection($this->resourceName);
+        $file = $this->fileSystem->input($this->resourceName);
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
 
-        $this->expectExceptionMessage('Invalid Collection name: "."');
-        $collection = new Collection($this->fileSystem, $this->context, $this->config, $this->module);
-        $collection->create('.');
+        $this->expectExceptionMessage('Invalid Input name: "."');
+        $input = new InputType($this->fileSystem, $this->context, $this->config, $this->module);
+        $input->create('.');
 
         rewind($this->errorStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
@@ -94,7 +95,7 @@ class CollectionTest extends TestCase
 
     public function testCallToCreateWillFailWhenAlreadyExists(): void
     {
-        $file = $this->fileSystem->collection($this->resourceName);
+        $file = $this->fileSystem->input($this->resourceName);
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
         $file->create('...');
@@ -102,56 +103,26 @@ class CollectionTest extends TestCase
         $this->assertTrue($file->exists());
 
         $this->expectExceptionMessage(
-            sprintf('Class "BookStoreCollection" already exists at %s', $file->getPath())
+            sprintf('Class "BookStoreInput" already exists at %s', $file->getPath())
         );
-        $collection = new Collection($this->fileSystem, $this->context, $this->config, $this->module);
-        $collection->create('BookStoreCollection');
+        $input = new InputType($this->fileSystem, $this->context, $this->config, $this->module);
+        $input->create('BookStoreInput');
 
         rewind($this->errorStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
     }
 
-    public function testCallToInvokeWillOutputErrorAndWillNotCreateFileWhenProjectTypeIsNotAPI(): void
-    {
-        $root = vfsStream::setup('root', 0644, [
-            'composer.json' => '{
-                "autoload": {
-                    "psr-4": {
-                        "Admin\\\\App\\\\": "src/App/src/"
-                    }
-                }
-            }',
-        ]);
-
-        $this->context = new Context($root->url());
-
-        $file = $this->fileSystem->collection($this->resourceName);
-        $this->assertFileDoesNotExist($file->getPath());
-        $this->assertFalse($file->exists());
-
-        $collection = new Collection($this->fileSystem, $this->context, $this->config, $this->module);
-        $collection();
-
-        rewind($this->errorStream);
-        $this->assertStringContainsString(
-            'Collections can be created only in an API',
-            stream_get_contents($this->errorStream)
-        );
-        $this->assertFalse($file->exists());
-        $this->assertFileDoesNotExist($file->getPath());
-    }
-
     public function testCallToInvokeWillNotCreateFileOnEmptyInput(): void
     {
-        $file = $this->fileSystem->collection($this->resourceName);
+        $file = $this->fileSystem->input($this->resourceName);
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
 
         fwrite($this->inputStream, PHP_EOL);
         rewind($this->inputStream);
 
-        $collection = new Collection($this->fileSystem, $this->context, $this->config, $this->module);
-        $collection();
+        $input = new InputType($this->fileSystem, $this->context, $this->config, $this->module);
+        $input();
 
         rewind($this->errorStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
@@ -161,33 +132,33 @@ class CollectionTest extends TestCase
 
     public function testCallToInvokeWillOutputErrorAndWillNotCreateFileWhenNameIsInvalid(): void
     {
-        $file = $this->fileSystem->collection($this->resourceName);
+        $file = $this->fileSystem->input($this->resourceName);
         $this->assertFalse($file->exists());
         $this->assertFileDoesNotExist($file->getPath());
 
         fwrite($this->inputStream, '.' . PHP_EOL);
         rewind($this->inputStream);
 
-        $collection = new Collection($this->fileSystem, $this->context, $this->config, $this->module);
-        $collection();
+        $input = new InputType($this->fileSystem, $this->context, $this->config, $this->module);
+        $input();
 
         rewind($this->errorStream);
-        $this->assertStringContainsString('Invalid Collection name: "."', stream_get_contents($this->errorStream));
+        $this->assertStringContainsString('Invalid Input name: "."', stream_get_contents($this->errorStream));
         $this->assertFalse($file->exists());
         $this->assertFileDoesNotExist($file->getPath());
     }
 
     public function testCallToInvokeWillSucceedWhenNameIsValid(): void
     {
-        $file = $this->fileSystem->collection($this->resourceName);
+        $file = $this->fileSystem->input($this->resourceName);
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
 
         fwrite($this->inputStream, $this->resourceName . PHP_EOL);
         rewind($this->inputStream);
 
-        $collection = new Collection($this->fileSystem, $this->context, $this->config, $this->module);
-        $collection();
+        $input = new InputType($this->fileSystem, $this->context, $this->config, $this->module);
+        $input();
 
         $this->assertFileExists($file->getPath());
         $this->assertTrue($file->exists());
@@ -197,12 +168,12 @@ class CollectionTest extends TestCase
 
     public function testCallToCreateWillSucceedWhenNameIsValid(): void
     {
-        $file = $this->fileSystem->collection($this->resourceName);
+        $file = $this->fileSystem->input($this->resourceName);
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
 
-        $collection = new Collection($this->fileSystem, $this->context, $this->config, $this->module);
-        $type       = $collection->create($this->resourceName);
+        $input = new InputType($this->fileSystem, $this->context, $this->config, $this->module);
+        $type  = $input->create($this->resourceName);
 
         $this->assertFileExists($file->getPath());
         $this->assertTrue($file->exists());
@@ -213,7 +184,7 @@ class CollectionTest extends TestCase
 
         rewind($this->outputStream);
         $this->assertStringContainsString(
-            sprintf('Created Collection: %s', $type->getPath()),
+            sprintf('Created Input: %s', $type->getPath()),
             stream_get_contents($this->outputStream)
         );
 
@@ -222,17 +193,44 @@ class CollectionTest extends TestCase
 
     private function dataProvider(): string
     {
+        $uses = [
+            sprintf('use %s;', $this->import->getAppMessageFqcn()),
+            sprintf('use %s;', Import::LAMINAS_FILTER_STRINGTRIM),
+            sprintf('use %s;', Import::LAMINAS_FILTER_STRIPTAGS),
+            sprintf('use %s;', Import::LAMINAS_INPUTFILTER_INPUT),
+            sprintf('use %s;', Import::LAMINAS_VALIDATOR_NOTEMPTY),
+        ];
+        $uses = implode(PHP_EOL, $uses);
+
         return <<<BODY
 <?php
 
 declare(strict_types=1);
 
-namespace Api\ModuleName\Collection;
+namespace Api\ModuleName\InputFilter\Input;
 
-use {$this->import->getResourceCollectionFqcn()};
+{$uses}
 
-class BookStoreCollection extends ResourceCollection
+class BookStoreInput extends Input
 {
+    public function __construct(
+        ?string \$name = null,
+        bool \$isRequired = true,
+    ) {
+        parent::__construct(\$name);
+
+        \$this->setRequired(\$isRequired);
+        \$this->getFilterChain()
+            ->attachByName(StringTrim::class)
+            ->attachByName(StripTags::class);
+
+        // chain more validators below
+
+        \$this->getValidatorChain()
+            ->attachByName(NotEmpty::class, [
+                'message' => Message::VALIDATOR_REQUIRED_FIELD,
+            ], true);
+    }
 }
 
 BODY;
