@@ -2,35 +2,32 @@
 
 declare(strict_types=1);
 
-namespace Component;
+namespace DotTest\Maker\Type;
 
-use Dot\Maker\Component\Import;
 use Dot\Maker\Config;
 use Dot\Maker\Context;
 use Dot\Maker\FileSystem;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
-use Dot\Maker\Type\Input as InputType;
 use Dot\Maker\Type\Module;
+use Dot\Maker\Type\Repository;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
 use function fopen;
 use function fwrite;
-use function implode;
 use function rewind;
 use function sprintf;
 use function stream_get_contents;
 
 use const PHP_EOL;
 
-class InputTest extends TestCase
+class RepositoryTest extends TestCase
 {
     private Config $config;
     private Context $context;
     private FileSystem $fileSystem;
-    private Import $import;
     private Module $module;
     private string $moduleName   = 'ModuleName';
     private string $resourceName = 'BookStore';
@@ -48,7 +45,8 @@ class InputTest extends TestCase
             'composer.json' => '{
                 "autoload": {
                     "psr-4": {
-                        "Api\\\\App\\\\": "src/App/src/"
+                        "Api\\\\App\\\\": "src/App/src/",
+                        "Core\\\\App\\\\": "src/Core/src/App/src/"
                     }
                 }
             }',
@@ -57,7 +55,6 @@ class InputTest extends TestCase
         $this->config     = new Config($root->url());
         $this->context    = new Context($root->url());
         $this->fileSystem = (new FileSystem($this->context))->setModuleName($this->moduleName);
-        $this->import     = new Import($this->context);
         $this->module     = new Module($this->fileSystem, $this->context, $this->config);
 
         $this->outputStream = fopen('php://memory', 'w+');
@@ -79,13 +76,13 @@ class InputTest extends TestCase
 
     public function testCallToCreateWillFailWhenNameIsInvalid(): void
     {
-        $file = $this->fileSystem->input($this->resourceName);
+        $file = $this->fileSystem->repository($this->resourceName);
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
 
-        $this->expectExceptionMessage('Invalid Input name: "."');
-        $input = new InputType($this->fileSystem, $this->context, $this->config, $this->module);
-        $input->create('.');
+        $this->expectExceptionMessage('Invalid Repository name: "."');
+        $repository = new Repository($this->fileSystem, $this->context, $this->config, $this->module);
+        $repository->create('.');
 
         rewind($this->errorStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
@@ -95,7 +92,7 @@ class InputTest extends TestCase
 
     public function testCallToCreateWillFailWhenAlreadyExists(): void
     {
-        $file = $this->fileSystem->input($this->resourceName);
+        $file = $this->fileSystem->repository($this->resourceName);
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
         $file->create('...');
@@ -103,10 +100,10 @@ class InputTest extends TestCase
         $this->assertTrue($file->exists());
 
         $this->expectExceptionMessage(
-            sprintf('Class "BookStoreInput" already exists at %s', $file->getPath())
+            sprintf('Class "BookStoreRepository" already exists at %s', $file->getPath())
         );
-        $input = new InputType($this->fileSystem, $this->context, $this->config, $this->module);
-        $input->create('BookStoreInput');
+        $repository = new Repository($this->fileSystem, $this->context, $this->config, $this->module);
+        $repository->create($this->resourceName);
 
         rewind($this->errorStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
@@ -114,15 +111,15 @@ class InputTest extends TestCase
 
     public function testCallToInvokeWillNotCreateFileOnEmptyInput(): void
     {
-        $file = $this->fileSystem->input($this->resourceName);
+        $file = $this->fileSystem->repository($this->resourceName);
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
 
         fwrite($this->inputStream, PHP_EOL);
         rewind($this->inputStream);
 
-        $input = new InputType($this->fileSystem, $this->context, $this->config, $this->module);
-        $input();
+        $repository = new Repository($this->fileSystem, $this->context, $this->config, $this->module);
+        $repository();
 
         rewind($this->errorStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
@@ -132,48 +129,54 @@ class InputTest extends TestCase
 
     public function testCallToInvokeWillOutputErrorAndWillNotCreateFileWhenNameIsInvalid(): void
     {
-        $file = $this->fileSystem->input($this->resourceName);
+        $file = $this->fileSystem->repository($this->resourceName);
         $this->assertFalse($file->exists());
         $this->assertFileDoesNotExist($file->getPath());
 
         fwrite($this->inputStream, '.' . PHP_EOL);
         rewind($this->inputStream);
 
-        $input = new InputType($this->fileSystem, $this->context, $this->config, $this->module);
-        $input();
+        $repository = new Repository($this->fileSystem, $this->context, $this->config, $this->module);
+        $repository();
 
         rewind($this->errorStream);
-        $this->assertStringContainsString('Invalid Input name: "."', stream_get_contents($this->errorStream));
+        $this->assertStringContainsString('Invalid Repository name: "."', stream_get_contents($this->errorStream));
         $this->assertFalse($file->exists());
         $this->assertFileDoesNotExist($file->getPath());
     }
 
-    public function testCallToInvokeWillSucceedWhenNameIsValid(): void
+    /**
+     * @dataProvider dataProvider
+     */
+    public function testCallToInvokeWillSucceedWhenNameIsValid(string $expected): void
     {
-        $file = $this->fileSystem->input($this->resourceName);
+        $file = $this->fileSystem->repository($this->resourceName);
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
 
         fwrite($this->inputStream, $this->resourceName . PHP_EOL);
         rewind($this->inputStream);
 
-        $input = new InputType($this->fileSystem, $this->context, $this->config, $this->module);
-        $input();
+        $repository = new Repository($this->fileSystem, $this->context, $this->config, $this->module);
+        $repository();
 
         $this->assertFileExists($file->getPath());
         $this->assertTrue($file->exists());
 
-        $this->assertSame($this->dataProvider(), $file->read());
+        $this->assertSame($expected, $file->read());
     }
 
-    public function testCallToCreateWillSucceedWhenNameIsValid(): void
+    /**
+     * @dataProvider dataProvider
+     */
+    public function testCallToCreateWillSucceedWhenNameIsValid(string $expected): void
     {
-        $file = $this->fileSystem->input($this->resourceName);
+        $file = $this->fileSystem->repository($this->resourceName);
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
 
-        $input = new InputType($this->fileSystem, $this->context, $this->config, $this->module);
-        $type  = $input->create($this->resourceName);
+        $repository = new Repository($this->fileSystem, $this->context, $this->config, $this->module);
+        $type       = $repository->create($this->resourceName);
 
         $this->assertFileExists($file->getPath());
         $this->assertTrue($file->exists());
@@ -184,55 +187,60 @@ class InputTest extends TestCase
 
         rewind($this->outputStream);
         $this->assertStringContainsString(
-            sprintf('Created Input: %s', $type->getPath()),
+            sprintf('Created Repository: %s', $type->getPath()),
             stream_get_contents($this->outputStream)
         );
 
-        $this->assertSame($this->dataProvider(), $type->read());
+        $this->assertSame($expected, $type->read());
     }
 
-    private function dataProvider(): string
+    public static function dataProvider(): array
     {
-        $uses = [
-            sprintf('use %s;', $this->import->getAppMessageFqcn()),
-            sprintf('use %s;', Import::LAMINAS_FILTER_STRINGTRIM),
-            sprintf('use %s;', Import::LAMINAS_FILTER_STRIPTAGS),
-            sprintf('use %s;', Import::LAMINAS_INPUTFILTER_INPUT),
-            sprintf('use %s;', Import::LAMINAS_VALIDATOR_NOTEMPTY),
-        ];
-        $uses = implode(PHP_EOL, $uses);
-
-        return <<<BODY
+        $repository = <<<BODY
 <?php
 
 declare(strict_types=1);
 
-namespace Api\ModuleName\InputFilter\Input;
+namespace Core\ModuleName\Repository;
 
-{$uses}
+use Core\App\Repository\AbstractRepository;
+use Core\ModuleName\Entity\BookStore;
+use Doctrine\ORM\QueryBuilder;
+use Dot\DependencyInjection\Attribute\Entity;
 
-class BookStoreInput extends Input
+#[Entity(name: BookStore::class)]
+class BookStoreRepository extends AbstractRepository
 {
-    public function __construct(
-        ?string \$name = null,
-        bool \$isRequired = true,
-    ) {
-        parent::__construct(\$name);
+    /**
+     * @param array<non-empty-string, mixed> \$params
+     * @param array<non-empty-string, mixed> \$filters
+     */
+    public function getBookStores(
+        array \$params = [],
+        array \$filters = [],
+    ): QueryBuilder {
+        \$queryBuilder = \$this
+            ->getQueryBuilder()
+            ->select(['bookStore'])
+            ->from(BookStore::class, 'bookStore');
 
-        \$this->setRequired(\$isRequired);
-        \$this->getFilterChain()
-            ->attachByName(StringTrim::class)
-            ->attachByName(StripTags::class);
+        // add filters
 
-        // chain more validators below
+        \$queryBuilder
+            ->orderBy(\$params['sort'], \$params['dir'])
+            ->setFirstResult(\$params['offset'])
+            ->setMaxResults(\$params['limit'])
+            ->groupBy('bookStore.uuid');
+        \$queryBuilder->getQuery()->useQueryCache(true);
 
-        \$this->getValidatorChain()
-            ->attachByName(NotEmpty::class, [
-                'message' => Message::VALIDATOR_REQUIRED_FIELD,
-            ], true);
+        return \$queryBuilder;
     }
 }
 
 BODY;
+
+        return [
+            [$repository],
+        ];
     }
 }

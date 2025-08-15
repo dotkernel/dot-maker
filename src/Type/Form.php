@@ -46,23 +46,26 @@ class Form extends AbstractType implements FileInterface
     {
         $name = preg_replace('/Form$/', '', $name);
 
-        if (! $this->context->isApi()) {
-            $plural = Component::pluralize($name);
-            if (Input::confirm(sprintf('Allow creating %s?', $plural))) {
-                $this->component(TypeEnum::FormCreateResource)->create($name);
-                $this->component(TypeEnum::InputFilterCreateResource)->create($name);
-            }
-            if (Input::confirm(sprintf('Allow deleting %s?', $plural))) {
-                $this->component(TypeEnum::FormDeleteResource)->create($name);
-                $this->component(TypeEnum::InputFilterDeleteResource)->create($name);
-                $this->component(TypeEnum::InputConfirmDelete)->create($name);
-            }
-            if (Input::confirm(sprintf('Allow editing %s?', $plural))) {
-                $this->component(TypeEnum::FormEditResource)->create($name);
-                $this->component(TypeEnum::InputFilterEditResource)->create($name);
-            }
+        $form = $this->fileSystem->form($name);
+        if ($this->context->isApi()) {
+            return $form;
         }
 
-        return $this->fileSystem->form($name);
+        $plural = Component::pluralize($name);
+        if (Input::confirm(sprintf('Allow creating %s?', $plural))) {
+            $this->component(TypeEnum::FormCreateResource)->create($name);
+            $this->component(TypeEnum::InputFilterCreateResource)->create($name);
+        }
+        if (Input::confirm(sprintf('Allow deleting %s?', $plural))) {
+            $this->component(TypeEnum::FormDeleteResource)->create($name);
+            $this->component(TypeEnum::InputFilterDeleteResource)->create($name);
+            $this->component(TypeEnum::InputConfirmDelete)->create($name);
+        }
+        if (Input::confirm(sprintf('Allow editing %s?', $plural))) {
+            $this->component(TypeEnum::FormEditResource)->create($name);
+            $this->component(TypeEnum::InputFilterEditResource)->create($name);
+        }
+
+        return $form;
     }
 }

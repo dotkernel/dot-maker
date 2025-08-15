@@ -42,18 +42,25 @@ class InputFilter extends AbstractType implements FileInterface
         $name = preg_replace('/InputFilter$/', '', $name);
 
         $plural = Component::pluralize($name);
-        if (Input::confirm(sprintf('Allow creating %s?', $plural))) {
-            $this->component(TypeEnum::InputFilterCreateResource)->create($name);
-        }
-        if (Input::confirm(sprintf('Allow deleting %s?', $plural))) {
-            $this->component(TypeEnum::InputFilterDeleteResource)->create($name);
-        }
-        if (Input::confirm(sprintf('Allow editing %s?', $plural))) {
-            $this->component(TypeEnum::InputFilterEditResource)->create($name);
-        }
         if ($this->context->isApi()) {
+            if (Input::confirm(sprintf('Allow creating %s?', $plural))) {
+                $this->component(TypeEnum::InputFilterCreateResource)->create($name);
+            }
+            if (Input::confirm(sprintf('Allow editing %s?', $plural))) {
+                $this->component(TypeEnum::InputFilterEditResource)->create($name);
+            }
             if (Input::confirm(sprintf('Allow replacing %s?', $plural))) {
                 $this->component(TypeEnum::InputFilterReplaceResource)->create($name);
+            }
+        } else {
+            if (Input::confirm(sprintf('Allow creating %s?', $plural))) {
+                $this->component(TypeEnum::InputFilterCreateResource)->create($name);
+            }
+            if (Input::confirm(sprintf('Allow deleting %s?', $plural))) {
+                $this->component(TypeEnum::InputFilterDeleteResource)->create($name);
+            }
+            if (Input::confirm(sprintf('Allow editing %s?', $plural))) {
+                $this->component(TypeEnum::InputFilterEditResource)->create($name);
             }
         }
 

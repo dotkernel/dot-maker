@@ -25,5 +25,11 @@ interface TypeInterface
 
     public function isModule(): bool;
 
+    public function setConfig(Config $config): static;
+
+    public function setContext(Context $context): static;
+
+    public function setFileSystem(FileSystem $fileSystem): static;
+
     public function setModule(ModuleInterface $module): self;
 }

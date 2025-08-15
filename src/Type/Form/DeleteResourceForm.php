@@ -100,6 +100,8 @@ COMM
 
             )
             ->setBody(<<<BODY
+        // add more form elements
+
         \$this->add(
             (new Checkbox('confirmation'))
                 ->setCheckedValue('yes')
@@ -110,7 +112,7 @@ COMM
                 ->setValue('no')
         );
         \$this->add(
-            (new Csrf('{$entity->toCamelCase()}DeleteCsrf'))
+            (new Csrf('delete{$entity->getClassName()}Csrf'))
                 ->setOptions([
                     'csrf_options' => ['timeout' => 3600, 'session' => new Container()],
                 ])

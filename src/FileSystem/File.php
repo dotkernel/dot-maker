@@ -36,9 +36,7 @@ class File
     {
         $this->ensureParentDirectoryExists();
 
-        $created = file_put_contents($this->path, $data);
-
-        if ($created === false) {
+        if (! $this->write($data)) {
             throw new RuntimeException(
                 sprintf('Could not create file "%s"', $this->path)
             );
@@ -89,5 +87,10 @@ class File
     public function read(): false|string
     {
         return file_get_contents($this->path);
+    }
+
+    public function write(string $data): bool
+    {
+        return (bool) file_put_contents($this->path, $data);
     }
 }

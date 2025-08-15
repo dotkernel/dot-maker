@@ -2,14 +2,15 @@
 
 declare(strict_types=1);
 
-namespace Component;
+namespace DotTest\Maker\Type;
 
+use Dot\Maker\Component\Import;
 use Dot\Maker\Config;
 use Dot\Maker\Context;
 use Dot\Maker\FileSystem;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
-use Dot\Maker\Type\Entity;
+use Dot\Maker\Type\Collection;
 use Dot\Maker\Type\Module;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
@@ -23,11 +24,12 @@ use function stream_get_contents;
 
 use const PHP_EOL;
 
-class EntityTest extends TestCase
+class CollectionTest extends TestCase
 {
     private Config $config;
     private Context $context;
     private FileSystem $fileSystem;
+    private Import $import;
     private Module $module;
     private string $moduleName   = 'ModuleName';
     private string $resourceName = 'BookStore';
@@ -45,8 +47,7 @@ class EntityTest extends TestCase
             'composer.json' => '{
                 "autoload": {
                     "psr-4": {
-                        "Api\\\\App\\\\": "src/App/src/",
-                        "Core\\\\App\\\\": "src/Core/src/App/src/"
+                        "Api\\\\App\\\\": "src/App/src/"
                     }
                 }
             }',
@@ -55,6 +56,7 @@ class EntityTest extends TestCase
         $this->config     = new Config($root->url());
         $this->context    = new Context($root->url());
         $this->fileSystem = (new FileSystem($this->context))->setModuleName($this->moduleName);
+        $this->import     = new Import($this->context);
         $this->module     = new Module($this->fileSystem, $this->context, $this->config);
 
         $this->outputStream = fopen('php://memory', 'w+');
@@ -76,13 +78,13 @@ class EntityTest extends TestCase
 
     public function testCallToCreateWillFailWhenNameIsInvalid(): void
     {
-        $file = $this->fileSystem->entity($this->resourceName);
+        $file = $this->fileSystem->collection($this->resourceName);
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
 
-        $this->expectExceptionMessage('Invalid Entity name: "."');
-        $entity = new Entity($this->fileSystem, $this->context, $this->config, $this->module);
-        $entity->create('.');
+        $this->expectExceptionMessage('Invalid Collection name: "."');
+        $collection = new Collection($this->fileSystem, $this->context, $this->config, $this->module);
+        $collection->create('.');
 
         rewind($this->errorStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
@@ -92,7 +94,7 @@ class EntityTest extends TestCase
 
     public function testCallToCreateWillFailWhenAlreadyExists(): void
     {
-        $file = $this->fileSystem->entity($this->resourceName);
+        $file = $this->fileSystem->collection($this->resourceName);
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
         $file->create('...');
@@ -100,26 +102,56 @@ class EntityTest extends TestCase
         $this->assertTrue($file->exists());
 
         $this->expectExceptionMessage(
-            sprintf('Class "BookStore" already exists at %s', $file->getPath())
+            sprintf('Class "BookStoreCollection" already exists at %s', $file->getPath())
         );
-        $entity = new Entity($this->fileSystem, $this->context, $this->config, $this->module);
-        $entity->create($this->resourceName);
+        $collection = new Collection($this->fileSystem, $this->context, $this->config, $this->module);
+        $collection->create('BookStoreCollection');
 
         rewind($this->errorStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
     }
 
+    public function testCallToInvokeWillOutputErrorAndWillNotCreateFileWhenProjectTypeIsNotAPI(): void
+    {
+        $root = vfsStream::setup('root', 0644, [
+            'composer.json' => '{
+                "autoload": {
+                    "psr-4": {
+                        "Admin\\\\App\\\\": "src/App/src/"
+                    }
+                }
+            }',
+        ]);
+
+        $this->context = new Context($root->url());
+
+        $file = $this->fileSystem->collection($this->resourceName);
+        $this->assertFileDoesNotExist($file->getPath());
+        $this->assertFalse($file->exists());
+
+        $collection = new Collection($this->fileSystem, $this->context, $this->config, $this->module);
+        $collection();
+
+        rewind($this->errorStream);
+        $this->assertStringContainsString(
+            'Collections can be created only in an API',
+            stream_get_contents($this->errorStream)
+        );
+        $this->assertFalse($file->exists());
+        $this->assertFileDoesNotExist($file->getPath());
+    }
+
     public function testCallToInvokeWillNotCreateFileOnEmptyInput(): void
     {
-        $file = $this->fileSystem->entity($this->resourceName);
+        $file = $this->fileSystem->collection($this->resourceName);
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
 
         fwrite($this->inputStream, PHP_EOL);
         rewind($this->inputStream);
 
-        $entity = new Entity($this->fileSystem, $this->context, $this->config, $this->module);
-        $entity();
+        $collection = new Collection($this->fileSystem, $this->context, $this->config, $this->module);
+        $collection();
 
         rewind($this->errorStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
@@ -129,54 +161,48 @@ class EntityTest extends TestCase
 
     public function testCallToInvokeWillOutputErrorAndWillNotCreateFileWhenNameIsInvalid(): void
     {
-        $file = $this->fileSystem->entity($this->resourceName);
+        $file = $this->fileSystem->collection($this->resourceName);
         $this->assertFalse($file->exists());
         $this->assertFileDoesNotExist($file->getPath());
 
         fwrite($this->inputStream, '.' . PHP_EOL);
         rewind($this->inputStream);
 
-        $entity = new Entity($this->fileSystem, $this->context, $this->config, $this->module);
-        $entity();
+        $collection = new Collection($this->fileSystem, $this->context, $this->config, $this->module);
+        $collection();
 
         rewind($this->errorStream);
-        $this->assertStringContainsString('Invalid Entity name: "."', stream_get_contents($this->errorStream));
+        $this->assertStringContainsString('Invalid Collection name: "."', stream_get_contents($this->errorStream));
         $this->assertFalse($file->exists());
         $this->assertFileDoesNotExist($file->getPath());
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
-    public function testCallToInvokeWillSucceedWhenNameIsValid(string $expected): void
+    public function testCallToInvokeWillSucceedWhenNameIsValid(): void
     {
-        $file = $this->fileSystem->entity($this->resourceName);
+        $file = $this->fileSystem->collection($this->resourceName);
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
 
         fwrite($this->inputStream, $this->resourceName . PHP_EOL);
         rewind($this->inputStream);
 
-        $entity = new Entity($this->fileSystem, $this->context, $this->config, $this->module);
-        $entity();
+        $collection = new Collection($this->fileSystem, $this->context, $this->config, $this->module);
+        $collection();
 
         $this->assertFileExists($file->getPath());
         $this->assertTrue($file->exists());
 
-        $this->assertSame($expected, $file->read());
+        $this->assertSame($this->dataProvider(), $file->read());
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
-    public function testCallToCreateWillSucceedWhenNameIsValid(string $expected): void
+    public function testCallToCreateWillSucceedWhenNameIsValid(): void
     {
-        $file = $this->fileSystem->entity($this->resourceName);
+        $file = $this->fileSystem->collection($this->resourceName);
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
 
-        $entity = new Entity($this->fileSystem, $this->context, $this->config, $this->module);
-        $type   = $entity->create($this->resourceName);
+        $collection = new Collection($this->fileSystem, $this->context, $this->config, $this->module);
+        $type       = $collection->create($this->resourceName);
 
         $this->assertFileExists($file->getPath());
         $this->assertTrue($file->exists());
@@ -187,63 +213,28 @@ class EntityTest extends TestCase
 
         rewind($this->outputStream);
         $this->assertStringContainsString(
-            sprintf('Created Entity: %s', $type->getPath()),
+            sprintf('Created Collection: %s', $type->getPath()),
             stream_get_contents($this->outputStream)
         );
 
-        $this->assertSame($expected, $type->read());
+        $this->assertSame($this->dataProvider(), $type->read());
     }
 
-    public static function dataProvider(): array
+    private function dataProvider(): string
     {
-        $entity = <<<BODY
+        return <<<BODY
 <?php
 
 declare(strict_types=1);
 
-namespace Core\ModuleName\Entity;
+namespace Api\ModuleName\Collection;
 
-use Core\App\Entity\AbstractEntity;
-use Core\App\Entity\TimestampsTrait;
-use Core\ModuleName\Repository\BookStoreRepository;
-use DateTimeImmutable;
-use Doctrine\ORM\Mapping as ORM;
+use {$this->import->getResourceCollectionFqcn()};
 
-#[ORM\Entity(repositoryClass: BookStoreRepository::class)]
-#[ORM\Table(name: 'book_store')]
-#[ORM\HasLifecycleCallbacks]
-class BookStore extends AbstractEntity
+class BookStoreCollection extends ResourceCollection
 {
-    use TimestampsTrait;
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        \$this->created();
-    }
-
-    /**
-     * @return array{
-     *      uuid: non-empty-string,
-     *      created: DateTimeImmutable,
-     *      updated: DateTimeImmutable|null,
-     * }
-     */
-    public function getArrayCopy(): array
-    {
-        return [
-            'uuid'    => \$this->uuid->toString(),
-            'created' => \$this->created,
-            'updated' => \$this->updated,
-        ];
-    }
 }
 
 BODY;
-
-        return [
-            [$entity],
-        ];
     }
 }

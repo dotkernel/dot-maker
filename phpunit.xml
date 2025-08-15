@@ -6,6 +6,7 @@
     <testsuites>
         <testsuite name="dot-maker test suite">
             <directory>./test</directory>
+            <exclude>./test/Helper.php</exclude>
         </testsuite>
     </testsuites>
     <coverage/>

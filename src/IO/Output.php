@@ -7,6 +7,7 @@ namespace Dot\Maker\IO;
 use Dot\Maker\ColorEnum;
 
 use function fwrite;
+use function is_resource;
 
 use const PHP_EOL;
 use const STDERR;
@@ -67,11 +68,35 @@ class Output
     }
 
     /**
+     * @return resource
+     */
+    public static function getErrorStream()
+    {
+        if (! is_resource(self::$errorStream)) {
+            self::$errorStream = STDERR;
+        }
+
+        return self::$errorStream;
+    }
+
+    /**
      * @param resource $stream
      */
     public static function setErrorStream($stream): void
     {
         self::$errorStream = $stream;
+    }
+
+    /**
+     * @return resource
+     */
+    public static function getOutputStream()
+    {
+        if (! is_resource(self::$outputStream)) {
+            self::$outputStream = STDOUT;
+        }
+
+        return self::$outputStream;
     }
 
     /**

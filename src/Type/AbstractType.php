@@ -78,6 +78,27 @@ abstract class AbstractType implements TypeInterface
         return (bool) preg_match('/^[a-z0-9]+$/i', $name);
     }
 
+    public function setConfig(Config $config): static
+    {
+        $this->config = $config;
+
+        return $this;
+    }
+
+    public function setContext(Context $context): static
+    {
+        $this->context = $context;
+
+        return $this;
+    }
+
+    public function setFileSystem(FileSystem $fileSystem): static
+    {
+        $this->fileSystem = $fileSystem;
+
+        return $this;
+    }
+
     public function setModule(?ModuleInterface $module): static
     {
         $this->module = $module;

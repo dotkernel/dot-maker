@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Dot\Maker\IO;
 
 use function fgets;
+use function is_resource;
 use function sprintf;
 use function strtolower;
 use function trim;
@@ -43,6 +44,18 @@ class Input
                 return true;
             }
         }
+    }
+
+    /**
+     * @return resource
+     */
+    public static function getStream()
+    {
+        if (! is_resource(self::$stream)) {
+            self::$stream = STDIN;
+        }
+
+        return self::$stream;
     }
 
     /**

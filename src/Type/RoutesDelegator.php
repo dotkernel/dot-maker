@@ -13,7 +13,6 @@ use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Output;
-use Throwable;
 
 use function sprintf;
 
@@ -21,15 +20,6 @@ use const PHP_EOL;
 
 class RoutesDelegator extends AbstractType implements FileInterface
 {
-    public function __invoke(): void
-    {
-        try {
-            $this->create('RoutesDelegator');
-        } catch (Throwable $exception) {
-            Output::error($exception->getMessage());
-        }
-    }
-
     /**
      * @throws DuplicateFileException
      * @throws RuntimeException
@@ -43,7 +33,6 @@ class RoutesDelegator extends AbstractType implements FileInterface
 
         $content = $this->render(
             $routesDelegator->getComponent(),
-            $this->fileSystem->module($name)->getComponent(),
             $this->fileSystem->entity($name)->getComponent(),
             $this->fileSystem->apiDeleteResourceHandler($name),
             $this->fileSystem->apiGetResourceHandler($name),
@@ -70,7 +59,6 @@ class RoutesDelegator extends AbstractType implements FileInterface
 
     public function render(
         Component $routesDelegator,
-        Component $module,
         Component $entity,
         File $apiDeleteResourceHandler,
         File $apiGetResourceHandler,
@@ -126,7 +114,7 @@ COMM)
                     '->delete(\'/%s/\' . $uuid, %s, \'%s::delete-%s\')',
                     $entity->toKebabCase(),
                     $apiDeleteResourceHandler->getComponent()->getClassString(),
-                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
                     $entity->toKebabCase(),
                 ),
                 12
@@ -140,7 +128,7 @@ COMM)
                     '->get(\'/%s/\' . $uuid, %s, \'%s::view-%s\')',
                     $entity->toKebabCase(),
                     $apiGetResourceHandler->getComponent()->getClassString(),
-                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
                     $entity->toKebabCase(),
                 ),
                 12
@@ -154,7 +142,7 @@ COMM)
                     '->get(\'/%s\', %s, \'%s::list-%s\')',
                     $entity->toKebabCase(),
                     $apiGetCollectionHandler->getComponent()->getClassString(),
-                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
                     $entity->toKebabCase(),
                 ),
                 12
@@ -168,7 +156,7 @@ COMM)
                     '->patch(\'/%s/\' . $uuid, %s, \'%s::update-%s\')',
                     $entity->toKebabCase(),
                     $apiPatchResourceHandler->getComponent()->getClassString(),
-                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
                     $entity->toKebabCase(),
                 ),
                 12
@@ -182,7 +170,7 @@ COMM)
                     '->post(\'/%s\', %s, \'%s::create-%s\')',
                     $entity->toKebabCase(),
                     $apiPostResourceHandler->getComponent()->getClassString(),
-                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
                     $entity->toKebabCase(),
                 ),
                 12
@@ -196,7 +184,7 @@ COMM)
                     '->put(\'/%s/\' . $uuid, %s, \'%s::replace-%s\')',
                     $entity->toKebabCase(),
                     $apiPutResourceHandler->getComponent()->getClassString(),
-                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
                     $entity->toKebabCase(),
                 ),
                 12
@@ -210,7 +198,7 @@ COMM)
                     '->get(\'/create-%s\', %s, \'%s::create-%s-form\')',
                     $entity->toKebabCase(),
                     $getCreateResourceHandler->getComponent()->getClassString(),
-                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
                     $entity->toKebabCase(),
                 ),
                 12
@@ -224,7 +212,7 @@ COMM)
                     '->post(\'/create-%s\', %s, \'%s::create-%s\')',
                     $entity->toKebabCase(),
                     $postCreateResourceHandler->getComponent()->getClassString(),
-                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
                     $entity->toKebabCase(),
                 ),
                 12
@@ -238,7 +226,7 @@ COMM)
                     '->get(\'/delete-%s/\' . $uuid, %s, \'%s::delete-%s-form\')',
                     $entity->toKebabCase(),
                     $getDeleteResourceHandler->getComponent()->getClassString(),
-                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
                     $entity->toKebabCase(),
                 ),
                 12
@@ -252,7 +240,7 @@ COMM)
                     '->post(\'/delete-%s/\' . $uuid, %s, \'%s::delete-%s\')',
                     $entity->toKebabCase(),
                     $postDeleteResourceHandler->getComponent()->getClassString(),
-                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
                     $entity->toKebabCase(),
                 ),
                 12
@@ -266,7 +254,7 @@ COMM)
                     '->get(\'/edit-%s/\' . $uuid, %s, \'%s::edit-%s-form\')',
                     $entity->toKebabCase(),
                     $getEditResourceHandler->getComponent()->getClassString(),
-                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
                     $entity->toKebabCase(),
                 ),
                 12
@@ -280,7 +268,7 @@ COMM)
                     '->post(\'/edit-%s/\' . $uuid, %s, \'%s::edit-%s\')',
                     $entity->toKebabCase(),
                     $postEditResourceHandler->getComponent()->getClassString(),
-                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
                     $entity->toKebabCase(),
                 ),
                 12
@@ -294,7 +282,7 @@ COMM)
                     '->get(\'/list-%s\', %s, \'%s::list-%s\')',
                     $entity->toKebabCase(),
                     $getListResourcesHandler->getComponent()->getClassString(),
-                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
                     $entity->toKebabCase(),
                 ),
                 12
@@ -308,7 +296,7 @@ COMM)
                     '->get(\'/view-%s/\' . $uuid, %s, \'%s::view-%s-form\')',
                     $entity->toKebabCase(),
                     $getViewResourceHandler->getComponent()->getClassString(),
-                    $module->toKebabCase(),
+                    $entity->toKebabCase(),
                     $entity->toKebabCase(),
                 ),
                 12

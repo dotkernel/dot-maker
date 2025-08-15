@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Component;
+namespace DotTest\Maker\Type;
 
 use Dot\Maker\Component\Import;
 use Dot\Maker\Config;

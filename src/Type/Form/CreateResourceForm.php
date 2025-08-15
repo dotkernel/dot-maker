@@ -102,7 +102,7 @@ COMM
         // add more form elements
 
         \$this->add(
-            (new Csrf('{$entity->toCamelCase()}CreateCsrf'))
+            (new Csrf('create{$entity->getClassName()}Csrf'))
                 ->setOptions([
                     'csrf_options' => ['timeout' => 3600, 'session' => new Container()],
                 ])

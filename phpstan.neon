@@ -6,3 +6,7 @@ parameters:
         - src
         - test
     treatPhpDocTypesAsCertain: false
+    ignoreErrors:
+        -
+            message: '#Call to an undefined method org\\bovigo\\vfs\\vfsStreamContent::getChild\(\).#'
+            path: %currentWorkingDirectory%/test/FileSystem/FileTest.php

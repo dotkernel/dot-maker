@@ -22,7 +22,7 @@ use function trim;
 
 use const PHP_SAPI;
 
-final class Maker
+class Maker
 {
     public function __construct(
         private readonly string $projectPath,
@@ -32,7 +32,7 @@ final class Maker
     public function __invoke(array $arguments): int
     {
         try {
-            if (PHP_SAPI !== 'cli') {
+            if (! $this->isCli()) {
                 throw new RuntimeException('dot-maker must be run in CLI only');
             }
 
@@ -52,7 +52,7 @@ final class Maker
 
             if ($instance instanceof Help) {
                 $instance();
-                exit;
+                return Output::SUCCESS;
             }
 
             Output::info(sprintf('Detected project type: %s', $context->getProjectType()));
@@ -73,5 +73,10 @@ final class Maker
             Output::error($exception->getMessage());
             return Output::FAILURE;
         }
+    }
+
+    public function isCli(): bool
+    {
+        return PHP_SAPI === 'cli';
     }
 }
