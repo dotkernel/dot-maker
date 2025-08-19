@@ -26,6 +26,12 @@ class CoreConfigProvider extends AbstractType implements FileInterface
     public function create(string $name): File
     {
         $configProvider = $this->fileSystem->coreConfigProvider();
+        if (! $this->context->hasCore()) {
+            throw new RuntimeException(
+                'Core ConfigProvider cannot be created in projects that do not use the Core architecture'
+            );
+        }
+
         if ($configProvider->exists()) {
             throw DuplicateFileException::create($configProvider);
         }
