@@ -155,13 +155,13 @@ class PostEditResourceHandler extends AbstractType implements FileInterface
                 StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY
             );
         } catch (Throwable \$exception) {
+            \$this->messenger->addError(Message::AN_ERROR_OCCURRED);
             \$this->logger->err('Update {$entity->getClassName()}', [
                 'error' => \$exception->getMessage(),
                 'file'  => \$exception->getFile(),
                 'line'  => \$exception->getLine(),
                 'trace' => \$exception->getTraceAsString(),
             ]);
-            \$this->messenger->addError(Message::AN_ERROR_OCCURRED);
 
             return new EmptyResponse(StatusCodeInterface::STATUS_INTERNAL_SERVER_ERROR);
         }

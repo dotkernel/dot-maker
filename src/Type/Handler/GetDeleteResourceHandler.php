@@ -119,7 +119,7 @@ class GetDeleteResourceHandler extends AbstractType implements FileInterface
             \$this->template->render('{$entity->toKebabCase()}::{$entity->toKebabCase()}-delete-form', [
                 'form' => \$this->{$form->toCamelCase()}->prepare(),
                 '{$entity->toKebabCase()}' => {$entity->getVariable()},
-            ]),
+            ])
         );
 BODY);
         // phpcs:enable Generic.Files.LineLength.TooLong

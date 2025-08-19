@@ -445,26 +445,21 @@ class FileSystem
         );
     }
 
-    public function templateFile(string $subDirectory, string $name): File
-    {
-        return new File(
-            $this->templatesDir($subDirectory),
-            '',
-            $name,
-            'html.twig'
-        );
-    }
-
-    public function templates(string $name = 'templates'): Directory
-    {
-        return new Directory($name, sprintf('%s/src/%s', $this->context->getProjectPath(), $this->moduleName));
-    }
-
-    public function templatesDir(string $name): Directory
+    public function templateDir(string $name): Directory
     {
         return new Directory(
             $name,
             sprintf('%s/src/%s/templates', $this->context->getProjectPath(), $this->moduleName)
+        );
+    }
+
+    public function templateFile(string $subDirectory, string $name): File
+    {
+        return new File(
+            $this->templateDir($subDirectory),
+            '',
+            $name,
+            'html.twig'
         );
     }
 

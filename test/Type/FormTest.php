@@ -142,7 +142,7 @@ class FormTest extends TestCase
         $this->import     = new Import($this->context);
         $this->module     = new Module($this->fileSystem, $this->context, $this->config);
 
-        $file = $this->fileSystem->inputFilter($this->resourceName);
+        $file = $this->fileSystem->form($this->resourceName);
         $this->assertFalse($file->exists());
         $this->assertFileDoesNotExist($file->getPath());
 
