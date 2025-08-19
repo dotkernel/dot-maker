@@ -9,7 +9,6 @@ use Dot\Maker\Config;
 use Dot\Maker\Context;
 use Dot\Maker\FileSystem;
 use Dot\Maker\IO\Output;
-use Dot\Maker\Type\ConfigProvider;
 use Dot\Maker\Type\CoreConfigProvider;
 use Dot\Maker\Type\Module;
 use org\bovigo\vfs\vfsStream;
