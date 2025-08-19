@@ -38,7 +38,8 @@ class Module extends AbstractType implements ModuleInterface
             }
 
             if (! $module->create()) {
-                Output::error(sprintf('Could not create directory "%s"', $module->getPath()), true);
+                Output::error(sprintf('Could not create directory "%s"', $module->getPath()));
+                return;
             }
             Output::success(sprintf('Created directory: %s', $module->getPath()));
 
@@ -114,6 +115,11 @@ class Module extends AbstractType implements ModuleInterface
         $this->messages[$message->getPriority()] = (string) $message;
 
         return $this;
+    }
+
+    public function getMessages(): array
+    {
+        return $this->messages;
     }
 
     public function initExisting(): self

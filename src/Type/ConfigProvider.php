@@ -14,22 +14,12 @@ use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Message;
 use Dot\Maker\VisibilityEnum;
-use Throwable;
 
 use function count;
 use function sprintf;
 
 class ConfigProvider extends AbstractType implements FileInterface
 {
-    public function __invoke(): void
-    {
-        try {
-            $this->create('ConfigProvider');
-        } catch (Throwable $exception) {
-            Output::error($exception->getMessage());
-        }
-    }
-
     /**
      * @throws DuplicateFileException
      * @throws RuntimeException
@@ -48,7 +38,6 @@ class ConfigProvider extends AbstractType implements FileInterface
                 $this->fileSystem->command($name),
                 $this->fileSystem->entity($name),
                 $this->fileSystem->middleware($name),
-                $this->fileSystem->routesDelegator($name),
                 $this->fileSystem->service($name),
                 $this->fileSystem->serviceInterface($name),
                 [
@@ -277,7 +266,6 @@ BODY);
         File $command,
         File $entity,
         File $middleware,
-        File $routesDelegator,
         File $service,
         File $serviceInterface,
         array $handlers,

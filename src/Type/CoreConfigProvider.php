@@ -14,21 +14,11 @@ use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Message;
 use Dot\Maker\VisibilityEnum;
-use Throwable;
 
 use function sprintf;
 
 class CoreConfigProvider extends AbstractType implements FileInterface
 {
-    public function __invoke(): void
-    {
-        try {
-            $this->create('ConfigProvider');
-        } catch (Throwable $exception) {
-            Output::error($exception->getMessage());
-        }
-    }
-
     /**
      * @throws DuplicateFileException
      * @throws RuntimeException
