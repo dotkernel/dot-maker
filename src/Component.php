@@ -111,6 +111,11 @@ class Component
         return strtolower(implode('-', $parts));
     }
 
+    public function toPlural(): string
+    {
+        return self::pluralize($this->className);
+    }
+
     public function toSnakeCase(bool $noInterface = true): string
     {
         return str_replace('-', '_', $this->toKebabCase($noInterface));

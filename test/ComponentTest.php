@@ -83,6 +83,7 @@ class ComponentTest extends TestCase
         $this->assertSame('book_store', $component->toSnakeCase(false));
         $this->assertSame('BOOK_STORE', $component->toUpperCase());
         $this->assertSame('BOOK_STORE', $component->toUpperCase(false));
+        $this->assertSame('BookStores', $component->toPlural());
     }
 
     public function testWillRenderForm(): void
