@@ -38,4 +38,16 @@ class Constructor extends Method
 
         return $this;
     }
+
+    public function setNullable(bool $nullable): static
+    {
+        return parent::setNullable(false);
+    }
+
+    public function setReturnType(string $returnType): static
+    {
+        $this->returnType = '';
+
+        return $this;
+    }
 }

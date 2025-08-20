@@ -28,6 +28,11 @@ class Getter extends Method
 GTR;
     }
 
+    public function getTarget(): ParameterInterface
+    {
+        return $this->target;
+    }
+
     public function setTarget(ParameterInterface $target): self
     {
         $this->returnType = $target->getType();

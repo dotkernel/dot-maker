@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Component;
 
-use Dot\Maker\Component\Interface\Declaration;
-
 use function array_map;
 use function count;
 use function implode;
@@ -52,6 +50,41 @@ class InterfaceFile
         $this->interfaces[$interface] = $interface;
 
         return $this;
+    }
+
+    public function getDeclarations(): array
+    {
+        return $this->declarations;
+    }
+
+    public function getClassUses(): array
+    {
+        return $this->classUses;
+    }
+
+    public function getConstantUses(): array
+    {
+        return $this->constantUses;
+    }
+
+    public function getFunctionUses(): array
+    {
+        return $this->functionUses;
+    }
+
+    public function getInterfaces(): array
+    {
+        return $this->interfaces;
+    }
+
+    public function isStrictTypes(): bool
+    {
+        return $this->strictTypes;
+    }
+
+    public function getComment(): string
+    {
+        return $this->comment;
     }
 
     public function useClass(string $use, ?string $alias = null): self

@@ -33,6 +33,16 @@ class Inject
         return $this;
     }
 
+    public function getNamedArguments(): array
+    {
+        return $this->namedArguments;
+    }
+
+    public function getPositionalArguments(): array
+    {
+        return $this->positionalArguments;
+    }
+
     public function render(int $spaces = 4): string
     {
         if (count($this->namedArguments) > 0) {

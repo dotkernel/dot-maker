@@ -2,10 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Dot\Maker\Component\Interface;
-
-use Dot\Maker\Component\ParameterInterface;
-use Dot\Maker\VisibilityEnum;
+namespace Dot\Maker\Component;
 
 use function array_map;
 use function count;
@@ -16,7 +13,6 @@ use const PHP_EOL;
 
 class Declaration
 {
-    private VisibilityEnum $visibility = VisibilityEnum::Public;
     /** @var ParameterInterface[] $parameters */
     private array $parameters  = [];
     private bool $nullable     = false;
@@ -38,6 +34,26 @@ class Declaration
         $this->parameters[] = $parameter;
 
         return $this;
+    }
+
+    public function getComment(): string
+    {
+        return $this->comment;
+    }
+
+    public function getParameters(): array
+    {
+        return $this->parameters;
+    }
+
+    public function getReturnType(): string
+    {
+        return $this->returnType;
+    }
+
+    public function isNullable(): bool
+    {
+        return $this->nullable;
     }
 
     public function render(): string
@@ -71,7 +87,7 @@ class Declaration
     private function renderWithParams(): string
     {
         return <<<DEC
-{$this->visibility->value} function $this->name(
+public function $this->name(
 {$this->renderParameters()}
     ){$this->renderSignature()};
 DEC;
@@ -80,7 +96,7 @@ DEC;
     private function renderWithoutParams(): string
     {
         return <<<DEC
-{$this->visibility->value} function $this->name(){$this->renderSignature()};
+public function $this->name(){$this->renderSignature()};
 DEC;
     }
 
@@ -118,13 +134,6 @@ DEC;
     public function setReturnType(string $returnType): self
     {
         $this->returnType = $returnType;
-
-        return $this;
-    }
-
-    public function setVisibility(VisibilityEnum $visibility): self
-    {
-        $this->visibility = $visibility;
 
         return $this;
     }

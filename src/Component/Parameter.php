@@ -26,6 +26,11 @@ class Parameter implements ParameterInterface
         return $this->render();
     }
 
+    public function getDefault(): ?string
+    {
+        return $this->default;
+    }
+
     public function getGetter(): Getter
     {
         return (new Getter(sprintf('get%s', ucfirst($this->name))))
@@ -36,6 +41,11 @@ class Parameter implements ParameterInterface
     public function getName(): string
     {
         return $this->name;
+    }
+
+    public function isNullable(): bool
+    {
+        return $this->nullable;
     }
 
     public function getSetter(): Setter

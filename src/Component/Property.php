@@ -13,10 +13,34 @@ use const PHP_EOL;
 class Property extends Parameter
 {
     protected VisibilityEnum $visibility = VisibilityEnum::Protected;
-    protected bool $promoted             = false;
     protected bool $readonly             = false;
     protected bool $static               = false;
     protected string $comment            = '';
+
+    public function getVisibility(): VisibilityEnum
+    {
+        return $this->visibility;
+    }
+
+    public function isReadonly(): bool
+    {
+        return $this->readonly;
+    }
+
+    public function isStatic(): bool
+    {
+        return $this->static;
+    }
+
+    public function getComment(): string
+    {
+        return $this->comment;
+    }
+
+    public function parentRender(): string
+    {
+        return parent::render();
+    }
 
     public function render(int $spaces = 0): string
     {
@@ -34,13 +58,9 @@ class Property extends Parameter
         if ($this->readonly === true) {
             $property .= ' readonly';
         }
-        $property .= ' ' . parent::render();
+        $property .= ' ' . parent::render() . ';';
 
-        if ($this->promoted === true) {
-            return $property;
-        }
-
-        return $property . ';';
+        return $property;
     }
 
     public function setComment(string $comment): self

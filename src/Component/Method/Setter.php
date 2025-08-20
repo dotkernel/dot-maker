@@ -24,14 +24,19 @@ class Setter extends Method
 
         // phpcs:disable Generic.Files.LineLength.TooLong
         return <<<STR
-{$this->visibility->value} function $this->name($nullable$this->target->getType() \$$this->target->getName()): {$this->returnType}
+{$this->visibility->value} function $this->name($nullable{$this->target->getType()} \${$this->target->getName()}): {$this->returnType}
     {
-        \$this->$this->target->getName() = \$$this->target->getName();
+        \$this->{$this->target->getName()} = \${$this->target->getName()};
 
         return \$this;
     }
 STR;
         // phpcs:enable Generic.Files.LineLength.TooLong
+    }
+
+    public function getTarget(): ParameterInterface
+    {
+        return $this->target;
     }
 
     public function setTarget(ParameterInterface $target): self

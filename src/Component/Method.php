@@ -69,14 +69,49 @@ class Method implements MethodInterface
         return $this;
     }
 
+    public function getBody(): string
+    {
+        return $this->body;
+    }
+
+    public function getComment(): string
+    {
+        return $this->comment;
+    }
+
+    public function getInjects(): array
+    {
+        return $this->injects;
+    }
+
     public function getName(): string
     {
         return $this->name;
     }
 
-    public function prependBody(string $bodyLine, int $spaces = 8): static
+    public function isNullable(): bool
     {
-        $this->body = PHP_EOL . str_repeat(' ', $spaces) . $bodyLine . $this->body;
+        return $this->nullable;
+    }
+
+    public function getParameters(): array
+    {
+        return $this->parameters;
+    }
+
+    public function getReturnType(): string
+    {
+        return $this->returnType;
+    }
+
+    public function getVisibility(): VisibilityEnum
+    {
+        return $this->visibility;
+    }
+
+    public function prependBody(string $string, int $spaces = 8): static
+    {
+        $this->body = PHP_EOL . str_repeat(' ', $spaces) . $string . $this->body;
 
         return $this;
     }

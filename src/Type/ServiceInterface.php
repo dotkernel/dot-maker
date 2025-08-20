@@ -5,8 +5,8 @@ declare(strict_types=1);
 namespace Dot\Maker\Type;
 
 use Dot\Maker\Component;
+use Dot\Maker\Component\Declaration;
 use Dot\Maker\Component\Import;
-use Dot\Maker\Component\Interface\Declaration;
 use Dot\Maker\Component\InterfaceFile;
 use Dot\Maker\Component\Parameter;
 use Dot\Maker\Exception\BadRequestException;

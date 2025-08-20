@@ -85,9 +85,81 @@ class ClassFile
      */
     public function addTrait(string $trait): self
     {
-        $this->traits[$trait] = sprintf('use %s;', $trait);
+        $use = sprintf('use %s;', $trait);
+
+        $this->traits[$use] = $use;
 
         return $this;
+    }
+
+    public function getInjects(): array
+    {
+        return $this->injects;
+    }
+
+    public function getMethods(): array
+    {
+        return $this->methods;
+    }
+
+    public function getProperties(): array
+    {
+        return $this->properties;
+    }
+
+    public function getClassUses(): array
+    {
+        return $this->classUses;
+    }
+
+    public function getConstantUses(): array
+    {
+        return $this->constantUses;
+    }
+
+    public function getFunctionUses(): array
+    {
+        return $this->functionUses;
+    }
+
+    public function getInterfaces(): array
+    {
+        return $this->interfaces;
+    }
+
+    public function getTraits(): array
+    {
+        return $this->traits;
+    }
+
+    public function isAbstract(): bool
+    {
+        return $this->abstract;
+    }
+
+    public function isReadonly(): bool
+    {
+        return $this->readonly;
+    }
+
+    public function isFinal(): bool
+    {
+        return $this->final;
+    }
+
+    public function isStrictTypes(): bool
+    {
+        return $this->strictTypes;
+    }
+
+    public function getExtends(): ?string
+    {
+        return $this->extends;
+    }
+
+    public function getComment(): string
+    {
+        return $this->comment;
     }
 
     public function hasMethod(string $method): bool
