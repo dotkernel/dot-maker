@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace DotTest\Maker\Type;
+namespace DotTest\Maker\Type\InputFilter;
 
 use Dot\Maker\Component\Import;
 use Dot\Maker\Config;
@@ -23,7 +23,7 @@ use function stream_get_contents;
 
 use const PHP_EOL;
 
-class InputFilterTest extends TestCase
+class ApiInputFilterTest extends TestCase
 {
     private Config $config;
     private Context $context;
@@ -46,7 +46,7 @@ class InputFilterTest extends TestCase
             'composer.json' => '{
                 "autoload": {
                     "psr-4": {
-                        "Admin\\\\App\\\\": "src/App/src/",
+                        "Api\\\\App\\\\": "src/App/src/",
                         "Core\\\\App\\\\": "src/Core/src/App/src/"
                     }
                 }
@@ -141,7 +141,7 @@ class InputFilterTest extends TestCase
 
         $this->assertFileExists($createResourceInputFilter->getPath());
         $this->assertTrue($createResourceInputFilter->exists());
-        $this->assertSame($this->dataProviderCreateResourceInputFilter(), $createResourceInputFilter->read());
+        $this->assertSame($this->dataProviderApiCreateResourceInputFilter(), $createResourceInputFilter->read());
 
         $this->assertFileDoesNotExist($deleteResourceInputFilter->getPath());
         $this->assertFalse($deleteResourceInputFilter->exists());
@@ -156,11 +156,11 @@ class InputFilterTest extends TestCase
         $this->assertEmpty(stream_get_contents($this->errorStream));
     }
 
-    public function testCallToInvokeWillCreateOnlyDeleteResourceInputFilter(): void
+    public function testCallToInvokeWillNotCreateDeleteResourceInputFilter(): void
     {
         fwrite($this->inputStream, $this->resourceName . PHP_EOL);
         fwrite($this->inputStream, 'no' . PHP_EOL);
-        fwrite($this->inputStream, 'yes' . PHP_EOL);
+        fwrite($this->inputStream, 'no' . PHP_EOL);
         fwrite($this->inputStream, 'no' . PHP_EOL);
         rewind($this->inputStream);
 
@@ -186,9 +186,8 @@ class InputFilterTest extends TestCase
         $this->assertFileDoesNotExist($createResourceInputFilter->getPath());
         $this->assertFalse($createResourceInputFilter->exists());
 
-        $this->assertFileExists($deleteResourceInputFilter->getPath());
-        $this->assertTrue($deleteResourceInputFilter->exists());
-        $this->assertSame($this->dataProviderDeleteResourceInputFilter(), $deleteResourceInputFilter->read());
+        $this->assertFileDoesNotExist($deleteResourceInputFilter->getPath());
+        $this->assertFalse($deleteResourceInputFilter->exists());
 
         $this->assertFileDoesNotExist($editResourceInputFilter->getPath());
         $this->assertFalse($editResourceInputFilter->exists());
@@ -204,8 +203,8 @@ class InputFilterTest extends TestCase
     {
         fwrite($this->inputStream, $this->resourceName . PHP_EOL);
         fwrite($this->inputStream, 'no' . PHP_EOL);
-        fwrite($this->inputStream, 'no' . PHP_EOL);
         fwrite($this->inputStream, 'yes' . PHP_EOL);
+        fwrite($this->inputStream, 'no' . PHP_EOL);
         rewind($this->inputStream);
 
         $createResourceInputFilter = $this->fileSystem->createResourceInputFilter($this->resourceName);
@@ -235,7 +234,7 @@ class InputFilterTest extends TestCase
 
         $this->assertFileExists($editResourceInputFilter->getPath());
         $this->assertTrue($editResourceInputFilter->exists());
-        $this->assertSame($this->dataProviderEditResourceInputFilter(), $editResourceInputFilter->read());
+        $this->assertSame($this->dataProviderApiEditResourceInputFilter(), $editResourceInputFilter->read());
 
         $this->assertFileDoesNotExist($replaceResourceInputFilter->getPath());
         $this->assertFalse($replaceResourceInputFilter->exists());
@@ -244,12 +243,12 @@ class InputFilterTest extends TestCase
         $this->assertEmpty(stream_get_contents($this->errorStream));
     }
 
-    public function testCallToInvokeWillNotCreateReplaceResourceInputFilter(): void
+    public function testCallToInvokeWillCreateOnlyReplaceResourceInputFilter(): void
     {
         fwrite($this->inputStream, $this->resourceName . PHP_EOL);
         fwrite($this->inputStream, 'no' . PHP_EOL);
         fwrite($this->inputStream, 'no' . PHP_EOL);
-        fwrite($this->inputStream, 'no' . PHP_EOL);
+        fwrite($this->inputStream, 'yes' . PHP_EOL);
         rewind($this->inputStream);
 
         $createResourceInputFilter = $this->fileSystem->createResourceInputFilter($this->resourceName);
@@ -280,8 +279,9 @@ class InputFilterTest extends TestCase
         $this->assertFileDoesNotExist($editResourceInputFilter->getPath());
         $this->assertFalse($editResourceInputFilter->exists());
 
-        $this->assertFileDoesNotExist($replaceResourceInputFilter->getPath());
-        $this->assertFalse($replaceResourceInputFilter->exists());
+        $this->assertFileExists($replaceResourceInputFilter->getPath());
+        $this->assertTrue($replaceResourceInputFilter->exists());
+        $this->assertSame($this->dataProviderApiReplaceResourceInputFilter(), $replaceResourceInputFilter->read());
 
         rewind($this->errorStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
@@ -315,7 +315,7 @@ class InputFilterTest extends TestCase
 
         $this->assertFileExists($createResourceInputFilter->getPath());
         $this->assertTrue($createResourceInputFilter->exists());
-        $this->assertSame($this->dataProviderCreateResourceInputFilter(), $createResourceInputFilter->read());
+        $this->assertSame($this->dataProviderApiCreateResourceInputFilter(), $createResourceInputFilter->read());
 
         $this->assertFileDoesNotExist($deleteResourceInputFilter->getPath());
         $this->assertFalse($deleteResourceInputFilter->exists());
@@ -330,10 +330,9 @@ class InputFilterTest extends TestCase
         $this->assertEmpty(stream_get_contents($this->errorStream));
     }
 
-    public function testCallToCreateWillCreateOnlyDeleteResourceInputFilter(): void
+    public function testCallToCreateWillNotCreateDeleteResourceInputFilter(): void
     {
         fwrite($this->inputStream, 'no' . PHP_EOL);
-        fwrite($this->inputStream, 'yes' . PHP_EOL);
         fwrite($this->inputStream, 'no' . PHP_EOL);
         fwrite($this->inputStream, 'no' . PHP_EOL);
         rewind($this->inputStream);
@@ -360,9 +359,8 @@ class InputFilterTest extends TestCase
         $this->assertFileDoesNotExist($createResourceInputFilter->getPath());
         $this->assertFalse($createResourceInputFilter->exists());
 
-        $this->assertFileExists($deleteResourceInputFilter->getPath());
-        $this->assertTrue($deleteResourceInputFilter->exists());
-        $this->assertSame($this->dataProviderDeleteResourceInputFilter(), $deleteResourceInputFilter->read());
+        $this->assertFileDoesNotExist($deleteResourceInputFilter->getPath());
+        $this->assertFalse($deleteResourceInputFilter->exists());
 
         $this->assertFileDoesNotExist($editResourceInputFilter->getPath());
         $this->assertFalse($editResourceInputFilter->exists());
@@ -377,8 +375,8 @@ class InputFilterTest extends TestCase
     public function testCallToCreateWillCreateOnlyEditResourceInputFilter(): void
     {
         fwrite($this->inputStream, 'no' . PHP_EOL);
-        fwrite($this->inputStream, 'no' . PHP_EOL);
         fwrite($this->inputStream, 'yes' . PHP_EOL);
+        fwrite($this->inputStream, 'no' . PHP_EOL);
         rewind($this->inputStream);
 
         $createResourceInputFilter = $this->fileSystem->createResourceInputFilter($this->resourceName);
@@ -408,7 +406,7 @@ class InputFilterTest extends TestCase
 
         $this->assertFileExists($editResourceInputFilter->getPath());
         $this->assertTrue($editResourceInputFilter->exists());
-        $this->assertSame($this->dataProviderEditResourceInputFilter(), $editResourceInputFilter->read());
+        $this->assertSame($this->dataProviderApiEditResourceInputFilter(), $editResourceInputFilter->read());
 
         $this->assertFileDoesNotExist($replaceResourceInputFilter->getPath());
         $this->assertFalse($replaceResourceInputFilter->exists());
@@ -417,11 +415,11 @@ class InputFilterTest extends TestCase
         $this->assertEmpty(stream_get_contents($this->errorStream));
     }
 
-    public function testCallToCreateWillNotCreateReplaceResourceInputFilter(): void
+    public function testCallToCreateWillCreateOnlyReplaceResourceInputFilter(): void
     {
         fwrite($this->inputStream, 'no' . PHP_EOL);
         fwrite($this->inputStream, 'no' . PHP_EOL);
-        fwrite($this->inputStream, 'no' . PHP_EOL);
+        fwrite($this->inputStream, 'yes' . PHP_EOL);
         rewind($this->inputStream);
 
         $createResourceInputFilter = $this->fileSystem->createResourceInputFilter($this->resourceName);
@@ -452,23 +450,23 @@ class InputFilterTest extends TestCase
         $this->assertFileDoesNotExist($editResourceInputFilter->getPath());
         $this->assertFalse($editResourceInputFilter->exists());
 
-        $this->assertFileDoesNotExist($replaceResourceInputFilter->getPath());
-        $this->assertFalse($replaceResourceInputFilter->exists());
+        $this->assertFileExists($replaceResourceInputFilter->getPath());
+        $this->assertTrue($replaceResourceInputFilter->exists());
+        $this->assertSame($this->dataProviderApiReplaceResourceInputFilter(), $replaceResourceInputFilter->read());
 
         rewind($this->errorStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
     }
 
-    private function dataProviderCreateResourceInputFilter(): string
+    private function dataProviderApiCreateResourceInputFilter(): string
     {
         return <<<BODY
 <?php
 
 declare(strict_types=1);
 
-namespace Admin\ModuleName\InputFilter;
+namespace Api\ModuleName\InputFilter;
 
-use {$this->import->getCsrfInputFqcn()};
 use {$this->import->getAbstractInputFilterFqcn()};
 
 /**
@@ -479,60 +477,22 @@ class CreateBookStoreInputFilter extends AbstractInputFilter
 {
     public function __construct()
     {
-        // chain inputs below
-
-        return \$this
-            ->add(new CsrfInput('CreateBookStoreCsrf', true));
+        // chain inputs here
     }
 }
 
 BODY;
     }
 
-    private function dataProviderDeleteResourceInputFilter(): string
-    {
-        $confirmDeleteInput = $this->fileSystem->input('ConfirmDeleteBookStoreInput');
-
-        return <<<BODY
-<?php
-
-declare(strict_types=1);
-
-namespace Admin\ModuleName\InputFilter;
-
-use {$this->import->getCsrfInputFqcn()};
-use {$confirmDeleteInput->getComponent()->getFqcn()};
-use {$this->import->getAbstractInputFilterFqcn()};
-
-/**
- * @phpstan-type DeleteBookStoreDataType array{}
- * @extends AbstractInputFilter<DeleteBookStoreDataType>
- */
-class DeleteBookStoreInputFilter extends AbstractInputFilter
-{
-    public function __construct()
-    {
-        // chain inputs below
-
-        return \$this
-            ->add(new ConfirmDeleteBookStoreInput('confirmation'))
-            ->add(new CsrfInput('DeleteBookStoreCsrf', true));
-    }
-}
-
-BODY;
-    }
-
-    private function dataProviderEditResourceInputFilter(): string
+    private function dataProviderApiEditResourceInputFilter(): string
     {
         return <<<BODY
 <?php
 
 declare(strict_types=1);
 
-namespace Admin\ModuleName\InputFilter;
+namespace Api\ModuleName\InputFilter;
 
-use {$this->import->getCsrfInputFqcn()};
 use {$this->import->getAbstractInputFilterFqcn()};
 
 /**
@@ -543,10 +503,33 @@ class EditBookStoreInputFilter extends AbstractInputFilter
 {
     public function __construct()
     {
-        // chain inputs below
+        // chain inputs here
+    }
+}
 
-        return \$this
-            ->add(new CsrfInput('EditBookStoreCsrf', true));
+BODY;
+    }
+
+    private function dataProviderApiReplaceResourceInputFilter(): string
+    {
+        return <<<BODY
+<?php
+
+declare(strict_types=1);
+
+namespace Api\ModuleName\InputFilter;
+
+use {$this->import->getAbstractInputFilterFqcn()};
+
+/**
+ * @phpstan-type ReplaceBookStoreDataType array{}
+ * @extends AbstractInputFilter<ReplaceBookStoreDataType>
+ */
+class ReplaceBookStoreInputFilter extends AbstractInputFilter
+{
+    public function __construct()
+    {
+        // chain inputs here
     }
 }
 

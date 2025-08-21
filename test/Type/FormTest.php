@@ -45,6 +45,22 @@ class FormTest extends TestCase
 
     protected function setUp(): void
     {
+        $root = vfsStream::setup('root', 0644, [
+            'composer.json' => '{
+                "autoload": {
+                    "psr-4": {
+                        "Admin\\\\App\\\\": "src/App/src/"
+                    }
+                }
+            }',
+        ]);
+
+        $this->config     = new Config($root->url());
+        $this->context    = new Context($root->url());
+        $this->fileSystem = (new FileSystem($this->context))->setModuleName($this->moduleName);
+        $this->import     = new Import($this->context);
+        $this->module     = new Module($this->fileSystem, $this->context, $this->config);
+
         $this->outputStream = fopen('php://memory', 'w+');
         Output::setOutputStream($this->outputStream);
 
@@ -92,22 +108,6 @@ class FormTest extends TestCase
 
     public function testCallToInvokeWillNotCreateFileOnEmptyInput(): void
     {
-        $root = vfsStream::setup('root', 0644, [
-            'composer.json' => '{
-                "autoload": {
-                    "psr-4": {
-                        "Admin\\\\App\\\\": "src/App/src/"
-                    }
-                }
-            }',
-        ]);
-
-        $this->config     = new Config($root->url());
-        $this->context    = new Context($root->url());
-        $this->fileSystem = (new FileSystem($this->context))->setModuleName($this->moduleName);
-        $this->import     = new Import($this->context);
-        $this->module     = new Module($this->fileSystem, $this->context, $this->config);
-
         $file = $this->fileSystem->form($this->resourceName);
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
@@ -126,22 +126,6 @@ class FormTest extends TestCase
 
     public function testCallToInvokeWillOutputErrorAndWillNotCreateFileWhenNameIsInvalid(): void
     {
-        $root = vfsStream::setup('root', 0644, [
-            'composer.json' => '{
-                "autoload": {
-                    "psr-4": {
-                        "Admin\\\\App\\\\": "src/App/src/"
-                    }
-                }
-            }',
-        ]);
-
-        $this->config     = new Config($root->url());
-        $this->context    = new Context($root->url());
-        $this->fileSystem = (new FileSystem($this->context))->setModuleName($this->moduleName);
-        $this->import     = new Import($this->context);
-        $this->module     = new Module($this->fileSystem, $this->context, $this->config);
-
         $file = $this->fileSystem->form($this->resourceName);
         $this->assertFalse($file->exists());
         $this->assertFileDoesNotExist($file->getPath());
@@ -160,22 +144,6 @@ class FormTest extends TestCase
 
     public function testCallToInvokeWillCreateOnlyCreateResourceForm(): void
     {
-        $root = vfsStream::setup('root', 0644, [
-            'composer.json' => '{
-                "autoload": {
-                    "psr-4": {
-                        "Admin\\\\App\\\\": "src/App/src/"
-                    }
-                }
-            }',
-        ]);
-
-        $this->config     = new Config($root->url());
-        $this->context    = new Context($root->url());
-        $this->fileSystem = (new FileSystem($this->context))->setModuleName($this->moduleName);
-        $this->import     = new Import($this->context);
-        $this->module     = new Module($this->fileSystem, $this->context, $this->config);
-
         fwrite($this->inputStream, $this->resourceName . PHP_EOL);
         fwrite($this->inputStream, 'yes' . PHP_EOL);
         fwrite($this->inputStream, 'no' . PHP_EOL);
@@ -221,22 +189,6 @@ class FormTest extends TestCase
 
     public function testCallToInvokeWillCreateOnlyDeleteResourceForm(): void
     {
-        $root = vfsStream::setup('root', 0644, [
-            'composer.json' => '{
-                "autoload": {
-                    "psr-4": {
-                        "Admin\\\\App\\\\": "src/App/src/"
-                    }
-                }
-            }',
-        ]);
-
-        $this->config     = new Config($root->url());
-        $this->context    = new Context($root->url());
-        $this->fileSystem = (new FileSystem($this->context))->setModuleName($this->moduleName);
-        $this->import     = new Import($this->context);
-        $this->module     = new Module($this->fileSystem, $this->context, $this->config);
-
         fwrite($this->inputStream, $this->resourceName . PHP_EOL);
         fwrite($this->inputStream, 'no' . PHP_EOL);
         fwrite($this->inputStream, 'yes' . PHP_EOL);
@@ -288,23 +240,6 @@ class FormTest extends TestCase
 
     public function testCallToInvokeWillCreateOnlyEditResourceForm(): void
     {
-        $root = vfsStream::setup('root', 0644, [
-            'composer.json' => '{
-                "autoload": {
-                    "psr-4": {
-                        "Admin\\\\App\\\\": "src/App/src/",
-                        "Core\\\\App\\\\": "src/Core/src/App/src/"
-                    }
-                }
-            }',
-        ]);
-
-        $this->config     = new Config($root->url());
-        $this->context    = new Context($root->url());
-        $this->fileSystem = (new FileSystem($this->context))->setModuleName($this->moduleName);
-        $this->import     = new Import($this->context);
-        $this->module     = new Module($this->fileSystem, $this->context, $this->config);
-
         fwrite($this->inputStream, $this->resourceName . PHP_EOL);
         fwrite($this->inputStream, 'no' . PHP_EOL);
         fwrite($this->inputStream, 'no' . PHP_EOL);
@@ -349,22 +284,6 @@ class FormTest extends TestCase
 
     public function testCallToCreateWillCreateOnlyCreateResourceForm(): void
     {
-        $root = vfsStream::setup('root', 0644, [
-            'composer.json' => '{
-                "autoload": {
-                    "psr-4": {
-                        "Admin\\\\App\\\\": "src/App/src/"
-                    }
-                }
-            }',
-        ]);
-
-        $this->config     = new Config($root->url());
-        $this->context    = new Context($root->url());
-        $this->fileSystem = (new FileSystem($this->context))->setModuleName($this->moduleName);
-        $this->import     = new Import($this->context);
-        $this->module     = new Module($this->fileSystem, $this->context, $this->config);
-
         fwrite($this->inputStream, $this->resourceName . PHP_EOL);
         fwrite($this->inputStream, 'yes' . PHP_EOL);
         fwrite($this->inputStream, 'no' . PHP_EOL);
@@ -409,22 +328,6 @@ class FormTest extends TestCase
 
     public function testCallToCreateWillCreateOnlyDeleteResourceForm(): void
     {
-        $root = vfsStream::setup('root', 0644, [
-            'composer.json' => '{
-                "autoload": {
-                    "psr-4": {
-                        "Admin\\\\App\\\\": "src/App/src/"
-                    }
-                }
-            }',
-        ]);
-
-        $this->config     = new Config($root->url());
-        $this->context    = new Context($root->url());
-        $this->fileSystem = (new FileSystem($this->context))->setModuleName($this->moduleName);
-        $this->import     = new Import($this->context);
-        $this->module     = new Module($this->fileSystem, $this->context, $this->config);
-
         fwrite($this->inputStream, $this->resourceName . PHP_EOL);
         fwrite($this->inputStream, 'no' . PHP_EOL);
         fwrite($this->inputStream, 'yes' . PHP_EOL);
@@ -476,23 +379,6 @@ class FormTest extends TestCase
 
     public function testCallToCreateWillCreateOnlyEditResourceForm(): void
     {
-        $root = vfsStream::setup('root', 0644, [
-            'composer.json' => '{
-                "autoload": {
-                    "psr-4": {
-                        "Admin\\\\App\\\\": "src/App/src/",
-                        "Core\\\\App\\\\": "src/Core/src/App/src/"
-                    }
-                }
-            }',
-        ]);
-
-        $this->config     = new Config($root->url());
-        $this->context    = new Context($root->url());
-        $this->fileSystem = (new FileSystem($this->context))->setModuleName($this->moduleName);
-        $this->import     = new Import($this->context);
-        $this->module     = new Module($this->fileSystem, $this->context, $this->config);
-
         fwrite($this->inputStream, $this->resourceName . PHP_EOL);
         fwrite($this->inputStream, 'no' . PHP_EOL);
         fwrite($this->inputStream, 'no' . PHP_EOL);
