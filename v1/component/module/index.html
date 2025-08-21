@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        
+        <meta name="description" content="Programmatically generate Dotkernel project files and directories.">
+        
+        
+
+        
+        
+            
+        
+        <meta name="docsearch:version" content="1.0.0,latest">
+        <meta name="docsearch:language" content="en">
+        <meta name="docsearch:component" content="dot-maker">
+
+        
+        <link rel="canonical" href="https://docs.dotkernel.org/dot-maker/v1/component/module/">
+        
+        <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_docs_favicon_white.svg">
+
+        <title>Create Module - dot-maker - Dotkernel Documentation</title>
+
+        <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap.css">
+        <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap-icons.min.css">
+        <link rel="stylesheet" href="https://docs.dotkernel.org/css/docs.css">
+        <script src="https://docs.dotkernel.org//js/bootstrap.js" defer></script>
+        <script src="https://docs.dotkernel.org//js/docs.js" defer></script>
+        <script src="https://docs.dotkernel.org//js/scripts.js" defer></script>
+    </head>
+    <body data-bs-spy="scroll" data-bs-target=".toc" data-bs-offset="100">
+
+        
+        <nav class="navbar navbar-expand-lg bg-body-tertiary bg-light dk-nav py-3" data-bs-theme="light">
+    <div class="container justify-content-between">
+        <div class="dk-nav-icon d-flex align-items-center">
+            <a class="navbar-brand" href="https://docs.dotkernel.org/">
+                <img alt="Dotkernel Logo" class="d-inline-block align-text-top" height="50"
+                     src="https://docs.dotkernel.org//img/dk_logomark_white.svg" width="45"/>
+            </a>
+
+            <div class="dk-nav-icon-items">
+                <span style="font-size: 12px; line-height: 13px">Dotkernel Documentation</span>
+
+                <div class="dropdown" data-bs-theme="light">
+                    <span class="fw-bold dropdown-toggle dk-pkg-name" data-bs-toggle="dropdown" aria-expanded="false">Packages</span>
+                    <ul class="dropdown-menu">
+                        
+                        <li class="dropdown-item ">
+                            <a href="https://docs.dotkernel.org/api-documentation/" class="nav-link d-flex gap-4 align-items-center">
+                                <img alt="Dotkernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
+                                <div>
+                                    <span class="fw-bold d-block">API</span>
+                                    <span>Dotkernel API</span>
+                                </div>
+                            </a>
+                        </li>
+                        
+                        <li class="dropdown-item ">
+                            <a href="https://docs.dotkernel.org/admin-documentation/" class="nav-link d-flex gap-4 align-items-center">
+                                <img alt="Dotkernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
+                                <div>
+                                    <span class="fw-bold d-block">Admin</span>
+                                    <span>Dotkernel Admin</span>
+                                </div>
+                            </a>
+                        </li>
+                        
+                        <li class="dropdown-item ">
+                            <a href="https://docs.dotkernel.org/frontend-documentation/" class="nav-link d-flex gap-4 align-items-center">
+                                <img alt="Dotkernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
+                                <div>
+                                    <span class="fw-bold d-block">Frontend</span>
+                                    <span>Dotkernel Frontend</span>
+                                </div>
+                            </a>
+                        </li>
+                        
+                        <li class="dropdown-item ">
+                            <a href="https://docs.dotkernel.org/light-documentation/" class="nav-link d-flex gap-4 align-items-center">
+                                <img alt="Dotkernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
+                                <div>
+                                    <span class="fw-bold d-block">Light</span>
+                                    <span>Dotkernel Light</span>
+                                </div>
+                            </a>
+                        </li>
+                        
+                        <li class="dropdown-item ">
+                            <a href="https://docs.dotkernel.org/queue-documentation/" class="nav-link d-flex gap-4 align-items-center">
+                                <img alt="Dotkernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
+                                <div>
+                                    <span class="fw-bold d-block">Queue</span>
+                                    <span>Dotkernel Queue</span>
+                                </div>
+                            </a>
+                        </li>
+                        
+                        <li class="dropdown-item bg-light">
+                            <a href="https://docs.dotkernel.org/packages/" class="nav-link d-flex gap-4 align-items-center">
+                                <img alt="Dotkernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
+                                <div>
+                                    <span class="fw-bold d-block">Packages</span>
+                                    <span>Dotkernel packages</span>
+                                </div>
+                            </a>
+                        </li>
+                        
+                        <li class="dropdown-item ">
+                            <a href="https://docs.dotkernel.org/development/" class="nav-link d-flex gap-4 align-items-center">
+                                <img alt="Dotkernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
+                                <div>
+                                    <span class="fw-bold d-block">Development</span>
+                                    <span>WSL2 Development Environment</span>
+                                </div>
+                            </a>
+                        </li>
+                        
+                        <li class="dropdown-item ">
+                            <a href="https://docs.dotkernel.org/headless-documentation/" class="nav-link d-flex gap-4 align-items-center">
+                                <img alt="Dotkernel Logo" class="d-inline-block align-text-top" height="50" src="https://docs.dotkernel.org/img/dk_logomark.svg" width="45" />
+                                <div>
+                                    <span class="fw-bold d-block">Headless Platform</span>
+                                    <span>Dotkernel Headless Platform</span>
+                                </div>
+                            </a>
+                        </li>
+                        
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarText" aria-controls="navbarText" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="navbarText">
+            <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+<!--                <li class="nav-item">-->
+<!--                    <a href="#" class="nav-link fw-bold text-white" data-bs-toggle="modal" data-bs-target="#mkdocs_search_modal" title="Open search">-->
+<!--                        <i class="bi bi-search"></i> Search-->
+<!--                    </a>-->
+<!--                </li>-->
+                <li class="nav-item">
+                    <a class="nav-link fw-bold text-white" href="https://github.com/dotkernel/dot-maker" title="Go to dot-maker repository" target="_blank">
+                        <i class="bi bi-github"></i>
+                        GitHub
+                    </a>
+                </li>
+                <li class="nav-item">
+                    
+    
+
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+        
+        <div class="container">
+    <nav aria-label="breadcrumb" class="nav_breadcrumb">
+        <ol class="breadcrumb">
+            
+                <li class="breadcrumb-item"><a href="https://docs.dotkernel.org/">Overview</a></li>
+                
+
+                
+                    <li class="breadcrumb-item"><a href="../../..">dot-maker</a></li>
+
+                    
+                        
+                            
+                            
+                        
+                    
+                        
+                            
+                            
+                                <li class="breadcrumb-item">Component</li>
+                            
+                        
+                    
+
+                    <li class="breadcrumb-item active" aria-current="page">Create Module</li>
+                
+            
+        </ol>
+    </nav>
+</div>
+
+        
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-3 right_sidebar">
+                    
+                    
+    <div class="subnavigation hidden-print">
+<!--        <h4 class="subnavigation__title">-->
+<!--            <a href="../../..">dot-maker</a>-->
+<!--        </h4>-->
+
+        <h5 class="subnavigation__title">Table of Contents</h5>
+
+        <ul class="subnavigation__list">
+            
+
+                
+                
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../../overview/" class="subnavigation__link">Overview</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../../installation/" class="subnavigation__link">Installation</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../../setup/" class="subnavigation__link">Setup</a>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../../usage/" class="subnavigation__link">Usage</a>
+</li>
+
+                    
+                        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<li class="subnavigation__list-item">
+    <a data-bs-toggle="collapse" href="#component" role="button" aria-expanded="false" aria-controls="component">
+        <span class="subnavigation__headline">Component</span>
+    </a>
+    <ul class="subnavigation__list collapse" id="component">
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../collection/" class="subnavigation__link">Create Collection</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../command/" class="subnavigation__link">Create Command</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../entity/" class="subnavigation__link">Create Entity</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../form/" class="subnavigation__link">Create Form</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../handler/" class="subnavigation__link">Create Handler</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../input/" class="subnavigation__link">Create Input</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../input-filter/" class="subnavigation__link">Create InputFilter</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../middleware/" class="subnavigation__link">Create Middleware</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item subnavigation__list-item--active">
+    <a href="./" class="subnavigation__link">Create Module</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../repository/" class="subnavigation__link">Create Repository</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../service/" class="subnavigation__link">Create Service</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../service-interface/" class="subnavigation__link">Create ServiceInterface</a>
+</li>
+
+        
+    </ul>
+</li>
+
+                    
+                        
+
+
+
+
+
+
+
+<li class="subnavigation__list-item">
+    <a data-bs-toggle="collapse" href="#io" role="button" aria-expanded="false" aria-controls="io">
+        <span class="subnavigation__headline">IO</span>
+    </a>
+    <ul class="subnavigation__list collapse" id="io">
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../../io/input/" class="subnavigation__link">Input</a>
+</li>
+
+        
+        
+<li class="subnavigation__list-item ">
+    <a href="../../io/output/" class="subnavigation__link">Output</a>
+</li>
+
+        
+    </ul>
+</li>
+
+                    
+                        
+<li class="subnavigation__list-item ">
+    <a href="../../naming-standards/" class="subnavigation__link">Naming Standards</a>
+</li>
+
+                    
+                
+            
+        </ul>
+    </div>
+
+                    
+
+                    
+                    
+                    
+    
+
+    
+    
+        <div class="toc">
+            <h6 class="toc__headline">On this page</h6>
+            <ul class="toc__list">
+            
+                <li class="toc__entry">
+                    <a href="#run-the-command" class="toc__link nav-link">Run the command</a>
+                </li>
+            
+                <li class="toc__entry">
+                    <a href="#name-the-module" class="toc__link nav-link">Name the Module</a>
+                </li>
+            
+                <li class="toc__entry">
+                    <a href="#create-module-files" class="toc__link nav-link">Create Module files</a>
+                </li>
+            
+                <li class="toc__entry">
+                    <a href="#next-steps" class="toc__link nav-link">Next steps</a>
+                </li>
+            
+            </ul>
+        </div>
+    
+
+                    
+                </div>
+                <div class="col-lg-9 main_docs">
+                    
+                    
+
+
+
+
+    
+    
+<!--        <h2 class="chapter__headline text-black-50">Component</h2>-->
+    
+
+    <h1 id="create-module">Create Module</h1>
+<blockquote>
+<p>This page assumes that you have created a Composer "make" script as described on the <a href="../../setup/#add-dot-maker-to-composerjson">Setup page</a>.</p>
+</blockquote>
+<p>To create a Module, use either of the following commands:</p>
+<h2 id="run-the-command">Run the command</h2>
+<pre class="highlight"><code class="language-shell">composer make module</code></pre>
+<p>OR</p>
+<pre class="highlight"><code class="language-shell">./vendor/bin/dot-maker module</code></pre>
+<h2 id="name-the-module">Name the Module</h2>
+<p>You will be prompted to input a name for the Module:</p>
+<blockquote>
+<p>New module name:</p>
+</blockquote>
+<p><strong>The name must contain only letters and numbers.</strong></p>
+<p>If you leave the name blank, the process will exit.</p>
+<p>If you input an invalid name (like, "."), an error will be thrown:</p>
+<blockquote>
+<p>Invalid Module name: "."</p>
+</blockquote>
+<p>If you input the name of an existing Module (like, "ExistingModule"), an error will be thrown:</p>
+<blockquote>
+<p>Module "ExistingModule" already exists at /path/to/project/src/ExistingModule</p>
+</blockquote>
+<p>If you input a valid name (like, "NewModule"), <code>dot-maker</code> will create the Command and output a success message:</p>
+<blockquote>
+<p>Created directory: /path/to/project/src/NewModule</p>
+</blockquote>
+<h2 id="create-module-files">Create Module files</h2>
+<p>From here, the process will run through a predefined set of files to create the Module components.</p>
+<blockquote>
+<p>The process will not ask for file names because they will be generated from the Module name.</p>
+</blockquote>
+<h3 id="entity-and-repository">Entity and Repository</h3>
+<p>Next, you will be asked to confirm whether the Module needs an Entity (and its matching Repository):</p>
+<blockquote>
+<p>Create entity and repository? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li>for projects compatible with the Core architecture:<ul>
+<li><code>src/Core/src/&lt;ModuleName&gt;/src/Entity/&lt;ModuleName&gt;.php</code></li>
+<li><code>src/Core/src/&lt;ModuleName&gt;/src/Repository/&lt;ModuleName&gt;Repository.php</code></li>
+</ul>
+</li>
+<li>for projects which are NOT compatible with the Core architecture:<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Entity/&lt;ModuleName&gt;.php</code></li>
+<li><code>src/&lt;ModuleName&gt;/src/Repository/&lt;ModuleName&gt;Repository.php</code></li>
+</ul>
+</li>
+</ul>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h3 id="service-and-serviceinterface">Service and ServiceInterface</h3>
+<p>Next, you will be asked to confirm whether the Module needs a Service (and its matching ServiceInterface):</p>
+<blockquote>
+<p>Create service and service interface? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Service/&lt;ModuleName&gt;Service.php</code></li>
+<li><code>src/&lt;ModuleName&gt;/src/Service/&lt;ModuleName&gt;ServiceInterface.php</code></li>
+</ul>
+<p>If, at the previous step, you chose to create a Repository, it will be automatically injected into the Service.
+Also, some common methods will be added to the Service and the ServiceInterface.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h3 id="command">Command</h3>
+<p>Next, you will be asked to confirm whether the Module needs a Command:</p>
+<blockquote>
+<p>Create command? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following file:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Command/&lt;ModuleName&gt;Command.php</code></li>
+</ul>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h3 id="middleware">Middleware</h3>
+<p>Next, you will be asked to confirm whether the Module needs a Middleware:</p>
+<blockquote>
+<p>Create middleware? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following file:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Middleware/&lt;ModuleName&gt;Middleware.php</code></li>
+</ul>
+<p>If, previously you chose to create a ServiceInterface, it will be automatically injected into the Middleware.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h3 id="handler">Handler</h3>
+<p>Next, you will be asked to confirm whether the Module needs request Handlers:</p>
+<blockquote>
+<p>Create handler? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, depending on the project type, the process will iterate over a list of CRUD operations, asking you to confirm whether the Module needs a request Handler for each operation.</p>
+<h4 id="api-projects">API projects</h4>
+<h5 id="list-resources">List resources</h5>
+<p>The prompt asks you whether you want to list resources:</p>
+<blockquote>
+<p>Allow listing Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Collection/&lt;ModuleName&gt;Collection.php</code>: describes a resource-specific collection</li>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Get&lt;ModuleName&gt;CollectionHandler.php</code>: handles the resource collection representation</li>
+</ul>
+<p>The matching Collection and ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="view-resources">View resources</h5>
+<p>The prompt asks you whether you want to view resources:</p>
+<blockquote>
+<p>Allow viewing Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following file:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Get&lt;ModuleName&gt;ResourceHandler.php</code>: handles the resource representation</li>
+</ul>
+<p>The matching ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="create-resources">Create resources</h5>
+<p>The prompt asks you whether you want to create resources:</p>
+<blockquote>
+<p>Allow creating Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Post&lt;ModuleName&gt;ResourceHandler.php</code>: handles the resource creation</li>
+<li><code>src/&lt;ModuleName&gt;/src/InputFilter/Create&lt;ModuleName&gt;InputFilter.php</code>: request payload validators</li>
+</ul>
+<p>The matching InputFilter and ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="delete-resources">Delete resources</h5>
+<p>The prompt asks you whether you want to delete resources:</p>
+<blockquote>
+<p>Allow deleting Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Delete&lt;ModuleName&gt;ResourceHandler.php</code>: handles the resource deletion</li>
+</ul>
+<p>The matching ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="edit-resources">Edit resources</h5>
+<p>The prompt asks you whether you want to edit resources:</p>
+<blockquote>
+<p>Allow editing Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Patch&lt;ModuleName&gt;ResourceHandler.php</code>: handles the resource update</li>
+<li><code>src/&lt;ModuleName&gt;/src/InputFilter/Edit&lt;ModuleName&gt;InputFilter.php</code>: request payload validators</li>
+</ul>
+<p>The matching InputFilter and ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="replace-resources">Replace resources</h5>
+<p>The prompt asks you whether you want to replace resources:</p>
+<blockquote>
+<p>Allow replacing Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Put&lt;ModuleName&gt;ResourceHandler.php</code>: handles the resource replacement</li>
+<li><code>src/&lt;ModuleName&gt;/src/InputFilter/Replace&lt;ModuleName&gt;InputFilter.php</code>: request payload validators</li>
+</ul>
+<p>The matching InputFilter and ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h4 id="non-api-projects">Non-API projects</h4>
+<h5 id="list-resources_1">List resources</h5>
+<p>The prompt asks you whether you want to list resources:</p>
+<blockquote>
+<p>Allow listing Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Get&lt;ModuleName&gt;ListHandler.php</code>: renders the resource list page</li>
+<li><code>src/&lt;ModuleName&gt;/templates/&lt;ModuleName&gt;/&lt;ModuleName&gt;-list.html.twig</code>: renders the resource list</li>
+</ul>
+<p>The matching ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="view-resources_1">View resources</h5>
+<p>The prompt asks you whether you want to view resources:</p>
+<blockquote>
+<p>Allow viewing Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Get&lt;ModuleName&gt;ViewHandler.php</code>: renders the resource page</li>
+<li><code>src/&lt;ModuleName&gt;/templates/&lt;ModuleName&gt;/&lt;ModuleName&gt;-view.html.twig</code>: renders the resource</li>
+</ul>
+<p>The matching ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="create-resources_1">Create resources</h5>
+<p>The prompt asks you whether you want to create resources:</p>
+<blockquote>
+<p>Allow creating Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Get&lt;ModuleName&gt;CreateFormHandler.php</code>: renders the resource creation form page</li>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Post&lt;ModuleName&gt;CreateHandler.php</code>: handles the resource creation</li>
+<li><code>src/&lt;ModuleName&gt;/src/Form/Create&lt;ModuleName&gt;Form.php</code>: form fields</li>
+<li><code>src/&lt;ModuleName&gt;/src/InputFilter/Create&lt;ModuleName&gt;InputFilter.php</code>: form field validators</li>
+<li><code>src/&lt;ModuleName&gt;/templates/&lt;ModuleName&gt;/&lt;ModuleName&gt;-view.html.twig</code>: renders the resource creation form</li>
+</ul>
+<p>The matching Form and ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="delete-resources_1">Delete resources</h5>
+<p>The prompt asks you whether you want to delete resources:</p>
+<blockquote>
+<p>Allow deleting Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Get&lt;ModuleName&gt;DeleteFormHandler.php</code>: renders the resource deletion form page</li>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Post&lt;ModuleName&gt;DeleteHandler.php</code>: handles the resource deletion</li>
+<li><code>src/&lt;ModuleName&gt;/src/Form/Delete&lt;ModuleName&gt;Form.php</code>: form fields</li>
+<li><code>src/&lt;ModuleName&gt;/src/InputFilter/Delete&lt;ModuleName&gt;InputFilter.php</code>: form field validators</li>
+<li><code>src/&lt;ModuleName&gt;/src/InputFilter/Input/ConfirmDelete&lt;ModuleName&gt;Input.php</code>: checkbox input for deletion confirmation</li>
+<li><code>src/&lt;ModuleName&gt;/templates/&lt;ModuleName&gt;/&lt;ModuleName&gt;-delete-form.html.twig</code>: renders the resource deletion form</li>
+</ul>
+<p>The matching ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="edit-resources_1">Edit resources</h5>
+<p>The prompt asks you whether you want to edit resources:</p>
+<blockquote>
+<p>Allow editing Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Get&lt;ModuleName&gt;EditFormHandler.php</code>: renders the resource edit form page</li>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Post&lt;ModuleName&gt;EditHandler.php</code>: handles the resource update</li>
+<li><code>src/&lt;ModuleName&gt;/src/Form/Edit&lt;ModuleName&gt;Form.php</code>: form fields</li>
+<li><code>src/&lt;ModuleName&gt;/src/InputFilter/Edit&lt;ModuleName&gt;InputFilter.php</code>: form field validators</li>
+<li><code>src/&lt;ModuleName&gt;/templates/&lt;ModuleName&gt;/&lt;ModuleName&gt;-edit-form.html.twig</code>: renders the resource creation form</li>
+</ul>
+<p>The matching InputFilter and ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h3 id="routesdelegator">RoutesDelegator</h3>
+<p>This component is created only if you chose to create request Handlers.
+It is generated automatically and contains the basic CRUD operations based on the selected actions during Handler creation.</p>
+<p>Location: <code>src/&lt;ModuleName&gt;/src/RoutesDelegator.php</code></p>
+<h3 id="openapi">OpenAPI</h3>
+<blockquote>
+<p>This component is created only when a project type is API.</p>
+</blockquote>
+<p>It is generated automatically and contains the basic description of the API endpoints found in this Module.
+Once you extend the entities with additional fields, you will need to update the OpenAPI file manually.</p>
+<p>Location: <code>src/&lt;ModuleName&gt;/src/RoutesDelegator.php</code></p>
+<h3 id="configprovider">ConfigProvider</h3>
+<p>It is generated automatically and contains all the delegators, factories and service aliases for this Module.
+Once you add new files that need dependency injection, you will need to update the ConfigProvider manually.</p>
+<p>Location: <code>src/&lt;ModuleName&gt;/src/ConfigProvider.php</code></p>
+<h3 id="core-configprovider">Core ConfigProvider</h3>
+<blockquote>
+<p>This component is created only when a project uses the Core architecture.</p>
+</blockquote>
+<p>It is generated automatically and contains all the delegators, factories and service aliases for this Module.
+Once you add new files that need dependency injection, you will need to update the ConfigProvider manually.</p>
+<p>Location: <code>src/Core/src/&lt;ModuleName&gt;/src/ConfigProvider.php</code></p>
+<h3 id="templates">Templates</h3>
+<blockquote>
+<p>This file structure is NOT created when the project type is API.</p>
+</blockquote>
+<p>Location: <code>src/&lt;ModuleName&gt;/templates/&lt;ModuleName&gt;/*.html.twig</code></p>
+<h2 id="next-steps">Next steps</h2>
+<p>Once the Module is created, <code>dot-maker</code> will display a list of tasks that need to be performed manually:</p>
+<pre class="highlight"><code class="language-text">Next steps:
+===========
+- add to config/config.php:
+  &lt;ProjectType&gt;\&lt;ModuleName&gt;\ConfigProvider,
+- add to config/config.php:
+  Core\&lt;ModuleName&gt;\ConfigProvider,
+- add to config/autoload/cli.global.php under dot_cli.commands:
+  &lt;ProjectType&gt;\&lt;ModuleName&gt;\Command\&lt;ModuleName&gt;Command::getDefaultName() =&gt; &lt;ProjectType&gt;\&lt;ModuleName&gt;\Command\&lt;ModuleName&gt;Command::class,
+- add to config/pipeline.php:
+  $app-&gt;pipe(&lt;ProjectType&gt;\&lt;ModuleName&gt;\Middleware\&lt;ModuleName&gt;Middleware);
+- add to config/autoload/authorization.global.php (OR config/autoload/authorization-guards.global.php)
+  the routes registered in /path/to/project/src/&lt;ModuleName&gt;/src/RoutesDelegator.php
+- add to composer.json under autoload.psr-4:
+  "&lt;ProjectType&gt;\\&lt;ModuleName&gt;\\": "src/&lt;ModuleName&gt;/src/"
+- add to composer.json under autoload.psr-4:
+  "Core\\&lt;ModuleName&gt;\\": "src/Core/src/&lt;ModuleName&gt;/src/"
+- dump Composer autoloader by executing this command:
+  composer dump
+- generate Doctrine migration:
+  php ./vendor/bin/doctrine-migrations diff
+- Run through each new file, verify their content and start adding logic to them.</code></pre>
+<p>where <code>&lt;ProjectType&gt;</code> is the project type (<strong>API</strong>, <strong>Admin</strong>, <strong>Frontend</strong>, <strong>Light</strong> or <strong>Queue</strong>) and <code>&lt;ModuleName&gt;</code> is the name of the Module.</p>
+
+
+
+
+    <nav>
+    <ul class="list-unstyled page-nav row w-100 mt-5 mb-3 pt-5 pb-3">
+        
+        <li class="col text-nowrap text-md-start">
+            
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../middleware/">
+                    <i class="bi bi-chevron-left"></i>
+                    Create Middleware
+                </a>
+            
+        </li>
+
+        
+        <li class="col text-nowrap text-md-end pe-0">
+            
+                <a rel="next" class="page-nav__link page-nav__link--next" href="../repository/">
+                    Create Repository
+                    <i class="bi bi-chevron-right"></i>
+                </a>
+            
+        </li>
+    </ul>
+</nav>
+
+
+
+                    
+                </div>
+            </div>
+        </div>
+
+        
+        <footer class="footer">
+    <div class="container">
+        <hr class="mb-5" />
+
+        <div class="row">
+            <div class="col-md-9">
+                <div class="row">
+                    <div class="col-lg-4 col-md-6 dk_widget">
+                        <p class="ms-0">API</p>
+
+                        <a href="https://docs.dotkernel.org/api-documentation/">
+                            <i class="bi bi-arrow-return-right"></i>
+                            Dotkernel web starter project suitable for building RESTful APIs
+                        </a>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 dk_widget">
+                        <p class="ms-0">Admin</p>
+
+                        <a href="https://docs.dotkernel.org/admin-documentation/">
+                            <i class="bi bi-arrow-return-right"></i>
+                            Dotkernel web starter project suitable for admin applications
+                        </a>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 dk_widget">
+                        <p class="ms-0">Frontend</p>
+
+                        <a href="https://docs.dotkernel.org/frontend-documentation/">
+                            <i class="bi bi-arrow-return-right"></i>
+                            Dotkernel web starter project suitable for frontend applications
+                        </a>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 dk_widget">
+                        <p class="ms-0">Light</p>
+
+                        <a href="https://docs.dotkernel.org/light-documentation/">
+                            <i class="bi bi-arrow-return-right"></i>
+                            Dotkernel web starter project suitable for generating a simple website
+                        </a>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 dk_widget">
+                        <p class="ms-0">Dotkernel Packages</p>
+
+                        <a href="https://docs.dotkernel.org/packages/">
+                            <i class="bi bi-arrow-return-right"></i>
+                            Dotkernel packages offering a wide range of tools
+                        </a>
+                    </div>
+
+                    <div class="col-lg-4 col-md-6 dk_widget">
+                        <p class="ms-0">Development environment</p>
+
+                        <a href="https://docs.dotkernel.org/development/">
+                            <i class="bi bi-arrow-return-right"></i>
+                            Install PHP, Apache, MariaDB, Composer, PhpMyAdmin, Node.js and Git on WSL2
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-md-3 pt-3 mt-1">
+                <ul class="support__list row">
+                    <li class="support__list-item col-lg-6 mb-md-3">
+                        <a href="https://github.com/dotkernel" class="support__link" title="GitHub" target="_blank">
+                            <i class="bi bi-github"></i> GitHub
+                        </a>
+                    </li>
+                    <li class="support__list-item col-lg-6 mb-md-3">
+                        <a href="https://dotkernel.slack.com" class="support__link" title="Chat" target="_blank">
+                            <i class="bi bi-slack"></i> Slack
+                        </a>
+                    </li>
+                    <li class="support__list-item col-lg-6 mb-md-3">
+                        <a href="https://twitter.com/dotkernel" class="support__link" title="X (Twitter)" target="_blank">
+                            <i class="bi bi-twitter-x"></i> Twitter
+                        </a>
+                    </li>
+                    <li class="support__list-item col-lg-6 mb-md-3">
+                        <a href="https://www.dotkernel.com/blog/" class="support__link" title="Blog" target="_blank">
+                            <i class="bi bi-file-post"></i> Blog
+                        </a>
+                    </li>
+                    <li class="support__list-item col-lg-6 mb-md-3">
+                        <a href="https://www.dotkernel.com/feed/" class="support__link" title="Blog feed" target="_blank">
+                            <i class="bi bi-rss-fill"></i> Feed
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <hr class="mt-5" />
+
+        <div class="footer_copy">
+            &#169; Copyright Dotkernel 2024. All rights reserved.
+        </div>
+    </div>
+</footer>
+
+        <script>
+            let base_url = '../../..',
+                project  = "packages",
+                siteName = 'dot-maker';
+
+                document.addEventListener("DOMContentLoaded", function() {
+                    document.querySelectorAll('.subnavigation__link').forEach(function(link) {
+                        if (link.getAttribute('href') === './') {
+                            link.parentNode.parentNode.classList.add('show');
+                        }
+                    });
+                });
+        </script>
+<!--        -->
+<!--        <div class="modal" id="mkdocs_search_modal" tabindex="-1" role="dialog" aria-labelledby="Search Modal" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Search</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <form role="form">
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search in dot-maker" id="mkdocs-search-query">
+                    </div>
+                </form>
+                <div id="mkdocs-search-results"></div>
+            </div>
+        </div>
+    </div>
+</div>-->
+    </body>
+</html>
