@@ -30,7 +30,7 @@ class Method implements MethodInterface
     public function __construct(
         public readonly string $name,
     ) {
-        $this->visibility = VisibilityEnum::Public;
+        $this->setVisibility(VisibilityEnum::Public);
     }
 
     public function __toString(): string

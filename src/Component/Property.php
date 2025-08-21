@@ -21,7 +21,7 @@ class Property extends Parameter
     {
         parent::__construct($name, $type, $nullable, $default);
 
-        $this->visibility = VisibilityEnum::Protected;
+        $this->setVisibility(VisibilityEnum::Protected);
     }
 
     public function getVisibility(): VisibilityEnum
