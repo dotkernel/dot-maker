@@ -12,17 +12,10 @@ use const PHP_EOL;
 
 class Property extends Parameter
 {
-    protected VisibilityEnum $visibility;
-    protected bool $readonly  = false;
-    protected bool $static    = false;
-    protected string $comment = '';
-
-    public function __construct(string $name, string $type, bool $nullable = false, ?string $default = null)
-    {
-        parent::__construct($name, $type, $nullable, $default);
-
-        $this->setVisibility(VisibilityEnum::Protected);
-    }
+    protected VisibilityEnum $visibility = VisibilityEnum::Protected;
+    protected bool $readonly             = false;
+    protected bool $static               = false;
+    protected string $comment            = '';
 
     public function getVisibility(): VisibilityEnum
     {

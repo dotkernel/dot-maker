@@ -17,7 +17,7 @@ use const PHP_EOL;
 
 class Method implements MethodInterface
 {
-    protected VisibilityEnum $visibility;
+    protected VisibilityEnum $visibility = VisibilityEnum::Public;
     /** @var ParameterInterface[] $parameters */
     protected array $parameters = [];
     /** @var Inject[] $injects */
@@ -30,7 +30,6 @@ class Method implements MethodInterface
     public function __construct(
         public readonly string $name,
     ) {
-        $this->setVisibility(VisibilityEnum::Public);
     }
 
     public function __toString(): string
