@@ -1,0 +1,16 @@
+#!/usr/bin/env php
+<?php
+
+declare(strict_types=1);
+
+namespace Dot\Maker;
+
+$autoload = getcwd() . '/vendor/autoload.php';
+if (file_exists($autoload)) {
+    require $autoload;
+} else {
+    fwrite(STDERR, 'Cannot locate autoloader; please run "composer install"' . PHP_EOL);
+    exit(1);
+}
+
+(new Maker(getcwd()))($argv);

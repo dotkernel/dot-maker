@@ -1,0 +1,51 @@
+{
+    "name": "dotkernel/dot-maker",
+    "description": "Dotkernel library for programmatically generating structured code files",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Dotkernel Team",
+            "email": "team@dotkernel.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Dot\\Maker\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "DotTest\\Maker\\": "test/"
+        }
+    },
+    "bin": [
+        "bin/dot-maker"
+    ],
+    "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        }
+    },
+    "require": {
+        "php": "~8.1.0 || ~8.2.0 || ~8.3.0 || ~8.4.0"
+    },
+    "require-dev": {
+        "laminas/laminas-coding-standard": "^3.1.0",
+        "mikey179/vfsstream": "^1.6.12",
+        "phpstan/phpstan": "^2.1.17",
+        "phpstan/phpstan-phpunit": "^2.0.6",
+        "phpunit/phpunit": "^10.5.47"
+    },
+    "scripts": {
+        "check": [
+            "@cs-check",
+            "@test",
+            "@static-analysis"
+        ],
+        "cs-check": "phpcs",
+        "cs-fix": "phpcbf",
+        "static-analysis": "phpstan analyse --memory-limit 1G",
+        "test": "phpunit --colors=always"
+    }
+}
