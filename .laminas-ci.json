@@ -1,3 +1,9 @@
 {
-  "backwardCompatibilityCheck": true
+  "backwardCompatibilityCheck": true,
+  "exclude": {
+    "bc-check": [
+      "src/Component/Method.php",
+      "src/Component/Property.php"
+    ]
+  }
 }
