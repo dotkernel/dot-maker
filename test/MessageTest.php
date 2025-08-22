@@ -60,7 +60,7 @@ EXP;
 
         $expected = <<<EXP
 add to \033[97mconfig/config.php\033[0m:
-\033[93m  App\\Module\\ConfigProvider,\033[0m
+\033[93m  App\\Module\\ConfigProvider::class,\033[0m
 EXP;
 
         $this->assertSame($expected, (string) $message);
@@ -73,7 +73,7 @@ EXP;
 
         $expected = <<<EXP
 add to \033[97mconfig/config.php\033[0m:
-\033[93m  Core\\Module\\ConfigProvider,\033[0m
+\033[93m  Core\\Module\\ConfigProvider::class,\033[0m
 EXP;
 
         $this->assertSame($expected, (string) $message);
@@ -112,7 +112,7 @@ EXP;
 
         $expected = <<<EXP
 add to \033[97mconfig/pipeline.php\033[0m:
-\033[93m  \$app->pipe(App\\Module\\Middleware\\TestMiddleware);\033[0m
+\033[93m  \$app->pipe(App\\Module\\Middleware\\TestMiddleware::class);\033[0m
 EXP;
 
         $this->assertSame($expected, (string) $message);
