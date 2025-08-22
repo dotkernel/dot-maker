@@ -111,4 +111,16 @@ class InputTest extends TestCase
         fclose($inputStream);
         fclose($outputStream);
     }
+
+    public function testWillAlwaysGetInputStream(): void
+    {
+        Input::setStream(fopen('php://memory', 'w+'));
+
+        $stream = Input::getStream();
+        $this->assertIsResource($stream);
+        fclose($stream);
+
+        $stream = Input::getStream();
+        $this->assertIsResource($stream);
+    }
 }

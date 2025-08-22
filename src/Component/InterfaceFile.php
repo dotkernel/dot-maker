@@ -153,7 +153,7 @@ class InterfaceFile
         }
 
         if ($this->comment !== '') {
-            $interface .= PHP_EOL . $this->comment . PHP_EOL;
+            $interface .= PHP_EOL . $this->comment;
         }
 
         $interface .= PHP_EOL;

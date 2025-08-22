@@ -169,4 +169,28 @@ class OutputTest extends TestCase
 
         fclose($stream);
     }
+
+    public function testWillAlwaysGetErrorStream(): void
+    {
+        Output::setErrorStream(fopen('php://memory', 'w+'));
+
+        $stream = Output::getErrorStream();
+        $this->assertIsResource($stream);
+        fclose($stream);
+
+        $stream = Output::getErrorStream();
+        $this->assertIsResource($stream);
+    }
+
+    public function testWillAlwaysGetOutputStream(): void
+    {
+        Output::setOutputStream(fopen('php://memory', 'w+'));
+
+        $stream = Output::getOutputStream();
+        $this->assertIsResource($stream);
+        fclose($stream);
+
+        $stream = Output::getOutputStream();
+        $this->assertIsResource($stream);
+    }
 }

@@ -108,7 +108,15 @@ COMM;
         $this->assertSame(VisibilityEnum::Private, $method->getVisibility());
     }
 
-    public function testWillRender(): void
+    public function testWillRenderMethodWithoutBody(): void
+    {
+        $method = (new Method($this->methodName))
+            ->setVisibility(VisibilityEnum::Private)
+            ->setNullable(false);
+        $this->assertSame($this->dataProviderRenderedMethodWithoutBody(), (string) $method);
+    }
+
+    public function testWillRenderMethod(): void
     {
         $method = (new Method($this->methodName))
             ->setVisibility(VisibilityEnum::Private)
@@ -121,7 +129,16 @@ COMM;
 COMM)
             ->addParameter(new Parameter('param', 'string', true, 'null'))
             ->setBody('        return $this;');
-        $this->assertSame($this->dataProviderRenderedMethod(), $method->render());
+        $this->assertSame($this->dataProviderRenderedMethod(), (string) $method);
+    }
+
+    private function dataProviderRenderedMethodWithoutBody(): string
+    {
+        return <<<BODY
+private function someMethod(): void
+    {
+    }
+BODY;
     }
 
     private function dataProviderRenderedMethod(): string
