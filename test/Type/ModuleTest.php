@@ -57,6 +57,45 @@ class ModuleTest extends TestCase
         fclose($this->outputStream);
     }
 
+    public function testWillCallAccessors(): void
+    {
+        $root = vfsStream::setup('root', 0644, [
+            'composer.json' => '{
+                "autoload": {
+                    "psr-4": {
+                        "Api\\\\App\\\\": "src/App/src/"
+                    }
+                }
+            }',
+        ]);
+
+        $config     = new Config($root->url());
+        $context    = new Context($root->url());
+        $fileSystem = (new FileSystem($context))->setModuleName($this->moduleName);
+
+        fwrite($this->inputStream, PHP_EOL);
+        rewind($this->inputStream);
+
+        $module = new Module($fileSystem, $context, $config);
+        $this->assertContainsOnlyInstancesOf(Config::class, [$module->getConfig()]);
+        $this->assertContainsOnlyInstancesOf(Context::class, [$module->getContext()]);
+        $this->assertContainsOnlyInstancesOf(FileSystem::class, [$module->getFileSystem()]);
+
+        $this->assertTrue($module->isModule());
+        $this->assertNull($module->getModule());
+        $this->assertFalse($module->hasModule());
+        $module->setModule($module);
+        $this->assertContainsOnlyInstancesOf(Module::class, [$module->getModule()]);
+        $this->assertTrue($module->hasModule());
+
+        $module->setConfig(new Config($root->url()));
+        $module->setContext(new Context($root->url()));
+        $module->setFileSystem((new FileSystem($context))->setModuleName($this->moduleName));
+        $this->assertContainsOnlyInstancesOf(Config::class, [$module->getConfig()]);
+        $this->assertContainsOnlyInstancesOf(Context::class, [$module->getContext()]);
+        $this->assertContainsOnlyInstancesOf(FileSystem::class, [$module->getFileSystem()]);
+    }
+
     public function testCallToInvokeWillEarlyReturnOnEmptyInput(): void
     {
         $root = vfsStream::setup('root', 0644, [

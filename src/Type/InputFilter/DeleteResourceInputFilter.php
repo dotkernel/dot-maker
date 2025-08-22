@@ -31,18 +31,11 @@ class DeleteResourceInputFilter extends AbstractType implements FileInterface
             throw DuplicateFileException::create($inputFilter);
         }
 
-        if ($this->context->isApi()) {
-            $content = $this->renderApi(
-                $name,
-                $inputFilter->getComponent(),
-            );
-        } else {
-            $content = $this->render(
-                $name,
-                $inputFilter->getComponent(),
-                $this->fileSystem->confirmDeleteInput($name)->getComponent(),
-            );
-        }
+        $content = $this->render(
+            $name,
+            $inputFilter->getComponent(),
+            $this->fileSystem->confirmDeleteInput($name)->getComponent(),
+        );
 
         $inputFilter->create($content);
 
@@ -72,27 +65,6 @@ COMM);
         return \$this
             ->add(new {$input->getClassName()}('confirmation'))
             ->add(new CsrfInput('Delete{$name}Csrf', true));
-BODY);
-        $class->addMethod($init);
-
-        return $class->render();
-    }
-
-    public function renderApi(string $name, Component $inputFilter): string
-    {
-        $class = (new ClassFile($inputFilter->getNamespace(), $inputFilter->getClassName()))
-            ->setExtends('AbstractInputFilter')
-            ->useClass($this->import->getAbstractInputFilterFqcn())
-            ->setComment(<<<COMM
-/**
- * @phpstan-type Delete{$name}DataType array{}
- * @extends AbstractInputFilter<Delete{$name}DataType>
- */
-COMM);
-
-        $init = (new Constructor())
-            ->setBody(<<<BODY
-        // chain inputs here
 BODY);
         $class->addMethod($init);
 

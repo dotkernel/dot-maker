@@ -59,6 +59,41 @@ COMM;
         $this->assertSame('self', $declaration->getReturnType());
     }
 
+    public function testWillRenderParameters(): void
+    {
+        $declaration = new Declaration($this->declarationName);
+        $this->assertSame('', $declaration->renderParameters());
+
+        $declaration->addParameter(
+            new Parameter('param', 'string')
+        );
+        $this->assertSame('        string $param,', $declaration->renderParameters());
+
+        $declaration->addParameter(
+            new Parameter('other', 'string')
+        );
+        $this->assertSame(<<<BODY
+        string \$param,
+        string \$other,
+BODY, $declaration->renderParameters());
+    }
+
+    public function testWillRenderSignature(): void
+    {
+        $declaration = new Declaration($this->declarationName);
+        $this->assertSame(': void', $declaration->renderSignature());
+
+        $declaration->setReturnType('');
+        $this->assertSame('', $declaration->renderSignature());
+
+        $declaration->setReturnType('self');
+        $this->assertSame(': self', $declaration->renderSignature());
+
+        $declaration->setReturnType('string');
+        $declaration->setNullable(true);
+        $this->assertSame(': ?string', $declaration->renderSignature());
+    }
+
     public function testWillRender(): void
     {
         $comment = <<<COMM
@@ -74,7 +109,7 @@ COMM;
             ->addParameter(
                 new Parameter('param', 'string')
             );
-        $this->assertSame($this->dataProviderRenderedDeclaration(), $declaration->render());
+        $this->assertSame($this->dataProviderRenderedDeclaration(), (string) $declaration);
     }
 
     private function dataProviderRenderedDeclaration(): string

@@ -69,6 +69,6 @@ BODY, $setter->render());
     public function testWillRender(): void
     {
         $parameter = new Parameter('param', 'string', true, '"test"');
-        $this->assertSame('?string $param = "test"', $parameter->render());
+        $this->assertSame('?string $param = "test"', (string) $parameter);
     }
 }

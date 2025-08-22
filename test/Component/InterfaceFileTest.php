@@ -73,9 +73,14 @@ class InterfaceFileTest extends TestCase
             ->useClass('App\\Module\\OtherInterface')
             ->useFunction('sprintf')
             ->useConstant('PHP_EOL')
+            ->setComment(<<<COMM
+/**
+ * Comment
+ */
+COMM)
             ->addDeclaration((new Declaration('getResource'))->setReturnType('Resource'));
 
-        $this->assertSame($this->dataProviderRenderedClass(), $actual->render());
+        $this->assertSame($this->dataProviderRenderedClass(), (string) $actual);
     }
 
     private function dataProviderRenderedClass(): string
@@ -93,6 +98,9 @@ use function sprintf;
 
 use const PHP_EOL;
 
+/**
+ * Comment
+ */
 interface ClassName extends OtherInterface
 {
     public function getResource(): Resource;

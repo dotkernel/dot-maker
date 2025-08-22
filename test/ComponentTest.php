@@ -269,4 +269,15 @@ class ComponentTest extends TestCase
         $this->assertSame('BOOK_STORE_SERVICE_INTERFACE', $component->toUpperCase(false));
         $this->assertSame('BOOK_STORE_SERVICE', $component->toUpperCase());
     }
+
+    public function testWillPluralize(): void
+    {
+        $this->assertSame('buses', Component::pluralize('bus'));
+        $this->assertSame('boxes', Component::pluralize('box'));
+        $this->assertSame('jazzes', Component::pluralize('jazz'));
+        $this->assertSame('fishes', Component::pluralize('fish'));
+        $this->assertSame('watches', Component::pluralize('watch'));
+        $this->assertSame('candies', Component::pluralize('candy'));
+        $this->assertSame('books', Component::pluralize('book'));
+    }
 }

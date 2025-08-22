@@ -111,6 +111,9 @@ class ClassFileTest extends TestCase
             ->addInject(
                 (new Inject('CustomInjector'))->addArgument('true', 'param')
             )
+            ->setAbstract(true)
+            ->setFinal(true)
+            ->setReadonly(true)
             ->useClass('App\\Module\\OtherClassName')
             ->useClass('App\\Module\\InterfaceName')
             ->useFunction('sprintf')
@@ -158,7 +161,7 @@ COMM)
                     ->appendBody('// add logic')
             );
 
-        $this->assertSame($this->dataProviderRenderedClass(), $actual->render());
+        $this->assertSame($this->dataProviderRenderedClass(), (string) $actual);
     }
 
     private function dataProviderRenderedClass(): string
@@ -178,7 +181,7 @@ use function sprintf;
 use const PHP_EOL;
 
 #[CustomInjector(param: true)]
-class ClassName extends OtherClassName implements InterfaceName
+final readonly abstract class ClassName extends OtherClassName implements InterfaceName
 {
     protected bool \$propertyName = true;
 
