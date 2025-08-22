@@ -1060,13 +1060,13 @@ Allow replacing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/sr
 \033[93mNext steps:\033[0m
 \033[93m===========\033[0m
 - add to \033[97mconfig/config.php\033[0m:
-\033[93m  Api\BookStore\ConfigProvider,\033[0m
+\033[93m  Api\BookStore\ConfigProvider::class,\033[0m
 - add to \033[97mconfig/config.php\033[0m:
-\033[93m  Core\BookStore\ConfigProvider,\033[0m
+\033[93m  Core\BookStore\ConfigProvider::class,\033[0m
 - add to \033[97mconfig/autoload/cli.global.php\033[0m under \033[97mdot_cli\033[0m.\033[97mcommands\033[0m:
 \033[93m  Api\BookStore\Command\BookStoreCommand::getDefaultName() => Api\BookStore\Command\BookStoreCommand::class,\033[0m
 - add to \033[97mconfig/pipeline.php\033[0m:
-\033[93m  \$app->pipe(Api\BookStore\Middleware\BookStoreMiddleware);\033[0m
+\033[93m  \$app->pipe(Api\BookStore\Middleware\BookStoreMiddleware::class);\033[0m
 - add to \033[97mconfig/autoload/authorization.global.php\033[0m
   the routes registered in \033[97mvfs://root/src/BookStore/src/RoutesDelegator.php\033[0m
 - add to \033[97mcomposer.json\033[0m under \033[97mautoload\033[0m.\033[97mpsr-4\033[0m:
@@ -1125,11 +1125,11 @@ Allow replacing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/sr
 \033[93mNext steps:\033[0m
 \033[93m===========\033[0m
 - add to \033[97mconfig/config.php\033[0m:
-\033[93m  Api\BookStore\ConfigProvider,\033[0m
+\033[93m  Api\BookStore\ConfigProvider::class,\033[0m
 - add to \033[97mconfig/autoload/cli.global.php\033[0m under \033[97mdot_cli\033[0m.\033[97mcommands\033[0m:
 \033[93m  Api\BookStore\Command\BookStoreCommand::getDefaultName() => Api\BookStore\Command\BookStoreCommand::class,\033[0m
 - add to \033[97mconfig/pipeline.php\033[0m:
-\033[93m  \$app->pipe(Api\BookStore\Middleware\BookStoreMiddleware);\033[0m
+\033[93m  \$app->pipe(Api\BookStore\Middleware\BookStoreMiddleware::class);\033[0m
 - add to \033[97mconfig/autoload/authorization.global.php\033[0m
   the routes registered in \033[97mvfs://root/src/BookStore/src/RoutesDelegator.php\033[0m
 - add to \033[97mcomposer.json\033[0m under \033[97mautoload\033[0m.\033[97mpsr-4\033[0m:
@@ -1195,13 +1195,13 @@ Allow editing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/
 \033[93mNext steps:\033[0m
 \033[93m===========\033[0m
 - add to \033[97mconfig/config.php\033[0m:
-\033[93m  Admin\BookStore\ConfigProvider,\033[0m
+\033[93m  Admin\BookStore\ConfigProvider::class,\033[0m
 - add to \033[97mconfig/config.php\033[0m:
-\033[93m  Core\BookStore\ConfigProvider,\033[0m
+\033[93m  Core\BookStore\ConfigProvider::class,\033[0m
 - add to \033[97mconfig/autoload/cli.global.php\033[0m under \033[97mdot_cli\033[0m.\033[97mcommands\033[0m:
 \033[93m  Admin\BookStore\Command\BookStoreCommand::getDefaultName() => Admin\BookStore\Command\BookStoreCommand::class,\033[0m
 - add to \033[97mconfig/pipeline.php\033[0m:
-\033[93m  \$app->pipe(Admin\BookStore\Middleware\BookStoreMiddleware);\033[0m
+\033[93m  \$app->pipe(Admin\BookStore\Middleware\BookStoreMiddleware::class);\033[0m
 - add to \033[97mconfig/autoload/authorization-guards.global.php\033[0m
   the routes registered in \033[97mvfs://root/src/BookStore/src/RoutesDelegator.php\033[0m
 - add to \033[97mcomposer.json\033[0m under \033[97mautoload\033[0m.\033[97mpsr-4\033[0m:
@@ -1268,11 +1268,11 @@ Allow editing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/
 \033[93mNext steps:\033[0m
 \033[93m===========\033[0m
 - add to \033[97mconfig/config.php\033[0m:
-\033[93m  Admin\BookStore\ConfigProvider,\033[0m
+\033[93m  Admin\BookStore\ConfigProvider::class,\033[0m
 - add to \033[97mconfig/autoload/cli.global.php\033[0m under \033[97mdot_cli\033[0m.\033[97mcommands\033[0m:
 \033[93m  Admin\BookStore\Command\BookStoreCommand::getDefaultName() => Admin\BookStore\Command\BookStoreCommand::class,\033[0m
 - add to \033[97mconfig/pipeline.php\033[0m:
-\033[93m  \$app->pipe(Admin\BookStore\Middleware\BookStoreMiddleware);\033[0m
+\033[93m  \$app->pipe(Admin\BookStore\Middleware\BookStoreMiddleware::class);\033[0m
 - add to \033[97mconfig/autoload/authorization-guards.global.php\033[0m
   the routes registered in \033[97mvfs://root/src/BookStore/src/RoutesDelegator.php\033[0m
 - add to \033[97mcomposer.json\033[0m under \033[97mautoload\033[0m.\033[97mpsr-4\033[0m:

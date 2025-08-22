@@ -77,7 +77,7 @@ class Message
             )
             ->append(':')
             ->appendLine(
-                ColorEnum::colorize(sprintf('  %s,', $fqcn), ColorEnum::ForegroundBrightYellow)
+                ColorEnum::colorize(sprintf('  %s::class,', $fqcn), ColorEnum::ForegroundBrightYellow)
             );
     }
 
@@ -146,7 +146,7 @@ class Message
             )
             ->append(':')
             ->appendLine(
-                ColorEnum::colorize(sprintf('  $app->pipe(%s);', $fqcn), ColorEnum::ForegroundBrightYellow)
+                ColorEnum::colorize(sprintf('  $app->pipe(%s::class);', $fqcn), ColorEnum::ForegroundBrightYellow)
             );
     }
 
