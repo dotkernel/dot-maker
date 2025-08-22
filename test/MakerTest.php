@@ -51,9 +51,10 @@ class MakerTest extends TestCase
     {
         $maker = new Maker('');
         $this->assertContainsOnlyInstancesOf(Maker::class, [$maker]);
+        $this->assertTrue($maker->isCli());
     }
 
-    public function testInvokeWillOutputErrorWhenNotInCliMode(): void
+    public function testCallingInvokeWillOutputErrorWhenNotInCliMode(): void
     {
         $maker = $this->getMockBuilder(Maker::class)
             ->onlyMethods(['isCli'])
@@ -69,7 +70,7 @@ class MakerTest extends TestCase
         );
     }
 
-    public function testInvokeWillOutputErrorWhenInvalidComponent(): void
+    public function testCallingInvokeWillOutputErrorWhenInvalidComponent(): void
     {
         $root = vfsStream::setup('root', 0644, [
             'composer.json' => '{
@@ -98,7 +99,7 @@ class MakerTest extends TestCase
         $this->assertEmpty(stream_get_contents($this->outputStream));
     }
 
-    public function testInvokeWithoutArgsWillOutputHelpText(): void
+    public function testCallingInvokeWithoutArgsWillOutputHelpText(): void
     {
         $root = vfsStream::setup('root', 0644, [
             'composer.json' => '{
@@ -159,6 +160,37 @@ New module name:
 BODY,
             stream_get_contents($this->outputStream)
         );
+        $this->assertEmpty(stream_get_contents($this->errorStream));
+    }
+
+    public function testCallingInvokeWithValidComponentIdentifierWillSucceed(): void
+    {
+        $root = vfsStream::setup('root', 0644, [
+            'composer.json' => '{
+                "autoload": {
+                    "psr-4": {
+                        "Api\\\\App\\\\": "src/App/src/"
+                    }
+                }
+            }',
+            'src'           => [
+                'App' => [],
+            ],
+        ]);
+
+        fwrite($this->inputStream, 'App' . PHP_EOL);
+        fwrite($this->inputStream, 'Test' . PHP_EOL);
+        fwrite($this->inputStream, PHP_EOL);
+        rewind($this->inputStream);
+
+        $maker = $this->getMockBuilder(Maker::class)
+            ->onlyMethods(['isCli'])
+            ->setConstructorArgs([$root->url()])
+            ->getMock();
+        $maker->method('isCli')->willReturn(true);
+        $maker(['', 'command']);
+
+        rewind($this->errorStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
     }
 }

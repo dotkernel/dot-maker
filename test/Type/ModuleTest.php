@@ -87,6 +87,13 @@ class ModuleTest extends TestCase
         $module->setModule($module);
         $this->assertContainsOnlyInstancesOf(Module::class, [$module->getModule()]);
         $this->assertTrue($module->hasModule());
+
+        $module->setConfig(new Config($root->url()));
+        $module->setContext(new Context($root->url()));
+        $module->setFileSystem((new FileSystem($context))->setModuleName($this->moduleName));
+        $this->assertContainsOnlyInstancesOf(Config::class, [$module->getConfig()]);
+        $this->assertContainsOnlyInstancesOf(Context::class, [$module->getContext()]);
+        $this->assertContainsOnlyInstancesOf(FileSystem::class, [$module->getFileSystem()]);
     }
 
     public function testCallToInvokeWillEarlyReturnOnEmptyInput(): void
