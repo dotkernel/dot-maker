@@ -19,6 +19,7 @@ use function fclose;
 use function fopen;
 use function fwrite;
 use function rewind;
+use function sprintf;
 use function stream_get_contents;
 
 use const PHP_EOL;
@@ -456,6 +457,53 @@ class ApiInputFilterTest extends TestCase
 
         rewind($this->errorStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
+    }
+
+    public function testCallToInvokeWillNotCreateFileWhenFileAlreadyExists(): void
+    {
+        fwrite($this->inputStream, 'yes' . PHP_EOL);
+        fwrite($this->inputStream, 'no' . PHP_EOL);
+        fwrite($this->inputStream, 'no' . PHP_EOL);
+        rewind($this->inputStream);
+
+        $createResourceInputFilter = $this->fileSystem->createResourceInputFilter($this->resourceName);
+        $this->assertFileDoesNotExist($createResourceInputFilter->getPath());
+        $this->assertFalse($createResourceInputFilter->exists());
+
+        $deleteResourceInputFilter = $this->fileSystem->deleteResourceInputFilter($this->resourceName);
+        $this->assertFileDoesNotExist($deleteResourceInputFilter->getPath());
+        $this->assertFalse($deleteResourceInputFilter->exists());
+
+        $editResourceInputFilter = $this->fileSystem->editResourceInputFilter($this->resourceName);
+        $this->assertFileDoesNotExist($editResourceInputFilter->getPath());
+        $this->assertFalse($editResourceInputFilter->exists());
+
+        $replaceResourceInputFilter = $this->fileSystem->replaceResourceInputFilter($this->resourceName);
+        $this->assertFileDoesNotExist($replaceResourceInputFilter->getPath());
+        $this->assertFalse($replaceResourceInputFilter->exists());
+
+        $inputFilter = new InputFilter($this->fileSystem, $this->context, $this->config, $this->module);
+        $inputFilter->create($this->resourceName);
+
+        $this->assertFileExists($createResourceInputFilter->getPath());
+        $this->assertTrue($createResourceInputFilter->exists());
+
+        $this->assertFileDoesNotExist($deleteResourceInputFilter->getPath());
+        $this->assertFalse($deleteResourceInputFilter->exists());
+
+        $this->assertFileDoesNotExist($editResourceInputFilter->getPath());
+        $this->assertFalse($editResourceInputFilter->exists());
+
+        $this->assertFileDoesNotExist($replaceResourceInputFilter->getPath());
+        $this->assertFalse($replaceResourceInputFilter->exists());
+
+        rewind($this->errorStream);
+        $this->assertEmpty(stream_get_contents($this->errorStream));
+
+        $this->expectExceptionMessage(
+            sprintf('Class "CreateBookStoreInputFilter" already exists at %s', $createResourceInputFilter->getPath())
+        );
+        $inputFilter->create($this->resourceName);
     }
 
     private function dataProviderApiCreateResourceInputFilter(): string
