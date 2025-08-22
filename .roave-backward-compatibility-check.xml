@@ -3,7 +3,7 @@
         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
         xsi:noNamespaceSchemaLocation="vendor/roave/backward-compatibility-check/resources/schema.xsd">
     <baseline>
-        <ignored-regex>#\[BC\] SKIPPED: An enum expression Dot\Maker\\VisibilityEnum\:\:Public is not supported in class Dot\\Maker\\Component\\Method in file /src/Component/Method.php#</ignored-regex>
-        <ignored-regex>#\[BC\] SKIPPED: An enum expression Dot\Maker\\VisibilityEnum\:\:Protected is not supported in class Dot\\Maker\\Component\\Property in file /src/Component/Property.php#</ignored-regex>
+        <ignored-regex>#\[BC\] SKIPPED: An enum expression Dot\Maker\\VisibilityEnum::Public is not supported in class Dot\\Maker\\Component\\Method in file /src/Component/Method.php#</ignored-regex>
+        <ignored-regex>#\[BC\] SKIPPED: An enum expression Dot\Maker\\VisibilityEnum::Protected is not supported in class Dot\\Maker\\Component\\Property in file /src/Component/Property.php#</ignored-regex>
     </baseline>
 </roave-bc-check>
