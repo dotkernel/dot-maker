@@ -153,13 +153,13 @@ COMM;
 
         if ($apiGetCollectionHandler->exists()) {
             $class
-                ->useClass($apiDeleteResourceHandler->getComponent()->getFqcn())
+                ->useClass($apiGetCollectionHandler->getComponent()->getFqcn())
                 ->useClass($collection->getFqcn());
 
             // phpcs:disable Generic.Files.LineLength.TooLong
             $comments[] = <<<COMM
 /**
- * @see {$apiDeleteResourceHandler->getComponent()->getClassName()}::handle()
+ * @see {$apiGetCollectionHandler->getComponent()->getClassName()}::handle()
  */
 #[OA\Get(
     path: '/{$entity->toKebabCase()}',
