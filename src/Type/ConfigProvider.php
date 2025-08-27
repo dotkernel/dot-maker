@@ -181,11 +181,13 @@ COMM)
             if (! $form->exists()) {
                 continue;
             }
-            $class->useClass($form->getComponent()->getFqcn());
+            $class
+                ->useClass($form->getComponent()->getFqcn())
+                ->useClass(Import::LAMINAS_FORM_ELEMENTFACTORY);
 
             $getDependencies->appendBody(
                 sprintf(
-                    '%s => AttributedServiceFactory::class,',
+                    '%s => ElementFactory::class,',
                     $form->getComponent()->getClassString()
                 ),
                 16
