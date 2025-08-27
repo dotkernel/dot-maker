@@ -52,11 +52,11 @@ class ReplaceResourceInputFilter extends AbstractType implements FileInterface
  */
 COMM);
 
-        $init = (new Constructor())
+        $constructor = (new Constructor())
             ->setBody(<<<BODY
         // chain inputs here
 BODY);
-        $class->addMethod($init);
+        $class->addMethod($constructor);
 
         return $class->render();
     }

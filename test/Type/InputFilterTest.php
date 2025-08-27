@@ -477,7 +477,7 @@ use {$this->import->getAbstractInputFilterFqcn()};
  */
 class CreateBookStoreInputFilter extends AbstractInputFilter
 {
-    public function __construct()
+    public function init(): self
     {
         // chain inputs below
 
@@ -510,7 +510,7 @@ use {$this->import->getAbstractInputFilterFqcn()};
  */
 class DeleteBookStoreInputFilter extends AbstractInputFilter
 {
-    public function __construct()
+    public function init(): self
     {
         // chain inputs below
 
@@ -541,7 +541,7 @@ use {$this->import->getAbstractInputFilterFqcn()};
  */
 class EditBookStoreInputFilter extends AbstractInputFilter
 {
-    public function __construct()
+    public function init(): self
     {
         // chain inputs below
 
