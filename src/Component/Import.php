@@ -31,6 +31,7 @@ class Import
     public const LAMINAS_FORM_ELEMENT_CHECKBOX                               = 'Laminas\\Form\\Element\\Checkbox';
     public const LAMINAS_FORM_ELEMENT_CSRF                                   = 'Laminas\\Form\\Element\\Csrf';
     public const LAMINAS_FORM_ELEMENT_SUBMIT                                 = 'Laminas\\Form\\Element\\Submit';
+    public const LAMINAS_FORM_ELEMENTFACTORY                                 = 'Laminas\\Form\\ElementFactory';
     public const LAMINAS_FORM_EXCEPTION_EXCEPTIONINTERFACE                   = 'Laminas\\Form\\Exception\\ExceptionInterface';
     public const LAMINAS_INPUTFILTER_INPUT                                   = 'Laminas\\InputFilter\\Input';
     public const LAMINAS_SESSION_CONTAINER                                   = 'Laminas\\Session\\Container';
