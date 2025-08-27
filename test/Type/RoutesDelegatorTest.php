@@ -224,7 +224,7 @@ class RoutesDelegator
         \$routeCollector
             ->delete('/book-store/' . \$uuid, DeleteBookStoreResourceHandler::class, 'book-store::delete-book-store')
             ->get('/book-store/' . \$uuid, GetBookStoreResourceHandler::class, 'book-store::view-book-store')
-            ->get('/book-stores', GetBookStoreCollectionHandler::class, 'book-store::list-book-stores')
+            ->get('/book-store', GetBookStoreCollectionHandler::class, 'book-store::list-book-store')
             ->patch('/book-store/' . \$uuid, PatchBookStoreResourceHandler::class, 'book-store::update-book-store')
             ->post('/book-store', PostBookStoreResourceHandler::class, 'book-store::create-book-store')
             ->put('/book-store/' . \$uuid, PutBookStoreResourceHandler::class, 'book-store::replace-book-store');

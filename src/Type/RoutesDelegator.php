@@ -140,10 +140,10 @@ COMM)
             $invoke->appendBody(
                 sprintf(
                     '->get(\'/%s\', %s, \'%s::list-%s\')',
-                    Component::pluralize($entity->toKebabCase()),
+                    $entity->toKebabCase(),
                     $apiGetCollectionHandler->getComponent()->getClassString(),
                     $entity->toKebabCase(),
-                    Component::pluralize($entity->toKebabCase()),
+                    $entity->toKebabCase(),
                 ),
                 12
             );

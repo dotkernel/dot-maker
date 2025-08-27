@@ -155,6 +155,7 @@ namespace Api\ModuleName;
 use Api\ModuleName\Collection\ModuleNameCollection;
 use Api\ModuleName\Entity\ModuleName;
 use Api\ModuleName\Handler\ModuleName\DeleteModuleNameResourceHandler;
+use Api\ModuleName\Handler\ModuleName\GetModuleNameCollectionHandler;
 use Api\ModuleName\Handler\ModuleName\GetModuleNameResourceHandler;
 use Api\ModuleName\Handler\ModuleName\PatchModuleNameResourceHandler;
 use Api\ModuleName\Handler\ModuleName\PostModuleNameResourceHandler;
@@ -225,7 +226,7 @@ use OpenApi\Attributes as OA;
 )]
 
 /**
- * @see DeleteModuleNameResourceHandler::handle()
+ * @see GetModuleNameCollectionHandler::handle()
  */
 #[OA\Get(
     path: '/module-name',
