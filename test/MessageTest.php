@@ -140,7 +140,7 @@ EXP;
         $message = Message::checkFiles();
 
         $expected = <<<EXP
-\033[91mRun through each new file, verify their content and start adding logic to them.\033[0m
+\033[91mReview each new file, verify their contents and start adding logic to them.\033[0m
 EXP;
 
         $this->assertSame($expected, (string) $message);

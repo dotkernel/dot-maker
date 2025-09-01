@@ -129,14 +129,14 @@ declare(strict_types=1);
 
 namespace Admin\ModuleName;
 
-use Admin\ModuleName\Handler\BookStore\GetBookStoreCreateFormHandler;
-use Admin\ModuleName\Handler\BookStore\GetBookStoreDeleteFormHandler;
-use Admin\ModuleName\Handler\BookStore\GetBookStoreEditFormHandler;
-use Admin\ModuleName\Handler\BookStore\GetBookStoreListHandler;
-use Admin\ModuleName\Handler\BookStore\GetBookStoreViewHandler;
-use Admin\ModuleName\Handler\BookStore\PostBookStoreCreateHandler;
-use Admin\ModuleName\Handler\BookStore\PostBookStoreDeleteHandler;
-use Admin\ModuleName\Handler\BookStore\PostBookStoreEditHandler;
+use Admin\ModuleName\Handler\BookStore\GetCreateBookStoreFormHandler;
+use Admin\ModuleName\Handler\BookStore\GetDeleteBookStoreFormHandler;
+use Admin\ModuleName\Handler\BookStore\GetEditBookStoreFormHandler;
+use Admin\ModuleName\Handler\BookStore\GetListBookStoreHandler;
+use Admin\ModuleName\Handler\BookStore\GetViewBookStoreHandler;
+use Admin\ModuleName\Handler\BookStore\PostCreateBookStoreHandler;
+use Admin\ModuleName\Handler\BookStore\PostDeleteBookStoreHandler;
+use Admin\ModuleName\Handler\BookStore\PostEditBookStoreHandler;
 use Core\App\ConfigProvider;
 use Dot\Router\RouteCollectorInterface;
 use Mezzio\Application;
@@ -161,14 +161,14 @@ class RoutesDelegator
         \$routeCollector = \$container->get(RouteCollectorInterface::class);
 
         \$routeCollector
-            ->get('/create-book-store', GetBookStoreCreateFormHandler::class, 'book-store::create-book-store-form')
-            ->post('/create-book-store', PostBookStoreCreateHandler::class, 'book-store::create-book-store')
-            ->get('/delete-book-store/' . \$uuid, GetBookStoreDeleteFormHandler::class, 'book-store::delete-book-store-form')
-            ->post('/delete-book-store/' . \$uuid, PostBookStoreDeleteHandler::class, 'book-store::delete-book-store')
-            ->get('/edit-book-store/' . \$uuid, GetBookStoreEditFormHandler::class, 'book-store::edit-book-store-form')
-            ->post('/edit-book-store/' . \$uuid, PostBookStoreEditHandler::class, 'book-store::edit-book-store')
-            ->get('/list-book-store', GetBookStoreListHandler::class, 'book-store::list-book-store')
-            ->get('/view-book-store/' . \$uuid, GetBookStoreViewHandler::class, 'book-store::view-book-store-form');
+            ->get('/create-book-store', GetCreateBookStoreFormHandler::class, 'book-store::create-book-store-form')
+            ->post('/create-book-store', PostCreateBookStoreHandler::class, 'book-store::create-book-store')
+            ->get('/delete-book-store/' . \$uuid, GetDeleteBookStoreFormHandler::class, 'book-store::delete-book-store-form')
+            ->post('/delete-book-store/' . \$uuid, PostDeleteBookStoreHandler::class, 'book-store::delete-book-store')
+            ->get('/edit-book-store/' . \$uuid, GetEditBookStoreFormHandler::class, 'book-store::edit-book-store-form')
+            ->post('/edit-book-store/' . \$uuid, PostEditBookStoreHandler::class, 'book-store::edit-book-store')
+            ->get('/list-book-store', GetListBookStoreHandler::class, 'book-store::list-book-store')
+            ->get('/view-book-store/' . \$uuid, GetViewBookStoreHandler::class, 'book-store::view-book-store-form');
 
         return \$callback();
     }

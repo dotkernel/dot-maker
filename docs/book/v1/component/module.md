@@ -351,7 +351,7 @@ Next steps:
   composer dump
 - generate Doctrine migration:
   php ./vendor/bin/doctrine-migrations diff
-- Run through each new file, verify their content and start adding logic to them.
+- Review each new file, verify their contents and start adding logic to them.
 ```
 
 where `<ProjectType>` is the project type (**API**, **Admin**, **Frontend**, **Light** or **Queue**) and `<ModuleName>` is the name of the Module.
