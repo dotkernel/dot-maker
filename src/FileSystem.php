@@ -212,7 +212,7 @@ class FileSystem
         return new File(
             new Directory($name, sprintf('%s/src/%s/src/Handler', $this->context->getProjectPath(), $this->moduleName)),
             sprintf('%s\\%s\\Handler\\%s', $this->context->getRootNamespace(), $this->moduleName, $name),
-            sprintf('Get%sCreateFormHandler', $name),
+            sprintf('GetCreate%sFormHandler', $name),
         );
     }
 
@@ -221,7 +221,7 @@ class FileSystem
         return new File(
             new Directory($name, sprintf('%s/src/%s/src/Handler', $this->context->getProjectPath(), $this->moduleName)),
             sprintf('%s\\%s\\Handler\\%s', $this->context->getRootNamespace(), $this->moduleName, $name),
-            sprintf('Get%sDeleteFormHandler', $name),
+            sprintf('GetDelete%sFormHandler', $name),
         );
     }
 
@@ -230,7 +230,7 @@ class FileSystem
         return new File(
             new Directory($name, sprintf('%s/src/%s/src/Handler', $this->context->getProjectPath(), $this->moduleName)),
             sprintf('%s\\%s\\Handler\\%s', $this->context->getRootNamespace(), $this->moduleName, $name),
-            sprintf('Get%sEditFormHandler', $name),
+            sprintf('GetEdit%sFormHandler', $name),
         );
     }
 
@@ -239,7 +239,7 @@ class FileSystem
         return new File(
             new Directory($name, sprintf('%s/src/%s/src/Handler', $this->context->getProjectPath(), $this->moduleName)),
             sprintf('%s\\%s\\Handler\\%s', $this->context->getRootNamespace(), $this->moduleName, $name),
-            sprintf('Get%sListHandler', $name),
+            sprintf('GetList%sHandler', $name),
         );
     }
 
@@ -248,7 +248,7 @@ class FileSystem
         return new File(
             new Directory($name, sprintf('%s/src/%s/src/Handler', $this->context->getProjectPath(), $this->moduleName)),
             sprintf('%s\\%s\\Handler\\%s', $this->context->getRootNamespace(), $this->moduleName, $name),
-            sprintf('Get%sViewHandler', $name),
+            sprintf('GetView%sHandler', $name),
         );
     }
 
@@ -257,7 +257,7 @@ class FileSystem
         return new File(
             new Directory($name, sprintf('%s/src/%s/src/Handler', $this->context->getProjectPath(), $this->moduleName)),
             sprintf('%s\\%s\\Handler\\%s', $this->context->getRootNamespace(), $this->moduleName, $name),
-            sprintf('Post%sCreateHandler', $name),
+            sprintf('PostCreate%sHandler', $name),
         );
     }
 
@@ -266,7 +266,7 @@ class FileSystem
         return new File(
             new Directory($name, sprintf('%s/src/%s/src/Handler', $this->context->getProjectPath(), $this->moduleName)),
             sprintf('%s\\%s\\Handler\\%s', $this->context->getRootNamespace(), $this->moduleName, $name),
-            sprintf('Post%sDeleteHandler', $name),
+            sprintf('PostDelete%sHandler', $name),
         );
     }
 
@@ -275,7 +275,7 @@ class FileSystem
         return new File(
             new Directory($name, sprintf('%s/src/%s/src/Handler', $this->context->getProjectPath(), $this->moduleName)),
             sprintf('%s\\%s\\Handler\\%s', $this->context->getRootNamespace(), $this->moduleName, $name),
-            sprintf('Post%sEditHandler', $name),
+            sprintf('PostEdit%sHandler', $name),
         );
     }
 

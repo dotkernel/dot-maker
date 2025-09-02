@@ -1116,7 +1116,7 @@ Allow replacing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/sr
 \033[93m  composer dump\033[0m
 - generate Doctrine migration:
 \033[93m  php ./vendor/bin/doctrine-migrations diff\033[0m
-- \033[91mRun through each new file, verify their content and start adding logic to them.\033[0m
+- \033[91mReview each new file, verify their contents and start adding logic to them.\033[0m
 
 BODY;
         // phpcs:enable Generic.Files.LineLength.TooLong
@@ -1177,7 +1177,7 @@ Allow replacing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/sr
 \033[93m  composer dump\033[0m
 - generate Doctrine migration:
 \033[93m  php ./vendor/bin/doctrine-migrations diff\033[0m
-- \033[91mRun through each new file, verify their content and start adding logic to them.\033[0m
+- \033[91mReview each new file, verify their contents and start adding logic to them.\033[0m
 
 BODY;
         // phpcs:enable Generic.Files.LineLength.TooLong
@@ -1201,27 +1201,27 @@ Create command? [Y(es)/n(o)]: \033[92mCreated Command: vfs://root/src/BookStore/
 Create middleware? [Y(es)/n(o)]: \033[92mCreated Middleware: vfs://root/src/BookStore/src/Middleware/BookStoreMiddleware.php\033[0m
 
 Create handler? [Y(es)/n(o)]: 
-Allow listing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetBookStoreListHandler.php\033[0m
+Allow listing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetListBookStoreHandler.php\033[0m
 \033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-list.html.twig\033[0m
 
-Allow viewing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetBookStoreViewHandler.php\033[0m
+Allow viewing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetViewBookStoreHandler.php\033[0m
 \033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-view.html.twig\033[0m
 
-Allow creating BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetBookStoreCreateFormHandler.php\033[0m
-\033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostBookStoreCreateHandler.php\033[0m
+Allow creating BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetCreateBookStoreFormHandler.php\033[0m
+\033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostCreateBookStoreHandler.php\033[0m
 \033[92mCreated Form: vfs://root/src/BookStore/src/Form/CreateBookStoreForm.php\033[0m
 \033[92mCreated InputFilter: vfs://root/src/BookStore/src/InputFilter/CreateBookStoreInputFilter.php\033[0m
 \033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-create-form.html.twig\033[0m
 
-Allow deleting BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetBookStoreDeleteFormHandler.php\033[0m
-\033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostBookStoreDeleteHandler.php\033[0m
+Allow deleting BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetDeleteBookStoreFormHandler.php\033[0m
+\033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostDeleteBookStoreHandler.php\033[0m
 \033[92mCreated Form: vfs://root/src/BookStore/src/Form/DeleteBookStoreForm.php\033[0m
 \033[92mCreated InputFilter: vfs://root/src/BookStore/src/InputFilter/DeleteBookStoreInputFilter.php\033[0m
 \033[92mCreated Input: vfs://root/src/BookStore/src/InputFilter/Input/ConfirmDeleteBookStoreInput.php\033[0m
 \033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-delete-form.html.twig\033[0m
 
-Allow editing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetBookStoreEditFormHandler.php\033[0m
-\033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostBookStoreEditHandler.php\033[0m
+Allow editing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetEditBookStoreFormHandler.php\033[0m
+\033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostEditBookStoreHandler.php\033[0m
 \033[92mCreated Form: vfs://root/src/BookStore/src/Form/EditBookStoreForm.php\033[0m
 \033[92mCreated InputFilter: vfs://root/src/BookStore/src/InputFilter/EditBookStoreInputFilter.php\033[0m
 \033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-edit-form.html.twig\033[0m
@@ -1251,7 +1251,7 @@ Allow editing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/
 \033[93m  composer dump\033[0m
 - generate Doctrine migration:
 \033[93m  php ./vendor/bin/doctrine-migrations diff\033[0m
-- \033[91mRun through each new file, verify their content and start adding logic to them.\033[0m
+- \033[91mReview each new file, verify their contents and start adding logic to them.\033[0m
 
 BODY;
         // phpcs:enable Generic.Files.LineLength.TooLong
@@ -1275,27 +1275,27 @@ Create command? [Y(es)/n(o)]: \033[92mCreated Command: vfs://root/src/BookStore/
 Create middleware? [Y(es)/n(o)]: \033[92mCreated Middleware: vfs://root/src/BookStore/src/Middleware/BookStoreMiddleware.php\033[0m
 
 Create handler? [Y(es)/n(o)]: 
-Allow listing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetBookStoreListHandler.php\033[0m
+Allow listing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetListBookStoreHandler.php\033[0m
 \033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-list.html.twig\033[0m
 
-Allow viewing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetBookStoreViewHandler.php\033[0m
+Allow viewing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetViewBookStoreHandler.php\033[0m
 \033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-view.html.twig\033[0m
 
-Allow creating BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetBookStoreCreateFormHandler.php\033[0m
-\033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostBookStoreCreateHandler.php\033[0m
+Allow creating BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetCreateBookStoreFormHandler.php\033[0m
+\033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostCreateBookStoreHandler.php\033[0m
 \033[92mCreated Form: vfs://root/src/BookStore/src/Form/CreateBookStoreForm.php\033[0m
 \033[92mCreated InputFilter: vfs://root/src/BookStore/src/InputFilter/CreateBookStoreInputFilter.php\033[0m
 \033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-create-form.html.twig\033[0m
 
-Allow deleting BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetBookStoreDeleteFormHandler.php\033[0m
-\033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostBookStoreDeleteHandler.php\033[0m
+Allow deleting BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetDeleteBookStoreFormHandler.php\033[0m
+\033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostDeleteBookStoreHandler.php\033[0m
 \033[92mCreated Form: vfs://root/src/BookStore/src/Form/DeleteBookStoreForm.php\033[0m
 \033[92mCreated InputFilter: vfs://root/src/BookStore/src/InputFilter/DeleteBookStoreInputFilter.php\033[0m
 \033[92mCreated Input: vfs://root/src/BookStore/src/InputFilter/Input/ConfirmDeleteBookStoreInput.php\033[0m
 \033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-delete-form.html.twig\033[0m
 
-Allow editing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetBookStoreEditFormHandler.php\033[0m
-\033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostBookStoreEditHandler.php\033[0m
+Allow editing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetEditBookStoreFormHandler.php\033[0m
+\033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostEditBookStoreHandler.php\033[0m
 \033[92mCreated Form: vfs://root/src/BookStore/src/Form/EditBookStoreForm.php\033[0m
 \033[92mCreated InputFilter: vfs://root/src/BookStore/src/InputFilter/EditBookStoreInputFilter.php\033[0m
 \033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-edit-form.html.twig\033[0m
@@ -1320,7 +1320,7 @@ Allow editing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/
 \033[93m  composer dump\033[0m
 - generate Doctrine migration:
 \033[93m  php ./vendor/bin/doctrine-migrations diff\033[0m
-- \033[91mRun through each new file, verify their content and start adding logic to them.\033[0m
+- \033[91mReview each new file, verify their contents and start adding logic to them.\033[0m
 
 BODY;
         // phpcs:enable Generic.Files.LineLength.TooLong

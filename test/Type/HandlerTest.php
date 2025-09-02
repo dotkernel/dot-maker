@@ -1081,7 +1081,7 @@ namespace Admin\ModuleName\Handler\BookStore;
 
 {$uses}
 
-class GetBookStoreListHandler implements RequestHandlerInterface
+class GetListBookStoreHandler implements RequestHandlerInterface
 {
     #[Inject(
         BookStoreServiceInterface::class,
@@ -1135,7 +1135,7 @@ namespace Admin\ModuleName\Handler\BookStore;
 
 {$uses}
 
-class GetBookStoreViewHandler implements RequestHandlerInterface
+class GetViewBookStoreHandler implements RequestHandlerInterface
 {
     #[Inject(
         BookStoreServiceInterface::class,
@@ -1196,7 +1196,7 @@ namespace Admin\ModuleName\Handler\BookStore;
 
 {$uses}
 
-class GetBookStoreCreateFormHandler implements RequestHandlerInterface
+class GetCreateBookStoreFormHandler implements RequestHandlerInterface
 {
     #[Inject(
         RouterInterface::class,
@@ -1261,7 +1261,7 @@ namespace Admin\ModuleName\Handler\BookStore;
 
 {$uses}
 
-class PostBookStoreCreateHandler implements RequestHandlerInterface
+class PostCreateBookStoreHandler implements RequestHandlerInterface
 {
     #[Inject(
         BookStoreServiceInterface::class,
@@ -1369,7 +1369,7 @@ namespace Admin\ModuleName\Handler\BookStore;
 
 {$uses}
 
-class GetBookStoreDeleteFormHandler implements RequestHandlerInterface
+class GetDeleteBookStoreFormHandler implements RequestHandlerInterface
 {
     #[Inject(
         BookStoreServiceInterface::class,
@@ -1449,7 +1449,7 @@ namespace Admin\ModuleName\Handler\BookStore;
 
 {$uses}
 
-class PostBookStoreDeleteHandler implements RequestHandlerInterface
+class PostDeleteBookStoreHandler implements RequestHandlerInterface
 {
     #[Inject(
         BookStoreServiceInterface::class,
@@ -1551,7 +1551,7 @@ namespace Admin\ModuleName\Handler\BookStore;
 
 {$uses}
 
-class GetBookStoreEditFormHandler implements RequestHandlerInterface
+class GetEditBookStoreFormHandler implements RequestHandlerInterface
 {
     #[Inject(
         BookStoreServiceInterface::class,
@@ -1637,7 +1637,7 @@ namespace Admin\ModuleName\Handler\BookStore;
 
 {$uses}
 
-class PostBookStoreEditHandler implements RequestHandlerInterface
+class PostEditBookStoreHandler implements RequestHandlerInterface
 {
     #[Inject(
         BookStoreServiceInterface::class,

@@ -166,7 +166,7 @@ class Message
     {
         return new self(
             ColorEnum::colorize(
-                'Run through each new file, verify their content and start adding logic to them.',
+                'Review each new file, verify their contents and start adding logic to them.',
                 ColorEnum::ForegroundBrightRed
             ),
             self::CHECK_FILES
