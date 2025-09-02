@@ -64,7 +64,7 @@ COMM);
         // chain inputs below
 
         return \$this
-            ->add(new CsrfInput('Create{$name}Csrf', true));
+            ->add(new CsrfInput('create{$name}Csrf', true));
 BODY);
         $class->addMethod($init);
 

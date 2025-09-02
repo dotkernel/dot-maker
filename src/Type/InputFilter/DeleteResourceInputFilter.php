@@ -65,7 +65,7 @@ COMM);
 
         return \$this
             ->add(new {$input->getClassName()}('confirmation'))
-            ->add(new CsrfInput('Delete{$name}Csrf', true));
+            ->add(new CsrfInput('delete{$name}Csrf', true));
 BODY);
         $class->addMethod($init);
 
