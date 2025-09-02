@@ -693,13 +693,13 @@ Once you add new files that need dependency injection, you will need to update t
 <pre class="highlight"><code class="language-text">Next steps:
 ===========
 - add to config/config.php:
-  &lt;ProjectType&gt;\&lt;ModuleName&gt;\ConfigProvider,
+  &lt;ProjectType&gt;\&lt;ModuleName&gt;\ConfigProvider::class,
 - add to config/config.php:
-  Core\&lt;ModuleName&gt;\ConfigProvider,
+  Core\&lt;ModuleName&gt;\ConfigProvider::class,
 - add to config/autoload/cli.global.php under dot_cli.commands:
   &lt;ProjectType&gt;\&lt;ModuleName&gt;\Command\&lt;ModuleName&gt;Command::getDefaultName() =&gt; &lt;ProjectType&gt;\&lt;ModuleName&gt;\Command\&lt;ModuleName&gt;Command::class,
 - add to config/pipeline.php:
-  $app-&gt;pipe(&lt;ProjectType&gt;\&lt;ModuleName&gt;\Middleware\&lt;ModuleName&gt;Middleware);
+  $app-&gt;pipe(&lt;ProjectType&gt;\&lt;ModuleName&gt;\Middleware\&lt;ModuleName&gt;Middleware::class);
 - add to config/autoload/authorization.global.php (OR config/autoload/authorization-guards.global.php)
   the routes registered in /path/to/project/src/&lt;ModuleName&gt;/src/RoutesDelegator.php
 - add to composer.json under autoload.psr-4:
@@ -710,7 +710,7 @@ Once you add new files that need dependency injection, you will need to update t
   composer dump
 - generate Doctrine migration:
   php ./vendor/bin/doctrine-migrations diff
-- Run through each new file, verify their content and start adding logic to them.</code></pre>
+- Review each new file, verify their contents and start adding logic to them.</code></pre>
 <p>where <code>&lt;ProjectType&gt;</code> is the project type (<strong>API</strong>, <strong>Admin</strong>, <strong>Frontend</strong>, <strong>Light</strong> or <strong>Queue</strong>) and <code>&lt;ModuleName&gt;</code> is the name of the Module.</p>
 
 
