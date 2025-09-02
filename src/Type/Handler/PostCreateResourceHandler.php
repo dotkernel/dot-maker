@@ -110,7 +110,7 @@ class PostCreateResourceHandler extends AbstractType implements FileInterface
             )
             ->setBody(<<<BODY
         \$this->{$form->toCamelCase()}
-            ->setAttribute('action', \$this->router->generateUri('{$entity->toKebabCase()}::{$entity->toKebabCase()}-create'));
+            ->setAttribute('action', \$this->router->generateUri('{$entity->toKebabCase()}::create-{$entity->toKebabCase()}'));
 
         try {
             \$data = (array) \$request->getParsedBody();
