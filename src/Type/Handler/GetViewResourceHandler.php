@@ -102,7 +102,7 @@ class GetViewResourceHandler extends AbstractType implements FileInterface
         }
 
         return new HtmlResponse(
-            \$this->template->render('{$entity->toKebabCase()}::{$entity->toKebabCase()}-view', [
+            \$this->template->render('{$entity->toKebabCase()}::view-{$entity->toKebabCase()}', [
                 '{$entity->toCamelCase()}' => {$entity->getVariable()},
             ])
         );

@@ -1202,29 +1202,29 @@ Create middleware? [Y(es)/n(o)]: \033[92mCreated Middleware: vfs://root/src/Book
 
 Create handler? [Y(es)/n(o)]: 
 Allow listing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetListBookStoreHandler.php\033[0m
-\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-list.html.twig\033[0m
+\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/list-book-store.html.twig\033[0m
 
 Allow viewing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetViewBookStoreHandler.php\033[0m
-\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-view.html.twig\033[0m
+\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/view-book-store.html.twig\033[0m
 
 Allow creating BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetCreateBookStoreFormHandler.php\033[0m
 \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostCreateBookStoreHandler.php\033[0m
 \033[92mCreated Form: vfs://root/src/BookStore/src/Form/CreateBookStoreForm.php\033[0m
 \033[92mCreated InputFilter: vfs://root/src/BookStore/src/InputFilter/CreateBookStoreInputFilter.php\033[0m
-\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-create-form.html.twig\033[0m
+\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/create-book-store-form.html.twig\033[0m
 
 Allow deleting BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetDeleteBookStoreFormHandler.php\033[0m
 \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostDeleteBookStoreHandler.php\033[0m
 \033[92mCreated Form: vfs://root/src/BookStore/src/Form/DeleteBookStoreForm.php\033[0m
 \033[92mCreated InputFilter: vfs://root/src/BookStore/src/InputFilter/DeleteBookStoreInputFilter.php\033[0m
 \033[92mCreated Input: vfs://root/src/BookStore/src/InputFilter/Input/ConfirmDeleteBookStoreInput.php\033[0m
-\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-delete-form.html.twig\033[0m
+\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/delete-book-store-form.html.twig\033[0m
 
 Allow editing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetEditBookStoreFormHandler.php\033[0m
 \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostEditBookStoreHandler.php\033[0m
 \033[92mCreated Form: vfs://root/src/BookStore/src/Form/EditBookStoreForm.php\033[0m
 \033[92mCreated InputFilter: vfs://root/src/BookStore/src/InputFilter/EditBookStoreInputFilter.php\033[0m
-\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-edit-form.html.twig\033[0m
+\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/edit-book-store-form.html.twig\033[0m
 
 \033[92mCreated RoutesDelegator: vfs://root/src/BookStore/src/RoutesDelegator.php\033[0m
 
@@ -1276,29 +1276,29 @@ Create middleware? [Y(es)/n(o)]: \033[92mCreated Middleware: vfs://root/src/Book
 
 Create handler? [Y(es)/n(o)]: 
 Allow listing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetListBookStoreHandler.php\033[0m
-\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-list.html.twig\033[0m
+\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/list-book-store.html.twig\033[0m
 
 Allow viewing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetViewBookStoreHandler.php\033[0m
-\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-view.html.twig\033[0m
+\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/view-book-store.html.twig\033[0m
 
 Allow creating BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetCreateBookStoreFormHandler.php\033[0m
 \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostCreateBookStoreHandler.php\033[0m
 \033[92mCreated Form: vfs://root/src/BookStore/src/Form/CreateBookStoreForm.php\033[0m
 \033[92mCreated InputFilter: vfs://root/src/BookStore/src/InputFilter/CreateBookStoreInputFilter.php\033[0m
-\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-create-form.html.twig\033[0m
+\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/create-book-store-form.html.twig\033[0m
 
 Allow deleting BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetDeleteBookStoreFormHandler.php\033[0m
 \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostDeleteBookStoreHandler.php\033[0m
 \033[92mCreated Form: vfs://root/src/BookStore/src/Form/DeleteBookStoreForm.php\033[0m
 \033[92mCreated InputFilter: vfs://root/src/BookStore/src/InputFilter/DeleteBookStoreInputFilter.php\033[0m
 \033[92mCreated Input: vfs://root/src/BookStore/src/InputFilter/Input/ConfirmDeleteBookStoreInput.php\033[0m
-\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-delete-form.html.twig\033[0m
+\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/delete-book-store-form.html.twig\033[0m
 
 Allow editing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/GetEditBookStoreFormHandler.php\033[0m
 \033[92mCreated Handler: vfs://root/src/BookStore/src/Handler/BookStore/PostEditBookStoreHandler.php\033[0m
 \033[92mCreated Form: vfs://root/src/BookStore/src/Form/EditBookStoreForm.php\033[0m
 \033[92mCreated InputFilter: vfs://root/src/BookStore/src/InputFilter/EditBookStoreInputFilter.php\033[0m
-\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/book-store-edit-form.html.twig\033[0m
+\033[92mCreated template file: vfs://root/src/BookStore/templates/book-store/edit-book-store-form.html.twig\033[0m
 
 \033[92mCreated RoutesDelegator: vfs://root/src/BookStore/src/RoutesDelegator.php\033[0m
 

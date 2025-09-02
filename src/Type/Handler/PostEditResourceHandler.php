@@ -137,7 +137,7 @@ class PostEditResourceHandler extends AbstractType implements FileInterface
             }
 
             return new HtmlResponse(
-                \$this->template->render('{$entity->toKebabCase()}::{$entity->toKebabCase()}-edit-form', [
+                \$this->template->render('{$entity->toKebabCase()}::edit-{$entity->toKebabCase()}-form', [
                     'form' => \$this->{$form->toCamelCase()}->prepare(),
                     '{$entity->toCamelCase()}' => {$entity->getVariable()},
                 ]),
@@ -145,7 +145,7 @@ class PostEditResourceHandler extends AbstractType implements FileInterface
             );
         } catch (BadRequestException | ConflictException | NotFoundException \$exception) {
             return new HtmlResponse(
-                \$this->template->render('{$entity->toKebabCase()}::{$entity->toKebabCase()}-edit-form', [
+                \$this->template->render('{$entity->toKebabCase()}::edit-{$entity->toKebabCase()}-form', [
                     'form' => \$this->{$form->toCamelCase()}->prepare(),
                     '{$entity->toCamelCase()}' => {$entity->getVariable()},
                     'messages' => [

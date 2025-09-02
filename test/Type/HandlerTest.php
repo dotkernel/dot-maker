@@ -197,7 +197,7 @@ class HandlerTest extends TestCase
         $this->assertDirectoryExists($templateDir->getPath());
         $this->assertTrue($templateDir->exists());
 
-        $templateFile = $this->fileSystem->templateFile($entity->getComponent()->toKebabCase(), 'book-store-list');
+        $templateFile = $this->fileSystem->templateFile($entity->getComponent()->toKebabCase(), 'list-book-store');
         $this->assertFileExists($templateFile->getPath());
         $this->assertTrue($templateFile->exists());
 
@@ -289,7 +289,7 @@ class HandlerTest extends TestCase
         $this->assertDirectoryExists($templateDir->getPath());
         $this->assertTrue($templateDir->exists());
 
-        $templateFile = $this->fileSystem->templateFile($entity->getComponent()->toKebabCase(), 'book-store-view');
+        $templateFile = $this->fileSystem->templateFile($entity->getComponent()->toKebabCase(), 'view-book-store');
         $this->assertFileExists($templateFile->getPath());
         $this->assertTrue($templateFile->exists());
 
@@ -384,7 +384,7 @@ class HandlerTest extends TestCase
 
         $templateFile = $this->fileSystem->templateFile(
             $entity->getComponent()->toKebabCase(),
-            'book-store-create-form'
+            'create-book-store-form'
         );
         $this->assertFileExists($templateFile->getPath());
         $this->assertTrue($templateFile->exists());
@@ -480,7 +480,7 @@ class HandlerTest extends TestCase
 
         $templateFile = $this->fileSystem->templateFile(
             $entity->getComponent()->toKebabCase(),
-            'book-store-delete-form'
+            'delete-book-store-form'
         );
         $this->assertFileExists($templateFile->getPath());
         $this->assertTrue($templateFile->exists());
@@ -576,7 +576,7 @@ class HandlerTest extends TestCase
 
         $templateFile = $this->fileSystem->templateFile(
             $entity->getComponent()->toKebabCase(),
-            'book-store-edit-form'
+            'edit-book-store-form'
         );
         $this->assertFileExists($templateFile->getPath());
         $this->assertTrue($templateFile->exists());
@@ -669,7 +669,7 @@ class HandlerTest extends TestCase
         $this->assertDirectoryExists($templateDir->getPath());
         $this->assertTrue($templateDir->exists());
 
-        $templateFile = $this->fileSystem->templateFile($entity->getComponent()->toKebabCase(), 'book-store-list');
+        $templateFile = $this->fileSystem->templateFile($entity->getComponent()->toKebabCase(), 'list-book-store');
         $this->assertFileExists($templateFile->getPath());
         $this->assertTrue($templateFile->exists());
 
@@ -761,7 +761,7 @@ class HandlerTest extends TestCase
         $this->assertDirectoryExists($templateDir->getPath());
         $this->assertTrue($templateDir->exists());
 
-        $templateFile = $this->fileSystem->templateFile($entity->getComponent()->toKebabCase(), 'book-store-view');
+        $templateFile = $this->fileSystem->templateFile($entity->getComponent()->toKebabCase(), 'view-book-store');
         $this->assertFileExists($templateFile->getPath());
         $this->assertTrue($templateFile->exists());
 
@@ -856,7 +856,7 @@ class HandlerTest extends TestCase
 
         $templateFile = $this->fileSystem->templateFile(
             $entity->getComponent()->toKebabCase(),
-            'book-store-create-form'
+            'create-book-store-form'
         );
         $this->assertFileExists($templateFile->getPath());
         $this->assertTrue($templateFile->exists());
@@ -952,7 +952,7 @@ class HandlerTest extends TestCase
 
         $templateFile = $this->fileSystem->templateFile(
             $entity->getComponent()->toKebabCase(),
-            'book-store-delete-form'
+            'delete-book-store-form'
         );
         $this->assertFileExists($templateFile->getPath());
         $this->assertTrue($templateFile->exists());
@@ -1048,7 +1048,7 @@ class HandlerTest extends TestCase
 
         $templateFile = $this->fileSystem->templateFile(
             $entity->getComponent()->toKebabCase(),
-            'book-store-edit-form'
+            'edit-book-store-form'
         );
         $this->assertFileExists($templateFile->getPath());
         $this->assertTrue($templateFile->exists());
@@ -1097,7 +1097,7 @@ class GetListBookStoreHandler implements RequestHandlerInterface
         ServerRequestInterface \$request,
     ): ResponseInterface {
         return new HtmlResponse(
-            \$this->template->render('book-store::book-store-list', [
+            \$this->template->render('book-store::list-book-store', [
                 'pagination' => \$this->bookStoreService->getBookStores(\$request->getQueryParams()),
             ])
         );
@@ -1161,7 +1161,7 @@ class GetViewBookStoreHandler implements RequestHandlerInterface
         }
 
         return new HtmlResponse(
-            \$this->template->render('book-store::book-store-view', [
+            \$this->template->render('book-store::view-book-store', [
                 'bookStore' => \$bookStore,
             ])
         );
@@ -1217,7 +1217,7 @@ class GetCreateBookStoreFormHandler implements RequestHandlerInterface
             ->setAttribute('action', \$this->router->generateUri('book-store::book-store-create'));
 
         return new HtmlResponse(
-            \$this->template->render('book-store::book-store-create-form', [
+            \$this->template->render('book-store::create-book-store-form', [
                 'form' => \$this->createBookStoreForm->prepare(),
             ])
         );
@@ -1299,14 +1299,14 @@ class PostCreateBookStoreHandler implements RequestHandlerInterface
             }
 
             return new HtmlResponse(
-                \$this->template->render('book-store::book-store-create-form', [
+                \$this->template->render('book-store::create-book-store-form', [
                     'form' => \$this->createBookStoreForm->prepare(),
                 ]),
                 StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY
             );
         } catch (ConflictException \$exception) {
             return new HtmlResponse(
-                \$this->template->render('book-store::book-store-create-form', [
+                \$this->template->render('book-store::create-book-store-form', [
                     'form'     => \$this->createBookStoreForm->prepare(),
                     'messages' => [
                         'error' => \$exception->getMessage(),
@@ -1323,7 +1323,7 @@ class PostCreateBookStoreHandler implements RequestHandlerInterface
             ]);
 
             return new HtmlResponse(
-                \$this->template->render('book-store::book-store-create-form', [
+                \$this->template->render('book-store::create-book-store-form', [
                     'form'     => \$this->createBookStoreForm->prepare(),
                     'messages' => [
                         'error' => Message::AN_ERROR_OCCURRED,
@@ -1404,7 +1404,7 @@ class GetDeleteBookStoreFormHandler implements RequestHandlerInterface
         );
 
         return new HtmlResponse(
-            \$this->template->render('book-store::book-store-delete-form', [
+            \$this->template->render('book-store::delete-book-store-form', [
                 'form' => \$this->deleteBookStoreForm->prepare(),
                 'book-store' => \$bookStore,
             ])
@@ -1496,7 +1496,7 @@ class PostDeleteBookStoreHandler implements RequestHandlerInterface
             }
 
             return new HtmlResponse(
-                \$this->template->render('book-store::book-store-delete-form', [
+                \$this->template->render('book-store::delete-book-store-form', [
                     'form' => \$this->deleteBookStoreForm->prepare(),
                     'bookStore' => \$bookStore,
                 ]),
@@ -1588,7 +1588,7 @@ class GetEditBookStoreFormHandler implements RequestHandlerInterface
             ->bind(\$bookStore);
 
         return new HtmlResponse(
-            \$this->template->render('book-store::book-store-edit-form', [
+            \$this->template->render('book-store::edit-book-store-form', [
                 'form' => \$this->editBookStoreForm->prepare(),
                 'book-store' => \$bookStore,
             ])
@@ -1686,7 +1686,7 @@ class PostEditBookStoreHandler implements RequestHandlerInterface
             }
 
             return new HtmlResponse(
-                \$this->template->render('book-store::book-store-edit-form', [
+                \$this->template->render('book-store::edit-book-store-form', [
                     'form' => \$this->editBookStoreForm->prepare(),
                     'bookStore' => \$bookStore,
                 ]),
@@ -1694,7 +1694,7 @@ class PostEditBookStoreHandler implements RequestHandlerInterface
             );
         } catch (BadRequestException | ConflictException | NotFoundException \$exception) {
             return new HtmlResponse(
-                \$this->template->render('book-store::book-store-edit-form', [
+                \$this->template->render('book-store::edit-book-store-form', [
                     'form' => \$this->editBookStoreForm->prepare(),
                     'bookStore' => \$bookStore,
                     'messages' => [
