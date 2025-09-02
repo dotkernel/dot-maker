@@ -119,7 +119,7 @@ class PostDeleteResourceHandler extends AbstractType implements FileInterface
 
         \$this->{$form->toCamelCase()}->setAttribute(
             'action',
-            \$this->router->generateUri('{$entity->toKebabCase()}::{$entity->toKebabCase()}-delete', ['uuid' => {$entity->getVariable()}->getUuid()->toString()])
+            \$this->router->generateUri('{$entity->toKebabCase()}::delete-{$entity->toKebabCase()}', ['uuid' => {$entity->getVariable()}->getUuid()->toString()])
         );
 
         try {

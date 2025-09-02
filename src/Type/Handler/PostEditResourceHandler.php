@@ -122,7 +122,7 @@ class PostEditResourceHandler extends AbstractType implements FileInterface
         \$this->{$form->toCamelCase()}
             ->setAttribute(
                 'action',
-                \$this->router->generateUri('{$entity->toKebabCase()}::{$entity->toKebabCase()}-edit', ['uuid' => {$entity->getVariable()}->getUuid()->toString()])
+                \$this->router->generateUri('{$entity->toKebabCase()}::edit-{$entity->toKebabCase()}', ['uuid' => {$entity->getVariable()}->getUuid()->toString()])
             );
 
         try {

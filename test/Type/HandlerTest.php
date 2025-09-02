@@ -1214,7 +1214,7 @@ class GetCreateBookStoreFormHandler implements RequestHandlerInterface
         ServerRequestInterface \$request,
     ): ResponseInterface {
         \$this->createBookStoreForm
-            ->setAttribute('action', \$this->router->generateUri('book-store::book-store-create'));
+            ->setAttribute('action', \$this->router->generateUri('book-store::create-book-store'));
 
         return new HtmlResponse(
             \$this->template->render('book-store::book-store-create-form', [
@@ -1285,7 +1285,7 @@ class PostCreateBookStoreHandler implements RequestHandlerInterface
         ServerRequestInterface \$request,
     ): ResponseInterface {
         \$this->createBookStoreForm
-            ->setAttribute('action', \$this->router->generateUri('book-store::book-store-create'));
+            ->setAttribute('action', \$this->router->generateUri('book-store::create-book-store'));
 
         try {
             \$data = (array) \$request->getParsedBody();
@@ -1400,7 +1400,7 @@ class GetDeleteBookStoreFormHandler implements RequestHandlerInterface
 
         \$this->deleteBookStoreForm->setAttribute(
             'action',
-            \$this->router->generateUri('book-store::book-store-delete', ['uuid' => \$bookStore->getUuid()->toString()])
+            \$this->router->generateUri('book-store::delete-book-store', ['uuid' => \$bookStore->getUuid()->toString()])
         );
 
         return new HtmlResponse(
@@ -1482,7 +1482,7 @@ class PostDeleteBookStoreHandler implements RequestHandlerInterface
 
         \$this->deleteBookStoreForm->setAttribute(
             'action',
-            \$this->router->generateUri('book-store::book-store-delete', ['uuid' => \$bookStore->getUuid()->toString()])
+            \$this->router->generateUri('book-store::delete-book-store', ['uuid' => \$bookStore->getUuid()->toString()])
         );
 
         try {
@@ -1583,7 +1583,7 @@ class GetEditBookStoreFormHandler implements RequestHandlerInterface
         \$this->editBookStoreForm
             ->setAttribute(
                 'action',
-                \$this->router->generateUri('book-store::book-store-edit', ['uuid' => \$bookStore->getUuid()->toString()])
+                \$this->router->generateUri('book-store::edit-book-store', ['uuid' => \$bookStore->getUuid()->toString()])
             )
             ->bind(\$bookStore);
 
@@ -1671,7 +1671,7 @@ class PostEditBookStoreHandler implements RequestHandlerInterface
         \$this->editBookStoreForm
             ->setAttribute(
                 'action',
-                \$this->router->generateUri('book-store::book-store-edit', ['uuid' => \$bookStore->getUuid()->toString()])
+                \$this->router->generateUri('book-store::edit-book-store', ['uuid' => \$bookStore->getUuid()->toString()])
             );
 
         try {
