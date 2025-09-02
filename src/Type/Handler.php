@@ -79,7 +79,7 @@ class Handler extends AbstractType implements FileInterface
                 $template = $this->fileSystem
                     ->templateFile(
                         $entity->getComponent()->toKebabCase(),
-                        sprintf('%s-list', $entity->getComponent()->toKebabCase())
+                        sprintf('list-%s', $entity->getComponent()->toKebabCase())
                     );
                 if (! $template->exists()) {
                     $template->create(sprintf('List %s template', $plural));
@@ -93,7 +93,7 @@ class Handler extends AbstractType implements FileInterface
                 $template = $this->fileSystem
                     ->templateFile(
                         $entity->getComponent()->toKebabCase(),
-                        sprintf('%s-view', $entity->getComponent()->toKebabCase())
+                        sprintf('view-%s', $entity->getComponent()->toKebabCase())
                     );
                 if (! $template->exists()) {
                     $template->create(sprintf('View %s template', $plural));
@@ -110,7 +110,7 @@ class Handler extends AbstractType implements FileInterface
                 $template = $this->fileSystem
                     ->templateFile(
                         $entity->getComponent()->toKebabCase(),
-                        sprintf('%s-create-form', $entity->getComponent()->toKebabCase())
+                        sprintf('create-%s-form', $entity->getComponent()->toKebabCase())
                     );
                 if (! $template->exists()) {
                     $template->create(sprintf('Create %s template', $plural));
@@ -128,7 +128,7 @@ class Handler extends AbstractType implements FileInterface
                 $template = $this->fileSystem
                     ->templateFile(
                         $entity->getComponent()->toKebabCase(),
-                        sprintf('%s-delete-form', $entity->getComponent()->toKebabCase())
+                        sprintf('delete-%s-form', $entity->getComponent()->toKebabCase())
                     );
                 if (! $template->exists()) {
                     $template->create(sprintf('Delete %s template', $plural));
@@ -145,7 +145,7 @@ class Handler extends AbstractType implements FileInterface
                 $template = $this->fileSystem
                     ->templateFile(
                         $entity->getComponent()->toKebabCase(),
-                        sprintf('%s-edit-form', $entity->getComponent()->toKebabCase())
+                        sprintf('edit-%s-form', $entity->getComponent()->toKebabCase())
                     );
                 if (! $template->exists()) {
                     $template->create(sprintf('Edit %s template', $plural));

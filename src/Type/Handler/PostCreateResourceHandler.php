@@ -124,14 +124,14 @@ class PostCreateResourceHandler extends AbstractType implements FileInterface
             }
 
             return new HtmlResponse(
-                \$this->template->render('{$entity->toKebabCase()}::{$entity->toKebabCase()}-create-form', [
+                \$this->template->render('{$entity->toKebabCase()}::create-{$entity->toKebabCase()}-form', [
                     'form' => \$this->{$form->toCamelCase()}->prepare(),
                 ]),
                 StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY
             );
         } catch (ConflictException \$exception) {
             return new HtmlResponse(
-                \$this->template->render('{$entity->toKebabCase()}::{$entity->toKebabCase()}-create-form', [
+                \$this->template->render('{$entity->toKebabCase()}::create-{$entity->toKebabCase()}-form', [
                     'form'     => \$this->{$form->toCamelCase()}->prepare(),
                     'messages' => [
                         'error' => \$exception->getMessage(),
@@ -148,7 +148,7 @@ class PostCreateResourceHandler extends AbstractType implements FileInterface
             ]);
 
             return new HtmlResponse(
-                \$this->template->render('{$entity->toKebabCase()}::{$entity->toKebabCase()}-create-form', [
+                \$this->template->render('{$entity->toKebabCase()}::create-{$entity->toKebabCase()}-form', [
                     'form'     => \$this->{$form->toCamelCase()}->prepare(),
                     'messages' => [
                         'error' => Message::AN_ERROR_OCCURRED,

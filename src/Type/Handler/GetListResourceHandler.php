@@ -86,7 +86,7 @@ class GetListResourceHandler extends AbstractType implements FileInterface
             )
             ->setBody(<<<BODY
         return new HtmlResponse(
-            \$this->template->render('{$entity->toKebabCase()}::{$entity->toKebabCase()}-list', [
+            \$this->template->render('{$entity->toKebabCase()}::list-{$entity->toKebabCase()}', [
                 'pagination' => \$this->{$serviceInterface->toCamelCase(true)}->{$entity->getCollectionMethodName()}(\$request->getQueryParams()),
             ])
         );

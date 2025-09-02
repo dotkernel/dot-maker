@@ -89,7 +89,7 @@ class GetCreateResourceHandler extends AbstractType implements FileInterface
             ->setAttribute('action', \$this->router->generateUri('{$entity->toKebabCase()}::{$entity->toKebabCase()}-create'));
 
         return new HtmlResponse(
-            \$this->template->render('{$entity->toKebabCase()}::{$entity->toKebabCase()}-create-form', [
+            \$this->template->render('{$entity->toKebabCase()}::create-{$entity->toKebabCase()}-form', [
                 'form' => \$this->{$form->toCamelCase()}->prepare(),
             ])
         );

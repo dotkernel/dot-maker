@@ -118,7 +118,7 @@ class GetEditResourceHandler extends AbstractType implements FileInterface
             ->bind({$entity->getVariable()});
 
         return new HtmlResponse(
-            \$this->template->render('{$entity->toKebabCase()}::{$entity->toKebabCase()}-edit-form', [
+            \$this->template->render('{$entity->toKebabCase()}::edit-{$entity->toKebabCase()}-form', [
                 'form' => \$this->{$form->toCamelCase()}->prepare(),
                 '{$entity->toKebabCase()}' => {$entity->getVariable()},
             ])
