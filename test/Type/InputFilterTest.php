@@ -482,7 +482,7 @@ class CreateBookStoreInputFilter extends AbstractInputFilter
         // chain inputs below
 
         return \$this
-            ->add(new CsrfInput('CreateBookStoreCsrf', true));
+            ->add(new CsrfInput('createBookStoreCsrf', true));
     }
 }
 
@@ -516,7 +516,7 @@ class DeleteBookStoreInputFilter extends AbstractInputFilter
 
         return \$this
             ->add(new ConfirmDeleteBookStoreInput('confirmation'))
-            ->add(new CsrfInput('DeleteBookStoreCsrf', true));
+            ->add(new CsrfInput('deleteBookStoreCsrf', true));
     }
 }
 
@@ -546,7 +546,7 @@ class EditBookStoreInputFilter extends AbstractInputFilter
         // chain inputs below
 
         return \$this
-            ->add(new CsrfInput('EditBookStoreCsrf', true));
+            ->add(new CsrfInput('editBookStoreCsrf', true));
     }
 }
 
