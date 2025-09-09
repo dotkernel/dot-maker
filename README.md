@@ -25,7 +25,7 @@ Documentation is available at: https://docs.dotkernel.org/dot-maker/.
 Run the following command in your terminal:
 
 ```shell
-composer require-dev dotkernel/dot-maker
+composer require --dev dotkernel/dot-maker
 ```
 
 ## Setup
