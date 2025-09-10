@@ -5,6 +5,8 @@ extra:
   current_version: v1
   versions:
     - v1
+  installation:
+    composer_dev: true
 nav:
   - Home: index.md
   - v1:
