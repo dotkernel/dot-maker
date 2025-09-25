@@ -18,4 +18,4 @@ Programmatically generate Dotkernel project files and directories.
 
 Make sure you run through our guides on using the [inputs](./io/input.md) and the [outputs](./io/output.md).
 
-
+[![Watch the video](https://docs.dotkernel.org/img/dot-maker/dot-maker-preview.jpg)](https://www.youtube.com/watch?v=CPDilXP2kAc)
