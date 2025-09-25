@@ -17,3 +17,5 @@ Programmatically generate Dotkernel project files and directories.
 [![PHPStan](https://github.com/dotkernel/dot-maker/actions/workflows/static-analysis.yml/badge.svg?branch=1.0)](https://github.com/dotkernel/dot-maker/actions/workflows/static-analysis.yml)
 
 Make sure you run through our guides on using the [inputs](./io/input.md) and the [outputs](./io/output.md).
+
+

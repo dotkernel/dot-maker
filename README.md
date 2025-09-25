@@ -55,3 +55,5 @@ Invoke `dot-maker` by executing:
 - the (optional) Composer script created during [Setup](#setup): `composer make`
 
 Follow the instructions on the screen to create a specific Dotkernel project component.
+
+[![Watch the video](https://docs.dotkernel.org/img/dot-maker/dot-maker-preview.jpg)](https://www.youtube.com/watch?v=CPDilXP2kAc)
