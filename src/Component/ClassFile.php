@@ -178,8 +178,8 @@ class ClassFile
         $class .= PHP_EOL . 'namespace ' . $this->namespace . ';' . PHP_EOL;
 
         $classUses = $this->classUses;
-        sort($classUses);
         if (count($classUses) > 0) {
+            sort($classUses);
             foreach ($classUses as $use) {
                 $class .= PHP_EOL . $use;
             }
@@ -187,8 +187,8 @@ class ClassFile
         }
 
         $functionUses = $this->functionUses;
-        sort($functionUses);
         if (count($functionUses) > 0) {
+            sort($functionUses);
             foreach ($functionUses as $use) {
                 $class .= PHP_EOL . $use;
             }
@@ -196,8 +196,8 @@ class ClassFile
         }
 
         $constantUses = $this->constantUses;
-        sort($constantUses);
         if (count($constantUses) > 0) {
+            sort($constantUses);
             foreach ($constantUses as $use) {
                 $class .= PHP_EOL . $use;
             }

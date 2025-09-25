@@ -129,8 +129,8 @@ class InterfaceFile
         $interface .= PHP_EOL . 'namespace ' . $this->namespace . ';' . PHP_EOL;
 
         $classUses = $this->classUses;
-        sort($classUses);
         if (count($classUses) > 0) {
+            sort($classUses);
             foreach ($classUses as $use) {
                 $interface .= PHP_EOL . $use;
             }
@@ -138,8 +138,8 @@ class InterfaceFile
         }
 
         $functionUses = $this->functionUses;
-        sort($functionUses);
         if (count($functionUses) > 0) {
+            sort($functionUses);
             foreach ($functionUses as $use) {
                 $interface .= PHP_EOL . $use;
             }
@@ -147,8 +147,8 @@ class InterfaceFile
         }
 
         $constantUses = $this->constantUses;
-        sort($constantUses);
         if (count($constantUses) > 0) {
+            sort($constantUses);
             foreach ($constantUses as $use) {
                 $interface .= PHP_EOL . $use;
             }
