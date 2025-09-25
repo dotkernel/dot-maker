@@ -56,4 +56,4 @@ Invoke `dot-maker` by executing:
 
 Follow the instructions on the screen to create a specific Dotkernel project component.
 
-[![Watch the video](https://docs.dotkernel.org/img/dot-maker/dot-maker-preview.jpg)](https://www.youtube.com/watch?v=CPDilXP2kAc)
+<iframe width="560" height="315" src="https://www.youtube.com/embed/CPDilXP2kAc?si=_Y3nKvFbQmkvctL5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
