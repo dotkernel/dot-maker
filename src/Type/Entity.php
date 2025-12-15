@@ -9,7 +9,6 @@ use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
 use Dot\Maker\Component\Method;
-use Dot\Maker\Component\Method\Constructor;
 use Dot\Maker\Context;
 use Dot\Maker\Exception\BadRequestException;
 use Dot\Maker\Exception\DuplicateFileException;
@@ -78,6 +77,7 @@ class Entity extends AbstractType implements FileInterface
             ->setExtends('AbstractEntity')
             ->useClass($this->getAbstractEntityFqcn())
             ->useClass($this->getTimestampsTraitFqcn())
+            ->useClass($this->getUuidIdentifierTraitFqcn())
             ->useClass($repository->getFqcn())
             ->useClass(Import::DATETIMEIMMUTABLE)
             ->useClass(Import::DOCTRINE_ORM_MAPPING, 'ORM')
@@ -91,29 +91,23 @@ class Entity extends AbstractType implements FileInterface
             ->addInject(
                 new Inject('ORM\HasLifecycleCallbacks')
             )
-            ->addTrait('TimestampsTrait');
-
-        $constructor = (new Constructor())->setBody(<<<BODY
-        parent::__construct();
-
-        \$this->created();
-BODY);
-        $class->addMethod($constructor);
+            ->addTrait('TimestampsTrait')
+            ->addTrait('UuidIdentifierTrait');
 
         $getArrayCopy = (new Method('getArrayCopy'))
             ->setReturnType('array')
             ->setComment(<<<COMM
 /**
      * @return array{
-     *      uuid: non-empty-string,
-     *      created: DateTimeImmutable,
+     *      id: non-empty-string,
+     *      created: DateTimeImmutable|null,
      *      updated: DateTimeImmutable|null,
      * }
      */
 COMM)
             ->setBody(<<<BODY
         return [
-            'uuid'    => \$this->uuid->toString(),
+            'id'      => \$this->id->toString(),
             'created' => \$this->created,
             'updated' => \$this->updated,
         ];
@@ -134,9 +128,31 @@ BODY);
         return sprintf($format, $this->context->getRootNamespace());
     }
 
+    public function getNumericIdentifierTraitFqcn(): string
+    {
+        $format = Import::ROOT_APP_ENTITY_NUMERICIDENTIFIERTRAIT;
+
+        if ($this->context->hasCore()) {
+            return sprintf($format, Context::NAMESPACE_CORE);
+        }
+
+        return sprintf($format, $this->context->getRootNamespace());
+    }
+
     public function getTimestampsTraitFqcn(): string
     {
         $format = Import::ROOT_APP_ENTITY_TIMESTAMPSTRAIT;
+
+        if ($this->context->hasCore()) {
+            return sprintf($format, Context::NAMESPACE_CORE);
+        }
+
+        return sprintf($format, $this->context->getRootNamespace());
+    }
+
+    public function getUuidIdentifierTraitFqcn(): string
+    {
+        $format = Import::ROOT_APP_ENTITY_UUIDIDENTIFIERTRAIT;
 
         if ($this->context->hasCore()) {
             return sprintf($format, Context::NAMESPACE_CORE);

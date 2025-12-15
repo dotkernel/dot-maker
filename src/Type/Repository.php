@@ -106,7 +106,7 @@ COMM)
             ->orderBy(\$params['sort'], \$params['dir'])
             ->setFirstResult(\$params['offset'])
             ->setMaxResults(\$params['limit'])
-            ->groupBy('{$entity->toCamelCase()}.uuid');
+            ->groupBy('{$entity->toCamelCase()}.id');
         \$queryBuilder->getQuery()->useQueryCache(true);
 
         return \$queryBuilder;

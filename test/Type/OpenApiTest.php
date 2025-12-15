@@ -168,15 +168,15 @@ use OpenApi\Attributes as OA;
  * @see DeleteModuleNameResourceHandler::handle()
  */
 #[OA\Delete(
-    path: '/module-name/{uuid}',
-    description: 'Authenticated (super)admin deletes resource of type ModuleName, identified by its UUID',
+    path: '/module-name/{id}',
+    description: 'Authenticated (super)admin deletes resource of type ModuleName, identified by its ID',
     summary: 'Admin deletes a resource of type ModuleName',
     security: [['AuthToken' => []]],
     tags: ['ModuleName'],
     parameters: [
         new OA\Parameter(
-            name: 'uuid',
-            description: 'ModuleName UUID',
+            name: 'id',
+            description: 'ModuleName ID',
             in: 'path',
             required: true,
             schema: new OA\Schema(type: 'string'),
@@ -198,15 +198,15 @@ use OpenApi\Attributes as OA;
  * @see GetModuleNameResourceHandler::handle()
  */
 #[OA\Get(
-    path: '/module-name/{uuid}',
-    description: 'Authenticated (super)admin fetches a resource of type ModuleName, identified by its UUID',
+    path: '/module-name/{id}',
+    description: 'Authenticated (super)admin fetches a resource of type ModuleName, identified by its ID',
     summary: 'Admin fetches a resource of type ModuleName',
     security: [['AuthToken' => []]],
     tags: ['ModuleName'],
     parameters: [
         new OA\Parameter(
-            name: 'uuid',
-            description: 'ModuleName UUID',
+            name: 'id',
+            description: 'ModuleName ID',
             in: 'path',
             required: true,
             schema: new OA\Schema(type: 'string'),
@@ -296,7 +296,7 @@ use OpenApi\Attributes as OA;
  * @see PatchModuleNameResourceHandler::handle()
  */
 #[OA\Patch(
-    path: '/module-name/{uuid}',
+    path: '/module-name/{id}',
     description: 'Authenticated (super)admin updates an existing ModuleName',
     summary: 'Admin updates an existing ModuleName',
     security: [['AuthToken' => []]],
@@ -311,8 +311,8 @@ use OpenApi\Attributes as OA;
     tags: ['ModuleName'],
     parameters: [
         new OA\Parameter(
-            name: 'uuid',
-            description: 'ModuleName UUID',
+            name: 'id',
+            description: 'ModuleName ID',
             in: 'path',
             required: true,
             schema: new OA\Schema(type: 'string'),
@@ -388,7 +388,7 @@ use OpenApi\Attributes as OA;
  * @see PutModuleNameResourceHandler::handle()
  */
 #[OA\Put(
-    path: '/module-name/{uuid}',
+    path: '/module-name/{id}',
     description: 'Authenticated (super)admin replaces an existing ModuleName',
     summary: 'Admin updates an existing ModuleName',
     security: [['AuthToken' => []]],
@@ -403,8 +403,8 @@ use OpenApi\Attributes as OA;
     tags: ['ModuleName'],
     parameters: [
         new OA\Parameter(
-            name: 'uuid',
-            description: 'ModuleName UUID',
+            name: 'id',
+            description: 'ModuleName ID',
             in: 'path',
             required: true,
             schema: new OA\Schema(type: 'string'),
@@ -440,7 +440,7 @@ use OpenApi\Attributes as OA;
 #[OA\Schema(
     schema: 'ModuleName',
     properties: [
-        new OA\Property(property: 'uuid', type: 'string', example: '1234abcd-abcd-4321-12ab-123456abcdef'),
+        new OA\Property(property: 'id', type: 'string', example: '1234abcd-abcd-4321-12ab-123456abcdef'),
         new OA\Property(property: 'created', type: 'object', example: new DateTimeImmutable()),
         new OA\Property(property: 'updated', type: 'object', example: new DateTimeImmutable()),
         new OA\Property(

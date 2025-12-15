@@ -83,15 +83,15 @@ class OpenApi extends AbstractType implements FileInterface
  * @see {$apiDeleteResourceHandler->getComponent()->getClassName()}::handle()
  */
 #[OA\Delete(
-    path: '/{$entity->toKebabCase()}/{uuid}',
-    description: 'Authenticated (super)admin deletes resource of type {$entity->getClassName()}, identified by its UUID',
+    path: '/{$entity->toKebabCase()}/{id}',
+    description: 'Authenticated (super)admin deletes resource of type {$entity->getClassName()}, identified by its ID',
     summary: 'Admin deletes a resource of type {$entity->getClassName()}',
     security: [['AuthToken' => []]],
     tags: ['{$entity->getClassName()}'],
     parameters: [
         new OA\Parameter(
-            name: 'uuid',
-            description: '{$entity->getClassName()} UUID',
+            name: 'id',
+            description: '{$entity->getClassName()} ID',
             in: 'path',
             required: true,
             schema: new OA\Schema(type: 'string'),
@@ -121,15 +121,15 @@ COMM;
  * @see {$apiGetResourceHandler->getComponent()->getClassName()}::handle()
  */
 #[OA\Get(
-    path: '/{$entity->toKebabCase()}/{uuid}',
-    description: 'Authenticated (super)admin fetches a resource of type {$entity->getClassName()}, identified by its UUID',
+    path: '/{$entity->toKebabCase()}/{id}',
+    description: 'Authenticated (super)admin fetches a resource of type {$entity->getClassName()}, identified by its ID',
     summary: 'Admin fetches a resource of type {$entity->getClassName()}',
     security: [['AuthToken' => []]],
     tags: ['{$entity->getClassName()}'],
     parameters: [
         new OA\Parameter(
-            name: 'uuid',
-            description: '{$entity->getClassName()} UUID',
+            name: 'id',
+            description: '{$entity->getClassName()} ID',
             in: 'path',
             required: true,
             schema: new OA\Schema(type: 'string'),
@@ -237,7 +237,7 @@ COMM;
  * @see {$apiPatchResourceHandler->getComponent()->getClassName()}::handle()
  */
 #[OA\Patch(
-    path: '/{$entity->toKebabCase()}/{uuid}',
+    path: '/{$entity->toKebabCase()}/{id}',
     description: 'Authenticated (super)admin updates an existing {$entity->getClassName()}',
     summary: 'Admin updates an existing {$entity->getClassName()}',
     security: [['AuthToken' => []]],
@@ -252,8 +252,8 @@ COMM;
     tags: ['{$entity->getClassName()}'],
     parameters: [
         new OA\Parameter(
-            name: 'uuid',
-            description: '{$entity->getClassName()} UUID',
+            name: 'id',
+            description: '{$entity->getClassName()} ID',
             in: 'path',
             required: true,
             schema: new OA\Schema(type: 'string'),
@@ -345,7 +345,7 @@ COMM;
  * @see {$apiPutResourceHandler->getComponent()->getClassName()}::handle()
  */
 #[OA\Put(
-    path: '/{$entity->toKebabCase()}/{uuid}',
+    path: '/{$entity->toKebabCase()}/{id}',
     description: 'Authenticated (super)admin replaces an existing {$entity->getClassName()}',
     summary: 'Admin updates an existing {$entity->getClassName()}',
     security: [['AuthToken' => []]],
@@ -360,8 +360,8 @@ COMM;
     tags: ['{$entity->getClassName()}'],
     parameters: [
         new OA\Parameter(
-            name: 'uuid',
-            description: '{$entity->getClassName()} UUID',
+            name: 'id',
+            description: '{$entity->getClassName()} ID',
             in: 'path',
             required: true,
             schema: new OA\Schema(type: 'string'),
@@ -402,7 +402,7 @@ COMM;
 #[OA\Schema(
     schema: '{$entity->getClassName()}',
     properties: [
-        new OA\Property(property: 'uuid', type: 'string', example: '1234abcd-abcd-4321-12ab-123456abcdef'),
+        new OA\Property(property: 'id', type: 'string', example: '1234abcd-abcd-4321-12ab-123456abcdef'),
         new OA\Property(property: 'created', type: 'object', example: new DateTimeImmutable()),
         new OA\Property(property: 'updated', type: 'object', example: new DateTimeImmutable()),
         new OA\Property(

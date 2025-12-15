@@ -110,7 +110,7 @@ class PostDeleteResourceHandler extends AbstractType implements FileInterface
             )
             ->setBody(<<<BODY
         try {
-            {$entity->getVariable()} = \$this->{$serviceInterface->toCamelCase(true)}->{$entity->getFindMethodName()}(\$request->getAttribute('uuid'));
+            {$entity->getVariable()} = \$this->{$serviceInterface->toCamelCase(true)}->{$entity->getFindMethodName()}(\$request->getAttribute('id'));
         } catch (NotFoundException \$exception) {
             \$this->messenger->addError(\$exception->getMessage());
 
@@ -119,7 +119,7 @@ class PostDeleteResourceHandler extends AbstractType implements FileInterface
 
         \$this->{$form->toCamelCase()}->setAttribute(
             'action',
-            \$this->router->generateUri('{$entity->toKebabCase()}::delete-{$entity->toKebabCase()}', ['uuid' => {$entity->getVariable()}->getUuid()->toString()])
+            \$this->router->generateUri('{$entity->toKebabCase()}::delete-{$entity->toKebabCase()}', ['id' => {$entity->getVariable()}->getId()->toString()])
         );
 
         try {

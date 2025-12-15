@@ -53,7 +53,9 @@ class Import
     public const ROOT_APP_COLLECTION_RESOURCECOLLECTION                      = '%s\\App\\Collection\\ResourceCollection';
     public const ROOT_APP_CONFIGPROVIDER                                     = '%s\\App\\ConfigProvider';
     public const ROOT_APP_ENTITY_ABSTRACTENTITY                              = '%s\\App\\Entity\\AbstractEntity';
+    public const ROOT_APP_ENTITY_NUMERICIDENTIFIERTRAIT                      = '%s\\App\\Entity\\NumericIdentifierTrait';
     public const ROOT_APP_ENTITY_TIMESTAMPSTRAIT                             = '%s\\App\\Entity\\TimestampsTrait';
+    public const ROOT_APP_ENTITY_UUIDIDENTIFIERTRAIT                         = '%s\\App\\Entity\\UuidIdentifierTrait';
     public const ROOT_APP_EXCEPTION_BADREQUESTEXCEPTION                      = '%s\\App\\Exception\\BadRequestException';
     public const ROOT_APP_EXCEPTION_CONFLICTEXCEPTION                        = '%s\\App\\Exception\\ConflictException';
     public const ROOT_APP_EXCEPTION_NOTFOUNDEXCEPTION                        = '%s\\App\\Exception\\NotFoundException';

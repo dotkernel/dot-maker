@@ -342,7 +342,7 @@ interface BookStoreServiceInterface
      * @throws NotFoundException
      */
     public function findBookStore(
-        string \$uuid,
+        string \$id,
     ): BookStore;
 }
 

@@ -382,9 +382,9 @@ class BookStoreService implements BookStoreServiceInterface
      * @throws NotFoundException
      */
     public function findBookStore(
-        string \$uuid,
+        string \$id,
     ): BookStore {
-        \$bookStore = \$this->bookStoreRepository->find(\$uuid);
+        \$bookStore = \$this->bookStoreRepository->find(\$id);
         if (! \$bookStore instanceof BookStore) {
             throw new NotFoundException(Message::resourceNotFound('BookStore'));
         }

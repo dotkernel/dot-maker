@@ -94,7 +94,7 @@ class GetViewResourceHandler extends AbstractType implements FileInterface
             )
             ->setBody(<<<BODY
         try {
-            {$entity->getVariable()} = \$this->{$serviceInterface->toCamelCase(true)}->{$entity->getFindMethodName()}(\$request->getAttribute('uuid'));
+            {$entity->getVariable()} = \$this->{$serviceInterface->toCamelCase(true)}->{$entity->getFindMethodName()}(\$request->getAttribute('id'));
         } catch (NotFoundException \$exception) {
             \$this->messenger->addError(\$exception->getMessage());
 

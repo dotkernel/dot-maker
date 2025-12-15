@@ -187,7 +187,7 @@ BODY);
             $findResource = (new Method($entity->getFindMethodName()))
                 ->setReturnType($entity->getClassName())
                 ->addParameter(
-                    new Parameter('uuid', 'string')
+                    new Parameter('id', 'string')
                 )
                 ->setComment(<<<COMM
 /**
@@ -195,7 +195,7 @@ BODY);
      */
 COMM)
                 ->setBody(<<<BODY
-        {$entity->getVariable()} = \$this->{$repository->toCamelCase()}->find(\$uuid);
+        {$entity->getVariable()} = \$this->{$repository->toCamelCase()}->find(\$id);
         if (! {$entity->getVariable()} instanceof {$entity->getClassName()}) {
             throw new NotFoundException(Message::resourceNotFound('{$entity->getClassName()}'));
         }

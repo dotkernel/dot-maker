@@ -1,10 +1,6 @@
-# dot-maker
+# Overview
 
 Programmatically generate Dotkernel project files and directories.
-
-## Documentation
-
-Documentation is available at: https://docs.dotkernel.org/dot-maker/.
 
 ## Badges
 
@@ -20,38 +16,8 @@ Documentation is available at: https://docs.dotkernel.org/dot-maker/.
 [![codecov](https://codecov.io/gh/dotkernel/dot-maker/graph/badge.svg?token=KT9UA402B4)](https://codecov.io/gh/dotkernel/dot-maker)
 [![PHPStan](https://github.com/dotkernel/dot-maker/actions/workflows/static-analysis.yml/badge.svg?branch=2.0)](https://github.com/dotkernel/dot-maker/actions/workflows/static-analysis.yml)
 
-## Installation
+Make sure you run through our guides on using the [inputs](./io/input.md) and the [outputs](./io/output.md).
 
-Run the following command in your terminal:
-
-```shell
-composer require --dev dotkernel/dot-maker
-```
-
-## Setup
-
-Once installed, `dot-maker` is ready for usage, no need for extra configurations.
-
-### (Optional) Add dot-maker to composer.json
-
-Open your project's `composer.json` and locate the `scripts` section.
-If it does not exist, create it at the document's root level.
-
-Register a new script by appending `"alias": "dot-maker"` to the `scripts` section, where **alias** can be any string you want; like, for example, **make**.
-
-```json
-{
-    "scripts": {
-        "make": "dot-maker"
-    }
-}
-```
-
-## Usage
-
-Invoke `dot-maker` by executing:
-
-- the bin file in your vendor directory `./vendor/bin/dot-maker`
-- the (optional) Composer script created during [Setup](#setup): `composer make`
-
-Follow the instructions on the screen to create a specific Dotkernel project component.
+<!-- markdownlint-disable MD033 -->
+<iframe width="560" height="315" src="https://www.youtube.com/embed/CPDilXP2kAc?si=_Y3nKvFbQmkvctL5" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+<!-- markdownlint-enable MD033 -->
