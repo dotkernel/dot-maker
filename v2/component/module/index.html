@@ -18,11 +18,11 @@
         <meta name="docsearch:component" content="dot-maker">
 
         
-        <link rel="canonical" href="https://docs.dotkernel.org/dot-maker/v1/component/middleware/">
+        <link rel="canonical" href="https://docs.dotkernel.org/dot-maker/v2/component/module/">
         
         <link rel="shortcut icon" href="https://docs.dotkernel.org/img/dk_docs_favicon_white.svg">
 
-        <title>Create Middleware - dot-maker - Dotkernel Documentation</title>
+        <title>Create Module - dot-maker - Dotkernel Documentation</title>
 
         <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap.css">
         <link rel="stylesheet" href="https://docs.dotkernel.org/css/bootstrap-icons.min.css">
@@ -149,13 +149,13 @@
         <div class="btn-group">
             <button type="button" class="btn dropdown-toggle bg-light" data-toggle="dropdown" data-display="static" aria-haspopup="true" aria-expanded="false" id="version-selector-dropdown">
                 
-                    v1
+                    v2
                 
             </button>
             <div class="dropdown-menu dropdown-menu-right dropdown-menu-lg-left" aria-labelledby="version-selector-dropdown">
                 
                 
-                <a href="../../../v2/overview/" class="dropdown-item">
+                <a href="../../overview/" class="dropdown-item active">
                     
                         v2 (latest)
                     
@@ -163,7 +163,7 @@
                 
                 
                 
-                <a href="../../overview/" class="dropdown-item active">
+                <a href="../../../v1/overview/" class="dropdown-item">
                     
                         v1
                     
@@ -206,7 +206,7 @@
                         
                     
 
-                    <li class="breadcrumb-item active" aria-current="page">Create Middleware</li>
+                    <li class="breadcrumb-item active" aria-current="page">Create Module</li>
                 
             
         </ol>
@@ -227,14 +227,6 @@
         <h5 class="subnavigation__title">Table of Contents</h5>
 
         <ul class="subnavigation__list">
-            
-
-                
-                
-
-                    
-                    
-                
             
 
                 
@@ -335,14 +327,14 @@
 
         
         
-<li class="subnavigation__list-item subnavigation__list-item--active">
-    <a href="./" class="subnavigation__link">Create Middleware</a>
+<li class="subnavigation__list-item ">
+    <a href="../middleware/" class="subnavigation__link">Create Middleware</a>
 </li>
 
         
         
-<li class="subnavigation__list-item ">
-    <a href="../module/" class="subnavigation__link">Create Module</a>
+<li class="subnavigation__list-item subnavigation__list-item--active">
+    <a href="./" class="subnavigation__link">Create Module</a>
 </li>
 
         
@@ -406,6 +398,14 @@
                     
                 
             
+
+                
+                
+
+                    
+                    
+                
+            
         </ul>
     </div>
 
@@ -427,15 +427,15 @@
                 </li>
             
                 <li class="toc__entry">
-                    <a href="#identify-the-target-module" class="toc__link nav-link">Identify the target module</a>
+                    <a href="#name-the-module" class="toc__link nav-link">Name the Module</a>
                 </li>
             
                 <li class="toc__entry">
-                    <a href="#name-the-middleware" class="toc__link nav-link">Name the Middleware</a>
+                    <a href="#create-module-files" class="toc__link nav-link">Create Module files</a>
                 </li>
             
                 <li class="toc__entry">
-                    <a href="#create-multiple-middleware" class="toc__link nav-link">Create multiple Middleware</a>
+                    <a href="#next-steps" class="toc__link nav-link">Next steps</a>
                 </li>
             
             </ul>
@@ -448,13 +448,6 @@
                     
                     
 
-    <div class="alert alert-danger alert-caution" role="alert">
-        <p class="mb-0">
-            The documentation you are viewing is for an older version of this component.<br>
-            <a href="../../..">Switch to the latest (v2) version.</a>
-        </p>
-    </div>
-
 
 
 
@@ -463,57 +456,291 @@
 <!--        <h2 class="chapter__headline text-black-50">Component</h2>-->
     
 
-    <h1 id="create-middleware">Create Middleware</h1>
+    <h1 id="create-module">Create Module</h1>
 <blockquote>
 <p>This page assumes that you have created a Composer "make" script as described on the <a href="../../setup/#add-dot-maker-to-composerjson">Setup page</a>.</p>
 </blockquote>
-<p>To create a Middleware, use either of the following commands:</p>
+<p>To create a Module, use either of the following commands:</p>
 <h2 id="run-the-command">Run the command</h2>
-<pre class="highlight"><code class="language-shell">composer make middleware</code></pre>
+<pre class="highlight"><code class="language-shell">composer make module</code></pre>
 <p>OR</p>
-<pre class="highlight"><code class="language-shell">./vendor/bin/dot-maker middleware</code></pre>
-<h2 id="identify-the-target-module">Identify the target module</h2>
-<p><code>dot-maker</code> needs to know in which module you want to create the new Middleware.
-To determine this, it will prompt you to enter the name of an existing module:</p>
+<pre class="highlight"><code class="language-shell">./vendor/bin/dot-maker module</code></pre>
+<h2 id="name-the-module">Name the Module</h2>
+<p>You will be prompted to input a name for the Module:</p>
 <blockquote>
-<p>Existing module name:</p>
-</blockquote>
-<p>If you input a module name which does not exist (like, "NonExistentModule"), an error will be thrown:</p>
-<blockquote>
-<p>Module "NonExistentModule" not found</p>
-</blockquote>
-<p>and will keep prompting for a valid module name until you provide one.</p>
-<p>Once an existing module name (like, "ExistingModule") is provided, <code>dot-maker</code> will output a success message:</p>
-<blockquote>
-<p>Found Module "ExistingModule"</p>
-</blockquote>
-<h2 id="name-the-middleware">Name the Middleware</h2>
-<p>Once the target module has been identified, you will be prompted to input a name for the Middleware:</p>
-<blockquote>
-<p>Middleware name:</p>
+<p>New module name:</p>
 </blockquote>
 <p><strong>The name must contain only letters and numbers.</strong></p>
-<blockquote>
-<p>You don't have to append "Middleware" to the name.
-It is automatically appended when necessary.
-See our <a href="../../naming-standards/">Naming Standards</a> page for more information.</p>
-</blockquote>
 <p>If you leave the name blank, the process will exit.</p>
 <p>If you input an invalid name (like, "."), an error will be thrown:</p>
 <blockquote>
-<p>Invalid Middleware name: "."</p>
+<p>Invalid Module name: "."</p>
 </blockquote>
-<p>If you input the name of an existing Middleware (like, "ExistingMiddleware"), an error will be thrown:</p>
+<p>If you input the name of an existing Module (like, "ExistingModule"), an error will be thrown:</p>
 <blockquote>
-<p>Class "ExistingMiddleware" already exists at /path/to/project/src/ExistingModule/src/Middleware/ExistingMiddleware.php</p>
+<p>Module "ExistingModule" already exists at /path/to/project/src/ExistingModule</p>
 </blockquote>
-<p>If you input a valid name (like, "NewMiddleware"), <code>dot-maker</code> will create the Middleware and output a success message:</p>
+<p>If you input a valid name (like, "NewModule"), <code>dot-maker</code> will create the Command and output a success message:</p>
 <blockquote>
-<p>Created Middleware: /path/to/project/src/ExistingModule/src/Middleware/NewMiddleware.php</p>
+<p>Created directory: /path/to/project/src/NewModule</p>
 </blockquote>
-<h2 id="create-multiple-middleware">Create multiple Middleware</h2>
-<p>To allow the creation of multiple Middleware, the process will loop until you leave the name blank.
-Each iteration creates a new Middleware under the same module.</p>
+<h2 id="create-module-files">Create Module files</h2>
+<p>From here, the process will run through a predefined set of files to create the Module components.</p>
+<blockquote>
+<p>The process will not ask for file names because they will be generated from the Module name.</p>
+</blockquote>
+<h3 id="entity-and-repository">Entity and Repository</h3>
+<p>Next, you will be asked to confirm whether the Module needs an Entity (and its matching Repository):</p>
+<blockquote>
+<p>Create entity and repository? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li>for projects compatible with the Core architecture:<ul>
+<li><code>src/Core/src/&lt;ModuleName&gt;/src/Entity/&lt;ModuleName&gt;.php</code></li>
+<li><code>src/Core/src/&lt;ModuleName&gt;/src/Repository/&lt;ModuleName&gt;Repository.php</code></li>
+</ul>
+</li>
+<li>for projects which are NOT compatible with the Core architecture:<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Entity/&lt;ModuleName&gt;.php</code></li>
+<li><code>src/&lt;ModuleName&gt;/src/Repository/&lt;ModuleName&gt;Repository.php</code></li>
+</ul>
+</li>
+</ul>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h3 id="service-and-serviceinterface">Service and ServiceInterface</h3>
+<p>Next, you will be asked to confirm whether the Module needs a Service (and its matching ServiceInterface):</p>
+<blockquote>
+<p>Create service and service interface? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Service/&lt;ModuleName&gt;Service.php</code></li>
+<li><code>src/&lt;ModuleName&gt;/src/Service/&lt;ModuleName&gt;ServiceInterface.php</code></li>
+</ul>
+<p>If, at the previous step, you chose to create a Repository, it will be automatically injected into the Service.
+Also, some common methods will be added to the Service and the ServiceInterface.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h3 id="command">Command</h3>
+<p>Next, you will be asked to confirm whether the Module needs a Command:</p>
+<blockquote>
+<p>Create command? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following file:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Command/&lt;ModuleName&gt;Command.php</code></li>
+</ul>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h3 id="middleware">Middleware</h3>
+<p>Next, you will be asked to confirm whether the Module needs a Middleware:</p>
+<blockquote>
+<p>Create middleware? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following file:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Middleware/&lt;ModuleName&gt;Middleware.php</code></li>
+</ul>
+<p>If, previously you chose to create a ServiceInterface, it will be automatically injected into the Middleware.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h3 id="handler">Handler</h3>
+<p>Next, you will be asked to confirm whether the Module needs request Handlers:</p>
+<blockquote>
+<p>Create handler? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, depending on the project type, the process will iterate over a list of CRUD operations, asking you to confirm whether the Module needs a request Handler for each operation.</p>
+<h4 id="api-projects">API projects</h4>
+<h5 id="list-resources">List resources</h5>
+<p>The prompt asks you whether you want to list resources:</p>
+<blockquote>
+<p>Allow listing Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Collection/&lt;ModuleName&gt;Collection.php</code>: describes a resource-specific collection</li>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Get&lt;ModuleName&gt;CollectionHandler.php</code>: handles the resource collection representation</li>
+</ul>
+<p>The matching Collection and ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="view-resources">View resources</h5>
+<p>The prompt asks you whether you want to view resources:</p>
+<blockquote>
+<p>Allow viewing Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following file:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Get&lt;ModuleName&gt;ResourceHandler.php</code>: handles the resource representation</li>
+</ul>
+<p>The matching ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="create-resources">Create resources</h5>
+<p>The prompt asks you whether you want to create resources:</p>
+<blockquote>
+<p>Allow creating Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Post&lt;ModuleName&gt;ResourceHandler.php</code>: handles the resource creation</li>
+<li><code>src/&lt;ModuleName&gt;/src/InputFilter/Create&lt;ModuleName&gt;InputFilter.php</code>: request payload validators</li>
+</ul>
+<p>The matching InputFilter and ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="delete-resources">Delete resources</h5>
+<p>The prompt asks you whether you want to delete resources:</p>
+<blockquote>
+<p>Allow deleting Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Delete&lt;ModuleName&gt;ResourceHandler.php</code>: handles the resource deletion</li>
+</ul>
+<p>The matching ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="edit-resources">Edit resources</h5>
+<p>The prompt asks you whether you want to edit resources:</p>
+<blockquote>
+<p>Allow editing Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Patch&lt;ModuleName&gt;ResourceHandler.php</code>: handles the resource update</li>
+<li><code>src/&lt;ModuleName&gt;/src/InputFilter/Edit&lt;ModuleName&gt;InputFilter.php</code>: request payload validators</li>
+</ul>
+<p>The matching InputFilter and ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="replace-resources">Replace resources</h5>
+<p>The prompt asks you whether you want to replace resources:</p>
+<blockquote>
+<p>Allow replacing Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Put&lt;ModuleName&gt;ResourceHandler.php</code>: handles the resource replacement</li>
+<li><code>src/&lt;ModuleName&gt;/src/InputFilter/Replace&lt;ModuleName&gt;InputFilter.php</code>: request payload validators</li>
+</ul>
+<p>The matching InputFilter and ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h4 id="non-api-projects">Non-API projects</h4>
+<h5 id="list-resources_1">List resources</h5>
+<p>The prompt asks you whether you want to list resources:</p>
+<blockquote>
+<p>Allow listing Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Get&lt;ModuleName&gt;ListHandler.php</code>: renders the resource list page</li>
+<li><code>src/&lt;ModuleName&gt;/templates/&lt;ModuleName&gt;/&lt;ModuleName&gt;-list.html.twig</code>: renders the resource list</li>
+</ul>
+<p>The matching ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="view-resources_1">View resources</h5>
+<p>The prompt asks you whether you want to view resources:</p>
+<blockquote>
+<p>Allow viewing Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Get&lt;ModuleName&gt;ViewHandler.php</code>: renders the resource page</li>
+<li><code>src/&lt;ModuleName&gt;/templates/&lt;ModuleName&gt;/&lt;ModuleName&gt;-view.html.twig</code>: renders the resource</li>
+</ul>
+<p>The matching ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="create-resources_1">Create resources</h5>
+<p>The prompt asks you whether you want to create resources:</p>
+<blockquote>
+<p>Allow creating Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Get&lt;ModuleName&gt;CreateFormHandler.php</code>: renders the resource creation form page</li>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Post&lt;ModuleName&gt;CreateHandler.php</code>: handles the resource creation</li>
+<li><code>src/&lt;ModuleName&gt;/src/Form/Create&lt;ModuleName&gt;Form.php</code>: form fields</li>
+<li><code>src/&lt;ModuleName&gt;/src/InputFilter/Create&lt;ModuleName&gt;InputFilter.php</code>: form field validators</li>
+<li><code>src/&lt;ModuleName&gt;/templates/&lt;ModuleName&gt;/&lt;ModuleName&gt;-view.html.twig</code>: renders the resource creation form</li>
+</ul>
+<p>The matching Form and ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="delete-resources_1">Delete resources</h5>
+<p>The prompt asks you whether you want to delete resources:</p>
+<blockquote>
+<p>Allow deleting Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Get&lt;ModuleName&gt;DeleteFormHandler.php</code>: renders the resource deletion form page</li>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Post&lt;ModuleName&gt;DeleteHandler.php</code>: handles the resource deletion</li>
+<li><code>src/&lt;ModuleName&gt;/src/Form/Delete&lt;ModuleName&gt;Form.php</code>: form fields</li>
+<li><code>src/&lt;ModuleName&gt;/src/InputFilter/Delete&lt;ModuleName&gt;InputFilter.php</code>: form field validators</li>
+<li><code>src/&lt;ModuleName&gt;/src/InputFilter/Input/ConfirmDelete&lt;ModuleName&gt;Input.php</code>: checkbox input for deletion confirmation</li>
+<li><code>src/&lt;ModuleName&gt;/templates/&lt;ModuleName&gt;/&lt;ModuleName&gt;-delete-form.html.twig</code>: renders the resource deletion form</li>
+</ul>
+<p>The matching ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h5 id="edit-resources_1">Edit resources</h5>
+<p>The prompt asks you whether you want to edit resources:</p>
+<blockquote>
+<p>Allow editing Resources? [Y(es)/n(o)]:</p>
+</blockquote>
+<p>On confirmation, the process will create the following files:</p>
+<ul>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Get&lt;ModuleName&gt;EditFormHandler.php</code>: renders the resource edit form page</li>
+<li><code>src/&lt;ModuleName&gt;/src/Handler/&lt;ModuleName&gt;/Post&lt;ModuleName&gt;EditHandler.php</code>: handles the resource update</li>
+<li><code>src/&lt;ModuleName&gt;/src/Form/Edit&lt;ModuleName&gt;Form.php</code>: form fields</li>
+<li><code>src/&lt;ModuleName&gt;/src/InputFilter/Edit&lt;ModuleName&gt;InputFilter.php</code>: form field validators</li>
+<li><code>src/&lt;ModuleName&gt;/templates/&lt;ModuleName&gt;/&lt;ModuleName&gt;-edit-form.html.twig</code>: renders the resource creation form</li>
+</ul>
+<p>The matching InputFilter and ServiceInterface will be automatically injected into the Handler.</p>
+<p>Without confirmation, the process will skip to the next component.</p>
+<h3 id="routesdelegator">RoutesDelegator</h3>
+<p>This component is created only if you chose to create request Handlers.
+It is generated automatically and contains the basic CRUD operations based on the selected actions during Handler creation.</p>
+<p>Location: <code>src/&lt;ModuleName&gt;/src/RoutesDelegator.php</code></p>
+<h3 id="openapi">OpenAPI</h3>
+<blockquote>
+<p>This component is created only when a project type is API.</p>
+</blockquote>
+<p>It is generated automatically and contains the basic description of the API endpoints found in this Module.
+Once you extend the entities with additional fields, you will need to update the OpenAPI file manually.</p>
+<p>Location: <code>src/&lt;ModuleName&gt;/src/RoutesDelegator.php</code></p>
+<h3 id="configprovider">ConfigProvider</h3>
+<p>It is generated automatically and contains all the delegators, factories and service aliases for this Module.
+Once you add new files that need dependency injection, you will need to update the ConfigProvider manually.</p>
+<p>Location: <code>src/&lt;ModuleName&gt;/src/ConfigProvider.php</code></p>
+<h3 id="core-configprovider">Core ConfigProvider</h3>
+<blockquote>
+<p>This component is created only when a project uses the Core architecture.</p>
+</blockquote>
+<p>It is generated automatically and contains all the delegators, factories and service aliases for this Module.
+Once you add new files that need dependency injection, you will need to update the ConfigProvider manually.</p>
+<p>Location: <code>src/Core/src/&lt;ModuleName&gt;/src/ConfigProvider.php</code></p>
+<h3 id="templates">Templates</h3>
+<blockquote>
+<p>This file structure is NOT created when the project type is API.</p>
+</blockquote>
+<p>Location: <code>src/&lt;ModuleName&gt;/templates/&lt;ModuleName&gt;/*.html.twig</code></p>
+<h2 id="next-steps">Next steps</h2>
+<p>Once the Module is created, <code>dot-maker</code> will display a list of tasks that need to be performed manually:</p>
+<pre class="highlight"><code class="language-text">Next steps:
+===========
+- add to config/config.php:
+  &lt;ProjectType&gt;\&lt;ModuleName&gt;\ConfigProvider::class,
+- add to config/config.php:
+  Core\&lt;ModuleName&gt;\ConfigProvider::class,
+- add to config/autoload/cli.global.php under dot_cli.commands:
+  &lt;ProjectType&gt;\&lt;ModuleName&gt;\Command\&lt;ModuleName&gt;Command::getDefaultName() =&gt; &lt;ProjectType&gt;\&lt;ModuleName&gt;\Command\&lt;ModuleName&gt;Command::class,
+- add to config/pipeline.php:
+  $app-&gt;pipe(&lt;ProjectType&gt;\&lt;ModuleName&gt;\Middleware\&lt;ModuleName&gt;Middleware::class);
+- add to config/autoload/authorization.global.php (OR config/autoload/authorization-guards.global.php)
+  the routes registered in /path/to/project/src/&lt;ModuleName&gt;/src/RoutesDelegator.php
+- add to composer.json under autoload.psr-4:
+  "&lt;ProjectType&gt;\\&lt;ModuleName&gt;\\": "src/&lt;ModuleName&gt;/src/"
+- add to composer.json under autoload.psr-4:
+  "Core\\&lt;ModuleName&gt;\\": "src/Core/src/&lt;ModuleName&gt;/src/"
+- dump Composer autoloader by executing this command:
+  composer dump
+- generate Doctrine migration:
+  php ./vendor/bin/doctrine-migrations diff
+- Review each new file, verify their contents and start adding logic to them.</code></pre>
+<p>where <code>&lt;ProjectType&gt;</code> is the project type (<strong>API</strong>, <strong>Admin</strong>, <strong>Frontend</strong>, <strong>Light</strong> or <strong>Queue</strong>) and <code>&lt;ModuleName&gt;</code> is the name of the Module.</p>
 
 
 
@@ -523,9 +750,9 @@ Each iteration creates a new Middleware under the same module.</p>
         
         <li class="col text-nowrap text-md-start">
             
-                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../input-filter/">
+                <a rel="prev" class="page-nav__link page-nav__link--prev" href="../middleware/">
                     <i class="bi bi-chevron-left"></i>
-                    Create InputFilter
+                    Create Middleware
                 </a>
             
         </li>
@@ -533,8 +760,8 @@ Each iteration creates a new Middleware under the same module.</p>
         
         <li class="col text-nowrap text-md-end pe-0">
             
-                <a rel="next" class="page-nav__link page-nav__link--next" href="../module/">
-                    Create Module
+                <a rel="next" class="page-nav__link page-nav__link--next" href="../repository/">
+                    Create Repository
                     <i class="bi bi-chevron-right"></i>
                 </a>
             
