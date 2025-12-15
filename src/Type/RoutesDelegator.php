@@ -100,7 +100,7 @@ class RoutesDelegator extends AbstractType implements FileInterface
      * @throws NotFoundExceptionInterface
      */
 COMM)
-            ->appendBody('$uuid = ConfigProvider::REGEXP_UUID;')
+            ->appendBody('$id = ConfigProvider::REGEXP_UUID;')
             ->appendBody('', 0)
             ->appendBody('/** @var RouteCollectorInterface $routeCollector */')
             ->appendBody('$routeCollector = $container->get(RouteCollectorInterface::class);')
@@ -111,7 +111,7 @@ COMM)
             $class->useClass($apiDeleteResourceHandler->getComponent()->getFqcn());
             $invoke->appendBody(
                 sprintf(
-                    '->delete(\'/%s/\' . $uuid, %s, \'%s::delete-%s\')',
+                    '->delete(\'/%s/\' . $id, %s, \'%s::delete-%s\')',
                     $entity->toKebabCase(),
                     $apiDeleteResourceHandler->getComponent()->getClassString(),
                     $entity->toKebabCase(),
@@ -125,7 +125,7 @@ COMM)
             $class->useClass($apiGetResourceHandler->getComponent()->getFqcn());
             $invoke->appendBody(
                 sprintf(
-                    '->get(\'/%s/\' . $uuid, %s, \'%s::view-%s\')',
+                    '->get(\'/%s/\' . $id, %s, \'%s::view-%s\')',
                     $entity->toKebabCase(),
                     $apiGetResourceHandler->getComponent()->getClassString(),
                     $entity->toKebabCase(),
@@ -153,7 +153,7 @@ COMM)
             $class->useClass($apiPatchResourceHandler->getComponent()->getFqcn());
             $invoke->appendBody(
                 sprintf(
-                    '->patch(\'/%s/\' . $uuid, %s, \'%s::update-%s\')',
+                    '->patch(\'/%s/\' . $id, %s, \'%s::update-%s\')',
                     $entity->toKebabCase(),
                     $apiPatchResourceHandler->getComponent()->getClassString(),
                     $entity->toKebabCase(),
@@ -181,7 +181,7 @@ COMM)
             $class->useClass($apiPutResourceHandler->getComponent()->getFqcn());
             $invoke->appendBody(
                 sprintf(
-                    '->put(\'/%s/\' . $uuid, %s, \'%s::replace-%s\')',
+                    '->put(\'/%s/\' . $id, %s, \'%s::replace-%s\')',
                     $entity->toKebabCase(),
                     $apiPutResourceHandler->getComponent()->getClassString(),
                     $entity->toKebabCase(),
@@ -223,7 +223,7 @@ COMM)
             $class->useClass($getDeleteResourceHandler->getComponent()->getFqcn());
             $invoke->appendBody(
                 sprintf(
-                    '->get(\'/delete-%s/\' . $uuid, %s, \'%s::delete-%s-form\')',
+                    '->get(\'/delete-%s/\' . $id, %s, \'%s::delete-%s-form\')',
                     $entity->toKebabCase(),
                     $getDeleteResourceHandler->getComponent()->getClassString(),
                     $entity->toKebabCase(),
@@ -237,7 +237,7 @@ COMM)
             $class->useClass($postDeleteResourceHandler->getComponent()->getFqcn());
             $invoke->appendBody(
                 sprintf(
-                    '->post(\'/delete-%s/\' . $uuid, %s, \'%s::delete-%s\')',
+                    '->post(\'/delete-%s/\' . $id, %s, \'%s::delete-%s\')',
                     $entity->toKebabCase(),
                     $postDeleteResourceHandler->getComponent()->getClassString(),
                     $entity->toKebabCase(),
@@ -251,7 +251,7 @@ COMM)
             $class->useClass($getEditResourceHandler->getComponent()->getFqcn());
             $invoke->appendBody(
                 sprintf(
-                    '->get(\'/edit-%s/\' . $uuid, %s, \'%s::edit-%s-form\')',
+                    '->get(\'/edit-%s/\' . $id, %s, \'%s::edit-%s-form\')',
                     $entity->toKebabCase(),
                     $getEditResourceHandler->getComponent()->getClassString(),
                     $entity->toKebabCase(),
@@ -265,7 +265,7 @@ COMM)
             $class->useClass($postEditResourceHandler->getComponent()->getFqcn());
             $invoke->appendBody(
                 sprintf(
-                    '->post(\'/edit-%s/\' . $uuid, %s, \'%s::edit-%s\')',
+                    '->post(\'/edit-%s/\' . $id, %s, \'%s::edit-%s\')',
                     $entity->toKebabCase(),
                     $postEditResourceHandler->getComponent()->getClassString(),
                     $entity->toKebabCase(),
@@ -293,7 +293,7 @@ COMM)
             $class->useClass($getViewResourceHandler->getComponent()->getFqcn());
             $invoke->appendBody(
                 sprintf(
-                    '->get(\'/view-%s/\' . $uuid, %s, \'%s::view-%s-form\')',
+                    '->get(\'/view-%s/\' . $id, %s, \'%s::view-%s-form\')',
                     $entity->toKebabCase(),
                     $getViewResourceHandler->getComponent()->getClassString(),
                     $entity->toKebabCase(),

@@ -1153,7 +1153,7 @@ class GetViewBookStoreHandler implements RequestHandlerInterface
         ServerRequestInterface \$request,
     ): ResponseInterface {
         try {
-            \$bookStore = \$this->bookStoreService->findBookStore(\$request->getAttribute('uuid'));
+            \$bookStore = \$this->bookStoreService->findBookStore(\$request->getAttribute('id'));
         } catch (NotFoundException \$exception) {
             \$this->messenger->addError(\$exception->getMessage());
 
@@ -1391,7 +1391,7 @@ class GetDeleteBookStoreFormHandler implements RequestHandlerInterface
         ServerRequestInterface \$request,
     ): ResponseInterface {
         try {
-            \$bookStore = \$this->bookStoreService->findBookStore(\$request->getAttribute('uuid'));
+            \$bookStore = \$this->bookStoreService->findBookStore(\$request->getAttribute('id'));
         } catch (NotFoundException \$exception) {
             \$this->messenger->addError(\$exception->getMessage());
 
@@ -1400,7 +1400,7 @@ class GetDeleteBookStoreFormHandler implements RequestHandlerInterface
 
         \$this->deleteBookStoreForm->setAttribute(
             'action',
-            \$this->router->generateUri('book-store::delete-book-store', ['uuid' => \$bookStore->getUuid()->toString()])
+            \$this->router->generateUri('book-store::delete-book-store', ['id' => \$bookStore->getId()->toString()])
         );
 
         return new HtmlResponse(
@@ -1473,7 +1473,7 @@ class PostDeleteBookStoreHandler implements RequestHandlerInterface
         ServerRequestInterface \$request,
     ): ResponseInterface {
         try {
-            \$bookStore = \$this->bookStoreService->findBookStore(\$request->getAttribute('uuid'));
+            \$bookStore = \$this->bookStoreService->findBookStore(\$request->getAttribute('id'));
         } catch (NotFoundException \$exception) {
             \$this->messenger->addError(\$exception->getMessage());
 
@@ -1482,7 +1482,7 @@ class PostDeleteBookStoreHandler implements RequestHandlerInterface
 
         \$this->deleteBookStoreForm->setAttribute(
             'action',
-            \$this->router->generateUri('book-store::delete-book-store', ['uuid' => \$bookStore->getUuid()->toString()])
+            \$this->router->generateUri('book-store::delete-book-store', ['id' => \$bookStore->getId()->toString()])
         );
 
         try {
@@ -1573,7 +1573,7 @@ class GetEditBookStoreFormHandler implements RequestHandlerInterface
         ServerRequestInterface \$request,
     ): ResponseInterface {
         try {
-            \$bookStore = \$this->bookStoreService->findBookStore(\$request->getAttribute('uuid'));
+            \$bookStore = \$this->bookStoreService->findBookStore(\$request->getAttribute('id'));
         } catch (NotFoundException \$exception) {
             \$this->messenger->addError(\$exception->getMessage());
 
@@ -1583,7 +1583,7 @@ class GetEditBookStoreFormHandler implements RequestHandlerInterface
         \$this->editBookStoreForm
             ->setAttribute(
                 'action',
-                \$this->router->generateUri('book-store::edit-book-store', ['uuid' => \$bookStore->getUuid()->toString()])
+                \$this->router->generateUri('book-store::edit-book-store', ['id' => \$bookStore->getId()->toString()])
             )
             ->bind(\$bookStore);
 
@@ -1661,7 +1661,7 @@ class PostEditBookStoreHandler implements RequestHandlerInterface
         ServerRequestInterface \$request,
     ): ResponseInterface {
         try {
-            \$bookStore = \$this->bookStoreService->findBookStore(\$request->getAttribute('uuid'));
+            \$bookStore = \$this->bookStoreService->findBookStore(\$request->getAttribute('id'));
         } catch (NotFoundException \$exception) {
             \$this->messenger->addError(\$exception->getMessage());
 
@@ -1671,7 +1671,7 @@ class PostEditBookStoreHandler implements RequestHandlerInterface
         \$this->editBookStoreForm
             ->setAttribute(
                 'action',
-                \$this->router->generateUri('book-store::edit-book-store', ['uuid' => \$bookStore->getUuid()->toString()])
+                \$this->router->generateUri('book-store::edit-book-store', ['id' => \$bookStore->getId()->toString()])
             );
 
         try {

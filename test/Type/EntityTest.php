@@ -205,6 +205,7 @@ namespace Core\ModuleName\Entity;
 
 use Core\App\Entity\AbstractEntity;
 use Core\App\Entity\TimestampsTrait;
+use Core\App\Entity\UuidIdentifierTrait;
 use Core\ModuleName\Repository\BookStoreRepository;
 use DateTimeImmutable;
 use Doctrine\ORM\Mapping as ORM;
@@ -215,25 +216,19 @@ use Doctrine\ORM\Mapping as ORM;
 class BookStore extends AbstractEntity
 {
     use TimestampsTrait;
-
-    public function __construct()
-    {
-        parent::__construct();
-
-        \$this->created();
-    }
+    use UuidIdentifierTrait;
 
     /**
      * @return array{
-     *      uuid: non-empty-string,
-     *      created: DateTimeImmutable,
+     *      id: non-empty-string,
+     *      created: DateTimeImmutable|null,
      *      updated: DateTimeImmutable|null,
      * }
      */
     public function getArrayCopy(): array
     {
         return [
-            'uuid'    => \$this->uuid->toString(),
+            'id'      => \$this->id->toString(),
             'created' => \$this->created,
             'updated' => \$this->updated,
         ];

@@ -155,7 +155,7 @@ class RoutesDelegator
         string \$serviceName,
         callable \$callback,
     ): Application {
-        \$uuid = ConfigProvider::REGEXP_UUID;
+        \$id = ConfigProvider::REGEXP_UUID;
 
         /** @var RouteCollectorInterface \$routeCollector */
         \$routeCollector = \$container->get(RouteCollectorInterface::class);
@@ -163,12 +163,12 @@ class RoutesDelegator
         \$routeCollector
             ->get('/create-book-store', GetCreateBookStoreFormHandler::class, 'book-store::create-book-store-form')
             ->post('/create-book-store', PostCreateBookStoreHandler::class, 'book-store::create-book-store')
-            ->get('/delete-book-store/' . \$uuid, GetDeleteBookStoreFormHandler::class, 'book-store::delete-book-store-form')
-            ->post('/delete-book-store/' . \$uuid, PostDeleteBookStoreHandler::class, 'book-store::delete-book-store')
-            ->get('/edit-book-store/' . \$uuid, GetEditBookStoreFormHandler::class, 'book-store::edit-book-store-form')
-            ->post('/edit-book-store/' . \$uuid, PostEditBookStoreHandler::class, 'book-store::edit-book-store')
+            ->get('/delete-book-store/' . \$id, GetDeleteBookStoreFormHandler::class, 'book-store::delete-book-store-form')
+            ->post('/delete-book-store/' . \$id, PostDeleteBookStoreHandler::class, 'book-store::delete-book-store')
+            ->get('/edit-book-store/' . \$id, GetEditBookStoreFormHandler::class, 'book-store::edit-book-store-form')
+            ->post('/edit-book-store/' . \$id, PostEditBookStoreHandler::class, 'book-store::edit-book-store')
             ->get('/list-book-store', GetListBookStoreHandler::class, 'book-store::list-book-store')
-            ->get('/view-book-store/' . \$uuid, GetViewBookStoreHandler::class, 'book-store::view-book-store-form');
+            ->get('/view-book-store/' . \$id, GetViewBookStoreHandler::class, 'book-store::view-book-store-form');
 
         return \$callback();
     }
@@ -216,18 +216,18 @@ class RoutesDelegator
         string \$serviceName,
         callable \$callback,
     ): Application {
-        \$uuid = ConfigProvider::REGEXP_UUID;
+        \$id = ConfigProvider::REGEXP_UUID;
 
         /** @var RouteCollectorInterface \$routeCollector */
         \$routeCollector = \$container->get(RouteCollectorInterface::class);
 
         \$routeCollector
-            ->delete('/book-store/' . \$uuid, DeleteBookStoreResourceHandler::class, 'book-store::delete-book-store')
-            ->get('/book-store/' . \$uuid, GetBookStoreResourceHandler::class, 'book-store::view-book-store')
+            ->delete('/book-store/' . \$id, DeleteBookStoreResourceHandler::class, 'book-store::delete-book-store')
+            ->get('/book-store/' . \$id, GetBookStoreResourceHandler::class, 'book-store::view-book-store')
             ->get('/book-store', GetBookStoreCollectionHandler::class, 'book-store::list-book-store')
-            ->patch('/book-store/' . \$uuid, PatchBookStoreResourceHandler::class, 'book-store::update-book-store')
+            ->patch('/book-store/' . \$id, PatchBookStoreResourceHandler::class, 'book-store::update-book-store')
             ->post('/book-store', PostBookStoreResourceHandler::class, 'book-store::create-book-store')
-            ->put('/book-store/' . \$uuid, PutBookStoreResourceHandler::class, 'book-store::replace-book-store');
+            ->put('/book-store/' . \$id, PutBookStoreResourceHandler::class, 'book-store::replace-book-store');
 
         return \$callback();
     }

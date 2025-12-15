@@ -2,13 +2,36 @@ docs_dir: docs/book
 site_dir: docs/html
 extra:
   project: Packages
-  current_version: v1
+  current_version: v2
   versions:
+    - v2
     - v1
   installation:
     composer_dev: true
 nav:
   - Home: index.md
+  - v2:
+      - Overview: v2/overview.md
+      - Installation: v2/installation.md
+      - Setup: v2/setup.md
+      - Usage: v2/usage.md
+      - Component:
+          - Create Collection: v2/component/collection.md
+          - Create Command: v2/component/command.md
+          - Create Entity: v2/component/entity.md
+          - Create Form: v2/component/form.md
+          - Create Handler: v2/component/handler.md
+          - Create Input: v2/component/input.md
+          - Create InputFilter: v2/component/input-filter.md
+          - Create Middleware: v2/component/middleware.md
+          - Create Module: v2/component/module.md
+          - Create Repository: v2/component/repository.md
+          - Create Service: v2/component/service.md
+          - Create ServiceInterface: v2/component/service-interface.md
+      - IO:
+          - Input: v2/io/input.md
+          - Output: v2/io/output.md
+      - Naming Standards: v2/naming-standards.md
   - v1:
       - Overview: v1/overview.md
       - Installation: v1/installation.md

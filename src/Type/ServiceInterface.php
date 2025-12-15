@@ -124,7 +124,7 @@ COMM)
                     (new Declaration($entity->getFindMethodName()))
                         ->setReturnType($entity->getClassName())
                         ->addParameter(
-                            new Parameter('uuid', 'string')
+                            new Parameter('id', 'string')
                         )
                         ->setComment(<<<COMM
 /**

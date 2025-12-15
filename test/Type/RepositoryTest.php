@@ -230,7 +230,7 @@ class BookStoreRepository extends AbstractRepository
             ->orderBy(\$params['sort'], \$params['dir'])
             ->setFirstResult(\$params['offset'])
             ->setMaxResults(\$params['limit'])
-            ->groupBy('bookStore.uuid');
+            ->groupBy('bookStore.id');
         \$queryBuilder->getQuery()->useQueryCache(true);
 
         return \$queryBuilder;
