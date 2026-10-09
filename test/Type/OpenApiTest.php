@@ -169,6 +169,7 @@ use OpenApi\Attributes as OA;
  */
 #[OA\Delete(
     path: '/module-name/{id}',
+    operationId: 'deleteModuleNameResource',
     description: 'Authenticated (super)admin deletes resource of type ModuleName, identified by its ID',
     summary: 'Admin deletes a resource of type ModuleName',
     security: [['AuthToken' => []]],
@@ -199,6 +200,7 @@ use OpenApi\Attributes as OA;
  */
 #[OA\Get(
     path: '/module-name/{id}',
+    operationId: 'getModuleNameResource',
     description: 'Authenticated (super)admin fetches a resource of type ModuleName, identified by its ID',
     summary: 'Admin fetches a resource of type ModuleName',
     security: [['AuthToken' => []]],
@@ -230,6 +232,7 @@ use OpenApi\Attributes as OA;
  */
 #[OA\Get(
     path: '/module-name',
+    operationId: 'getModuleNameCollection',
     description: 'Authenticated (super)admin fetches a list of ModuleNames',
     summary: 'Admin lists ModuleNames',
     security: [['AuthToken' => []]],
@@ -297,6 +300,7 @@ use OpenApi\Attributes as OA;
  */
 #[OA\Patch(
     path: '/module-name/{id}',
+    operationId: 'patchModuleNameResource',
     description: 'Authenticated (super)admin updates an existing ModuleName',
     summary: 'Admin updates an existing ModuleName',
     security: [['AuthToken' => []]],
@@ -347,6 +351,7 @@ use OpenApi\Attributes as OA;
  */
 #[OA\Post(
     path: '/module-name',
+    operationId: 'postModuleNameResource',
     description: 'Authenticated (super)admin creates a new ModuleName',
     summary: 'Admin creates a new ModuleName',
     security: [['AuthToken' => []]],
@@ -389,6 +394,7 @@ use OpenApi\Attributes as OA;
  */
 #[OA\Put(
     path: '/module-name/{id}',
+    operationId: 'putModuleNameResource',
     description: 'Authenticated (super)admin replaces an existing ModuleName',
     summary: 'Admin updates an existing ModuleName',
     security: [['AuthToken' => []]],

@@ -13,6 +13,8 @@ use Dot\Maker\FileSystem\File;
 use Dot\Maker\IO\Output;
 
 use function implode;
+use function lcfirst;
+use function preg_replace;
 use function sprintf;
 
 use const PHP_EOL;
@@ -84,6 +86,7 @@ class OpenApi extends AbstractType implements FileInterface
  */
 #[OA\Delete(
     path: '/{$entity->toKebabCase()}/{id}',
+    operationId: '{$this->operationId($apiDeleteResourceHandler)}',
     description: 'Authenticated (super)admin deletes resource of type {$entity->getClassName()}, identified by its ID',
     summary: 'Admin deletes a resource of type {$entity->getClassName()}',
     security: [['AuthToken' => []]],
@@ -122,6 +125,7 @@ COMM;
  */
 #[OA\Get(
     path: '/{$entity->toKebabCase()}/{id}',
+    operationId: '{$this->operationId($apiGetResourceHandler)}',
     description: 'Authenticated (super)admin fetches a resource of type {$entity->getClassName()}, identified by its ID',
     summary: 'Admin fetches a resource of type {$entity->getClassName()}',
     security: [['AuthToken' => []]],
@@ -163,6 +167,7 @@ COMM;
  */
 #[OA\Get(
     path: '/{$entity->toKebabCase()}',
+    operationId: '{$this->operationId($apiGetCollectionHandler)}',
     description: 'Authenticated (super)admin fetches a list of {$entity->toPlural()}',
     summary: 'Admin lists {$entity->toPlural()}',
     security: [['AuthToken' => []]],
@@ -238,6 +243,7 @@ COMM;
  */
 #[OA\Patch(
     path: '/{$entity->toKebabCase()}/{id}',
+    operationId: '{$this->operationId($apiPatchResourceHandler)}',
     description: 'Authenticated (super)admin updates an existing {$entity->getClassName()}',
     summary: 'Admin updates an existing {$entity->getClassName()}',
     security: [['AuthToken' => []]],
@@ -296,6 +302,7 @@ COMM;
  */
 #[OA\Post(
     path: '/{$entity->toKebabCase()}',
+    operationId: '{$this->operationId($apiPostResourceHandler)}',
     description: 'Authenticated (super)admin creates a new {$entity->getClassName()}',
     summary: 'Admin creates a new {$entity->getClassName()}',
     security: [['AuthToken' => []]],
@@ -346,6 +353,7 @@ COMM;
  */
 #[OA\Put(
     path: '/{$entity->toKebabCase()}/{id}',
+    operationId: '{$this->operationId($apiPutResourceHandler)}',
     description: 'Authenticated (super)admin replaces an existing {$entity->getClassName()}',
     summary: 'Admin updates an existing {$entity->getClassName()}',
     security: [['AuthToken' => []]],
@@ -459,5 +467,10 @@ COMM;
         $class->setComment(implode(PHP_EOL . PHP_EOL, $comments));
 
         return $class->render();
+    }
+
+    private function operationId(File $handler): string
+    {
+        return lcfirst((string) preg_replace('/Handler$/', '', $handler->getComponent()->getClassName()));
     }
 }
