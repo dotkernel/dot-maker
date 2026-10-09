@@ -300,7 +300,8 @@ Location: `src/<ModuleName>/src/RoutesDelegator.php`
 > This component is created only when a project type is API.
 
 It is generated automatically and contains the basic description of the API endpoints found in this Module.
-Each endpoint gets an `operationId`, a name unique across the API, built from its handler class name without the `Handler` suffix and with a lowercase first letter (for example `getBookCollection` for `GetBookCollectionHandler`).
+Each endpoint gets an `operationId`, a name unique within the Module, built from its handler class name without the `Handler` suffix and with a lowercase first letter (for example `getBookCollection` for `GetBookCollectionHandler`).
+Keep it unique across the whole API as well, which holds as long as your entity names are unique.
 Once you extend the entities with additional fields, you will need to update the OpenAPI file manually.
 
 Location: `src/<ModuleName>/src/OpenAPI.php`
