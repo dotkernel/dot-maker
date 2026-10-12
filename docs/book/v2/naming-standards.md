@@ -160,15 +160,15 @@ These are classes used to modify the database schema.
 - pattern: `Version` + _Timestamp_
 - example: `src/Core/src/App/src/Migration/Version20250407142911.php`
 
-## OpenApi
+## OpenAPI
 
 > Can only be created in API projects.
 
-These are configuration classes where OpenApi specifications are registered.
+These are configuration classes where OpenAPI specifications are registered.
 
 - location: `src/<ModuleName>/src`
-- pattern: `OpenApi`
-- example: `src/<ModuleName>/src/OpenApi.php`
+- pattern: `OpenAPI`
+- example: `src/<ModuleName>/src/OpenAPI.php`
 
 ## Repositories
 
