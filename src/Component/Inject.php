@@ -69,7 +69,8 @@ class Inject
     private function renderWithPositionalArguments(int $spaces = 4): string
     {
         $arguments = array_map(
-            fn (string $argument): string => sprintf('%s%s%s,', PHP_EOL, str_repeat(' ', $spaces + 4), $argument),
+            static fn (string $argument): string =>
+                sprintf('%s%s%s,', PHP_EOL, str_repeat(' ', $spaces + 4), $argument),
             $this->positionalArguments
         );
 

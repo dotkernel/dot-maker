@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Component;
+namespace DotTest\Maker\Component;
 
 use Dot\Maker\Component\ClassFile;
 use Dot\Maker\Component\Inject;

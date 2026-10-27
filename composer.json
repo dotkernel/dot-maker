@@ -35,7 +35,8 @@
         "mikey179/vfsstream": "^1.6.12",
         "phpstan/phpstan": "^2.1.33",
         "phpstan/phpstan-phpunit": "^2.0.10",
-        "phpunit/phpunit": "^10.5.60"
+        "phpunit/phpunit": "^10.5.60",
+        "boundwize/structarmed": "^0.19"
     },
     "scripts": {
         "check": [

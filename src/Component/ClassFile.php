@@ -235,14 +235,14 @@ class ClassFile
         $class .= '{' . PHP_EOL;
 
         if (count($this->traits) > 0) {
-            $traits = array_map(fn (string $trait): string => $trait, $this->traits);
+            $traits = array_map(static fn (string $trait): string => $trait, $this->traits);
 
             $class .= '    ' . implode(PHP_EOL . '    ', $traits) . PHP_EOL . PHP_EOL;
         }
 
         if (count($this->properties) > 0) {
             $properties = array_map(
-                fn (ParameterInterface $property): string => $property->render(4),
+                static fn (ParameterInterface $property): string => $property->render(4),
                 $this->properties
             );
 
@@ -250,7 +250,7 @@ class ClassFile
         }
 
         if (count($this->methods) > 0) {
-            $methods = array_map(fn (MethodInterface $method): string => $method->render(), $this->methods);
+            $methods = array_map(static fn (MethodInterface $method): string => $method->render(), $this->methods);
 
             $class .= '    ' . implode(PHP_EOL . PHP_EOL . '    ', $methods) . PHP_EOL;
         }

@@ -79,7 +79,7 @@ class Declaration
         }
 
         return implode(PHP_EOL, array_map(
-            fn (ParameterInterface $parameter): string => sprintf('        %s,', $parameter->render()),
+            static fn (ParameterInterface $parameter): string => sprintf('        %s,', $parameter->render()),
             $this->parameters
         ));
     }

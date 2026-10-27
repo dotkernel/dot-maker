@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Component\Method;
+namespace DotTest\Maker\Component\Method;
 
 use Dot\Maker\Component\Inject;
 use Dot\Maker\Component\Method\Constructor;
