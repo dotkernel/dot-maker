@@ -16,36 +16,36 @@ return Architecture::define()
     ->layer('Maker', 'src/Maker.php')
     ->layer('IO', 'src/IO/')
     ->layer('Exception', 'src/Exception/')
-    ->layer('Component', ['src/Component.php', 'src/Component/'], 'src/Component/Method/')
-    ->layer('Method', 'src/Component/Method/')
+    ->layer('BaseComponent', ['src/Component.php', 'src/Component/'], 'src/Component/Method/')
+    ->layer('MethodComponent', 'src/Component/Method/')
     ->layer('FileSystem', ['src/FileSystem.php', 'src/FileSystem/'])
-    ->layer('Type', 'src/Type/', [
+    ->layer('CommonType', 'src/Type/', [
         'src/Type/Form/',
         'src/Type/Handler/',
         'src/Type/Input/',
         'src/Type/InputFilter/',
     ])
-    ->layer('Form', 'src/Type/Form/')
-    ->layer('Handler', 'src/Type/Handler/', 'src/Type/Handler/Api/')
-    ->layer('ApiHandler', 'src/Type/Handler/Api/')
-    ->layer('Input', 'src/Type/Input/')
-    ->layer('InputFilter', 'src/Type/InputFilter/')
+    ->layer('FormType', 'src/Type/Form/')
+    ->layer('HandlerType', 'src/Type/Handler/', 'src/Type/Handler/Api/')
+    ->layer('ApiHandlerType', 'src/Type/Handler/Api/')
+    ->layer('InputType', 'src/Type/Input/')
+    ->layer('InputFilterType', 'src/Type/InputFilter/')
     ->ruleset([
-        'ColorEnum'      => [],
-        'VisibilityEnum' => [],
-        'Context'        => [],
-        'IO'             => ['ColorEnum'],
-        'Message'        => ['ColorEnum', 'Context'],
-        'Component'      => ['Context', 'VisibilityEnum', 'Method'],
-        'Method'         => ['+Component'],
-        'Exception'      => ['FileSystem'],
-        'FileSystem'     => ['+Component', 'Exception'],
-        'Form'           => ['Type', 'Config', '+FileSystem', '+IO', '+Message'],
-        'Handler'        => ['Type', 'Config', '+FileSystem', '+IO', '+Message'],
-        'ApiHandler'     => ['+Handler'],
-        'Input'          => ['Type', 'Config', '+FileSystem', '+IO', '+Message'],
-        'InputFilter'    => ['Type', 'Config', '+FileSystem', '+IO', '+Message'],
-        'Type'           => ['+Form', '+ApiHandler', '+Input', '+InputFilter'],
-        'Maker'          => ['+Type'],
-        'Config'         => ['Maker'],
+        'ColorEnum'       => [],
+        'VisibilityEnum'  => [],
+        'Context'         => [],
+        'IO'              => ['ColorEnum'],
+        'Message'         => ['ColorEnum', 'Context'],
+        'BaseComponent'   => ['Context', 'VisibilityEnum', 'MethodComponent'],
+        'MethodComponent' => ['+BaseComponent'],
+        'Exception'       => ['FileSystem'],
+        'FileSystem'      => ['+BaseComponent', 'Exception'],
+        'FormType'        => ['CommonType', 'Config', '+FileSystem', '+IO', '+Message'],
+        'HandlerType'     => ['CommonType', 'Config', '+FileSystem', '+IO', '+Message'],
+        'ApiHandlerType'  => ['+HandlerType'],
+        'InputType'       => ['CommonType', 'Config', '+FileSystem', '+IO', '+Message'],
+        'InputFilterType' => ['CommonType', 'Config', '+FileSystem', '+IO', '+Message'],
+        'CommonType'      => ['+FormType', '+ApiHandlerType', '+InputType', '+InputFilterType'],
+        'Maker'           => ['+CommonType'],
+        'Config'          => ['Maker'],
     ]);
