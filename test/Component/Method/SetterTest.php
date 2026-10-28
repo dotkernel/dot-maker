@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Component\Method;
+namespace DotTest\Maker\Component\Method;
 
 use Dot\Maker\Component\Method\Setter;
 use Dot\Maker\Component\Parameter;

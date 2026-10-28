@@ -169,7 +169,7 @@ class InterfaceFile
 
         if (count($this->declarations) > 0) {
             $declarations = array_map(
-                fn (Declaration $declaration): string => $declaration->render(),
+                static fn (Declaration $declaration): string => $declaration->render(),
                 $this->declarations
             );
 

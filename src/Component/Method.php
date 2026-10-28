@@ -187,7 +187,7 @@ MTD;
             return '';
         }
 
-        $injects = array_map(fn (Inject $inject): string => $inject->render(), $this->injects);
+        $injects = array_map(static fn (Inject $inject): string => $inject->render(), $this->injects);
 
         return implode(PHP_EOL, $injects);
     }
@@ -199,7 +199,7 @@ MTD;
         }
 
         return implode(PHP_EOL, array_map(
-            fn (ParameterInterface $parameter): string => sprintf(
+            static fn (ParameterInterface $parameter): string => sprintf(
                 '%s%s,',
                 str_repeat(' ', $spaces),
                 $parameter->render()
