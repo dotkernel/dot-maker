@@ -33,3 +33,5 @@ These only matter if you wrote your own classes on top of `dot-maker`.
 | `Component` rejects an empty class name | `InvalidArgumentException` | Pass a non-empty class name |
 | `FileSystem::getModuleName()` before `setModuleName()` | `RuntimeException('No module selected.')` instead of an engine `Error` | Call `setModuleName()` first |
 | `Input::isExhausted()` added | None | Use it to detect the end of input in custom prompts |
+| `Entity::getNumericIdentifierTraitFqcn()` removed (it was never called) | Fatal error "Call to undefined method" | Use `sprintf(Import::ROOT_APP_ENTITY_NUMERICIDENTIFIERTRAIT, $namespace)` |
+| `FileSystem::coreModule()` removed (it was never called) | Fatal error "Call to undefined method" | Create the `Directory` yourself: `new Directory($name, $projectPath . '/src/Core/src')` |

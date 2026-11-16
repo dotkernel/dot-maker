@@ -227,4 +227,17 @@ class ContextTest extends TestCase
 
         new Context($fileSystem->url());
     }
+
+    public function testWillNotInstantiateWithUnreadableComposerJson(): void
+    {
+        $fileSystem = vfsStream::setup('root', 0755, [
+            'composer.json' => '{}',
+        ]);
+        $composer   = $fileSystem->getChild('composer.json');
+        $this->assertNotNull($composer);
+        $composer->chmod(0000);
+        $this->expectExceptionMessage(sprintf('%s/composer.json: not readable', $fileSystem->url()));
+
+        new Context($fileSystem->url());
+    }
 }

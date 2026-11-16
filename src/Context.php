@@ -12,6 +12,7 @@ use function explode;
 use function file_exists;
 use function file_get_contents;
 use function is_array;
+use function is_readable;
 use function json_decode;
 use function sprintf;
 use function str_starts_with;
@@ -42,10 +43,11 @@ class Context
             throw new RuntimeException(sprintf('%s: not found', $composerPath));
         }
 
-        $contents = file_get_contents($composerPath);
-        if ($contents === false) {
+        if (! is_readable($composerPath)) {
             throw new RuntimeException(sprintf('%s: not readable', $composerPath));
         }
+
+        $contents = (string) file_get_contents($composerPath);
 
         try {
             $composer = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);

@@ -31,7 +31,7 @@ All notable changes to this project are documented in this file, newest first.
 
 ### Removed
 
-- Nothing.
+- `Entity::getNumericIdentifierTraitFqcn()` and `FileSystem::coreModule()`, which nothing called.
 
 ### Fixed
 

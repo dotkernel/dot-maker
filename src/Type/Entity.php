@@ -134,20 +134,6 @@ BODY);
     /**
      * @return non-empty-string
      */
-    public function getNumericIdentifierTraitFqcn(): string
-    {
-        $format = Import::ROOT_APP_ENTITY_NUMERICIDENTIFIERTRAIT;
-
-        if ($this->context->hasCore()) {
-            return sprintf($format, Context::NAMESPACE_CORE);
-        }
-
-        return sprintf($format, $this->context->getRootNamespace());
-    }
-
-    /**
-     * @return non-empty-string
-     */
     public function getTimestampsTraitFqcn(): string
     {
         $format = Import::ROOT_APP_ENTITY_TIMESTAMPSTRAIT;

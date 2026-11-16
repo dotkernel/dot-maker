@@ -11,6 +11,7 @@ use Dot\Maker\Component\Parameter;
 use Dot\Maker\Component\PromotedProperty;
 use Dot\Maker\Component\Property;
 use Dot\Maker\VisibilityEnum;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class ClassFileTest extends TestCase
@@ -217,5 +218,21 @@ final readonly abstract class ClassName extends OtherClassName implements Interf
 }
 
 BODY;
+    }
+
+    public function testAddMethodWithEmptyNameThrows(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Name must not be empty.');
+
+        (new ClassFile('App\Module', 'ClassName'))->addMethod(new Method(''));
+    }
+
+    public function testAddPropertyWithEmptyNameThrows(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Name must not be empty.');
+
+        (new ClassFile('App\Module', 'ClassName'))->addProperty(new Property('', 'string'));
     }
 }

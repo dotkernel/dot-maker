@@ -59,11 +59,6 @@ class FileSystem
         );
     }
 
-    public function coreModule(string $name): Directory
-    {
-        return new Directory($name, sprintf('%s/src/Core/src', $this->context->getProjectPath()));
-    }
-
     public function entity(string $name): File
     {
         $name = Component::stripSuffix($name, 'Entity');

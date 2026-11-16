@@ -154,4 +154,9 @@ BODY;
     }
 BODY;
     }
+
+    public function testRenderParametersWithoutParametersIsEmpty(): void
+    {
+        $this->assertSame('', (new Method('method'))->renderParameters());
+    }
 }

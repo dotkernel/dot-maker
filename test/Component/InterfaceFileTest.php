@@ -6,6 +6,7 @@ namespace DotTest\Maker\Component;
 
 use Dot\Maker\Component\Declaration;
 use Dot\Maker\Component\InterfaceFile;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class InterfaceFileTest extends TestCase
@@ -107,5 +108,13 @@ interface ClassName extends OtherInterface
 }
 
 BODY;
+    }
+
+    public function testAddDeclarationWithEmptyNameThrows(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Name must not be empty.');
+
+        (new InterfaceFile('App\Module', 'InterfaceName'))->addDeclaration(new Declaration(''));
     }
 }
