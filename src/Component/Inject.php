@@ -14,7 +14,9 @@ use const PHP_EOL;
 
 class Inject
 {
-    private array $namedArguments      = [];
+    /** @var array<string, string> $namedArguments */
+    private array $namedArguments = [];
+    /** @var list<string> $positionalArguments */
     private array $positionalArguments = [];
 
     public function __construct(
@@ -33,11 +35,17 @@ class Inject
         return $this;
     }
 
+    /**
+     * @return array<string, string>
+     */
     public function getNamedArguments(): array
     {
         return $this->namedArguments;
     }
 
+    /**
+     * @return list<string>
+     */
     public function getPositionalArguments(): array
     {
         return $this->positionalArguments;

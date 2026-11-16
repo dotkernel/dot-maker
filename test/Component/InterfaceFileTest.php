@@ -80,10 +80,10 @@ class InterfaceFileTest extends TestCase
 COMM)
             ->addDeclaration((new Declaration('getResource'))->setReturnType('Resource'));
 
-        $this->assertSame($this->dataProviderRenderedClass(), (string) $actual);
+        $this->assertSame($this->expectedRenderedClass(), (string) $actual);
     }
 
-    private function dataProviderRenderedClass(): string
+    private function expectedRenderedClass(): string
     {
         return <<<BODY
 <?php

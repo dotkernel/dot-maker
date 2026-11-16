@@ -90,6 +90,7 @@ class ConfigProvider extends AbstractType implements FileInterface
 
     /**
      * @param File[] $handlers
+     * @param File[] $forms
      */
     public function render(
         Component $configProvider,

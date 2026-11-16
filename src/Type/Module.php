@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
+use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Message;
@@ -16,6 +17,7 @@ use function ucfirst;
 
 class Module extends AbstractType implements ModuleInterface
 {
+    /** @var array<int, array<string, string>> $messages priority => message => message */
     protected array $messages = [];
 
     public function __invoke(): void
@@ -112,11 +114,16 @@ class Module extends AbstractType implements ModuleInterface
 
     public function addMessage(Message $message): static
     {
-        $this->messages[$message->getPriority()] = (string) $message;
+        $text = (string) $message;
+
+        $this->messages[$message->getPriority()][$text] = $text;
 
         return $this;
     }
 
+    /**
+     * @return array<int, array<string, string>>
+     */
     public function getMessages(): array
     {
         return $this->messages;
@@ -126,6 +133,9 @@ class Module extends AbstractType implements ModuleInterface
     {
         while (true) {
             $name = ucfirst(Input::prompt('Existing module name: '));
+            if ($name === '' && Input::isExhausted()) {
+                throw new RuntimeException('No module name given before the end of input.');
+            }
             if (! $this->isValid($name)) {
                 Output::error(sprintf('Invalid module name: "%s"', $name));
                 continue;
@@ -163,8 +173,10 @@ class Module extends AbstractType implements ModuleInterface
         Output::warning('===========');
 
         ksort($this->messages);
-        foreach ($this->messages as $message) {
-            Output::writeLine(sprintf('- %s', $message));
+        foreach ($this->messages as $messages) {
+            foreach ($messages as $message) {
+                Output::writeLine(sprintf('- %s', $message));
+            }
         }
     }
 }

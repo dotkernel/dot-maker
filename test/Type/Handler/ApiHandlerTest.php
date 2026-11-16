@@ -12,11 +12,11 @@ use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\Handler;
 use Dot\Maker\Type\Module;
+use DotTest\Maker\StreamTrait;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function fwrite;
 use function implode;
 use function rewind;
@@ -27,6 +27,8 @@ use const PHP_EOL;
 
 class ApiHandlerTest extends TestCase
 {
+    use StreamTrait;
+
     private Config $config;
     private Context $context;
     private FileSystem $fileSystem;
@@ -60,13 +62,13 @@ class ApiHandlerTest extends TestCase
         $this->import     = new Import($this->context);
         $this->module     = new Module($this->fileSystem, $this->context, $this->config);
 
-        $this->outputStream = fopen('php://memory', 'w+');
+        $this->outputStream = $this->openMemoryStream();
         Output::setOutputStream($this->outputStream);
 
-        $this->errorStream = fopen('php://memory', 'w+');
+        $this->errorStream = $this->openMemoryStream();
         Output::setErrorStream($this->errorStream);
 
-        $this->inputStream = fopen('php://memory', 'w+');
+        $this->inputStream = $this->openMemoryStream();
         Input::setStream($this->inputStream);
     }
 
@@ -153,7 +155,7 @@ class ApiHandlerTest extends TestCase
 
         $this->assertFileExists($apiGetCollectionHandler->getPath());
         $this->assertTrue($apiGetCollectionHandler->exists());
-        $this->assertSame($this->dataProviderGetCollectionHandler(), $apiGetCollectionHandler->read());
+        $this->assertSame($this->expectedGetCollectionHandler(), $apiGetCollectionHandler->read());
 
         $collection = $this->fileSystem->collection($this->resourceName);
         $this->assertFileExists($collection->getPath());
@@ -221,7 +223,7 @@ class ApiHandlerTest extends TestCase
 
         $this->assertFileExists($apiGetResourceHandler->getPath());
         $this->assertTrue($apiGetResourceHandler->exists());
-        $this->assertSame($this->dataProviderGetResourceHandler(), $apiGetResourceHandler->read());
+        $this->assertSame($this->expectedGetResourceHandler(), $apiGetResourceHandler->read());
 
         $this->assertFileDoesNotExist($apiPostResourceHandler->getPath());
         $this->assertFalse($apiPostResourceHandler->exists());
@@ -285,7 +287,7 @@ class ApiHandlerTest extends TestCase
 
         $this->assertFileExists($apiPostResourceHandler->getPath());
         $this->assertTrue($apiPostResourceHandler->exists());
-        $this->assertSame($this->dataProviderPostResourceHandler(), $apiPostResourceHandler->read());
+        $this->assertSame($this->expectedPostResourceHandler(), $apiPostResourceHandler->read());
 
         $createResourceInputFilter = $this->fileSystem->createResourceInputFilter($this->resourceName);
         $this->assertFileExists($createResourceInputFilter->getPath());
@@ -353,7 +355,7 @@ class ApiHandlerTest extends TestCase
 
         $this->assertFileExists($apiDeleteResourceHandler->getPath());
         $this->assertTrue($apiDeleteResourceHandler->exists());
-        $this->assertSame($this->dataProviderDeleteResourceHandler(), $apiDeleteResourceHandler->read());
+        $this->assertSame($this->expectedDeleteResourceHandler(), $apiDeleteResourceHandler->read());
 
         $this->assertFileDoesNotExist($apiPatchResourceHandler->getPath());
         $this->assertFalse($apiPatchResourceHandler->exists());
@@ -417,7 +419,7 @@ class ApiHandlerTest extends TestCase
 
         $this->assertFileExists($apiPatchResourceHandler->getPath());
         $this->assertTrue($apiPatchResourceHandler->exists());
-        $this->assertSame($this->dataProviderPatchResourceHandler(), $apiPatchResourceHandler->read());
+        $this->assertSame($this->expectedPatchResourceHandler(), $apiPatchResourceHandler->read());
 
         $editResourceInputFilter = $this->fileSystem->editResourceInputFilter($this->resourceName);
         $this->assertFileExists($editResourceInputFilter->getPath());
@@ -485,7 +487,7 @@ class ApiHandlerTest extends TestCase
 
         $this->assertFileExists($apiPutResourceHandler->getPath());
         $this->assertTrue($apiPutResourceHandler->exists());
-        $this->assertSame($this->dataProviderPutResourceHandler(), $apiPutResourceHandler->read());
+        $this->assertSame($this->expectedPutResourceHandler(), $apiPutResourceHandler->read());
 
         $replaceResourceInputFilter = $this->fileSystem->replaceResourceInputFilter($this->resourceName);
         $this->assertFileExists($replaceResourceInputFilter->getPath());
@@ -535,7 +537,7 @@ class ApiHandlerTest extends TestCase
 
         $this->assertFileExists($apiGetCollectionHandler->getPath());
         $this->assertTrue($apiGetCollectionHandler->exists());
-        $this->assertSame($this->dataProviderGetCollectionHandler(), $apiGetCollectionHandler->read());
+        $this->assertSame($this->expectedGetCollectionHandler(), $apiGetCollectionHandler->read());
 
         $collection = $this->fileSystem->collection($this->resourceName);
         $this->assertFileExists($collection->getPath());
@@ -603,7 +605,7 @@ class ApiHandlerTest extends TestCase
 
         $this->assertFileExists($apiGetResourceHandler->getPath());
         $this->assertTrue($apiGetResourceHandler->exists());
-        $this->assertSame($this->dataProviderGetResourceHandler(), $apiGetResourceHandler->read());
+        $this->assertSame($this->expectedGetResourceHandler(), $apiGetResourceHandler->read());
 
         $this->assertFileDoesNotExist($apiPostResourceHandler->getPath());
         $this->assertFalse($apiPostResourceHandler->exists());
@@ -667,7 +669,7 @@ class ApiHandlerTest extends TestCase
 
         $this->assertFileExists($apiPostResourceHandler->getPath());
         $this->assertTrue($apiPostResourceHandler->exists());
-        $this->assertSame($this->dataProviderPostResourceHandler(), $apiPostResourceHandler->read());
+        $this->assertSame($this->expectedPostResourceHandler(), $apiPostResourceHandler->read());
 
         $createResourceInputFilter = $this->fileSystem->createResourceInputFilter($this->resourceName);
         $this->assertFileExists($createResourceInputFilter->getPath());
@@ -735,7 +737,7 @@ class ApiHandlerTest extends TestCase
 
         $this->assertFileExists($apiDeleteResourceHandler->getPath());
         $this->assertTrue($apiDeleteResourceHandler->exists());
-        $this->assertSame($this->dataProviderDeleteResourceHandler(), $apiDeleteResourceHandler->read());
+        $this->assertSame($this->expectedDeleteResourceHandler(), $apiDeleteResourceHandler->read());
 
         $this->assertFileDoesNotExist($apiPatchResourceHandler->getPath());
         $this->assertFalse($apiPatchResourceHandler->exists());
@@ -799,7 +801,7 @@ class ApiHandlerTest extends TestCase
 
         $this->assertFileExists($apiPatchResourceHandler->getPath());
         $this->assertTrue($apiPatchResourceHandler->exists());
-        $this->assertSame($this->dataProviderPatchResourceHandler(), $apiPatchResourceHandler->read());
+        $this->assertSame($this->expectedPatchResourceHandler(), $apiPatchResourceHandler->read());
 
         $editResourceInputFilter = $this->fileSystem->editResourceInputFilter($this->resourceName);
         $this->assertFileExists($editResourceInputFilter->getPath());
@@ -867,7 +869,7 @@ class ApiHandlerTest extends TestCase
 
         $this->assertFileExists($apiPutResourceHandler->getPath());
         $this->assertTrue($apiPutResourceHandler->exists());
-        $this->assertSame($this->dataProviderPutResourceHandler(), $apiPutResourceHandler->read());
+        $this->assertSame($this->expectedPutResourceHandler(), $apiPutResourceHandler->read());
 
         $replaceResourceInputFilter = $this->fileSystem->replaceResourceInputFilter($this->resourceName);
         $this->assertFileExists($replaceResourceInputFilter->getPath());
@@ -877,7 +879,7 @@ class ApiHandlerTest extends TestCase
         $this->assertEmpty(stream_get_contents($this->errorStream));
     }
 
-    private function dataProviderGetCollectionHandler(): string
+    private function expectedGetCollectionHandler(): string
     {
         $collection       = $this->fileSystem->collection($this->resourceName);
         $serviceInterface = $this->fileSystem->serviceInterface($this->resourceName);
@@ -924,7 +926,7 @@ class GetBookStoreCollectionHandler extends AbstractHandler
 BODY;
     }
 
-    private function dataProviderGetResourceHandler(): string
+    private function expectedGetResourceHandler(): string
     {
         $entity = $this->fileSystem->entity($this->resourceName);
 
@@ -962,7 +964,7 @@ class GetBookStoreResourceHandler extends AbstractHandler
 BODY;
     }
 
-    private function dataProviderPostResourceHandler(): string
+    private function expectedPostResourceHandler(): string
     {
         $createResourceInputFilter = $this->fileSystem->createResourceInputFilter($this->resourceName);
         $serviceInterface          = $this->fileSystem->serviceInterface($this->resourceName);
@@ -1024,7 +1026,7 @@ class PostBookStoreResourceHandler extends AbstractHandler
 BODY;
     }
 
-    private function dataProviderDeleteResourceHandler(): string
+    private function expectedDeleteResourceHandler(): string
     {
         $serviceInterface = $this->fileSystem->serviceInterface($this->resourceName);
         $entity           = $this->fileSystem->entity($this->resourceName);
@@ -1074,7 +1076,7 @@ class DeleteBookStoreResourceHandler extends AbstractHandler
 BODY;
     }
 
-    private function dataProviderPatchResourceHandler(): string
+    private function expectedPatchResourceHandler(): string
     {
         $editResourceInputFilter = $this->fileSystem->editResourceInputFilter($this->resourceName);
         $serviceInterface        = $this->fileSystem->serviceInterface($this->resourceName);
@@ -1143,7 +1145,7 @@ class PatchBookStoreResourceHandler extends AbstractHandler
 BODY;
     }
 
-    private function dataProviderPutResourceHandler(): string
+    private function expectedPutResourceHandler(): string
     {
         $replaceResourceInputFilter = $this->fileSystem->replaceResourceInputFilter($this->resourceName);
         $serviceInterface           = $this->fileSystem->serviceInterface($this->resourceName);

@@ -9,16 +9,16 @@ Documentation is available at: https://docs.dotkernel.org/dot-maker/.
 ## Badges
 
 ![OSS Lifecycle](https://img.shields.io/osslifecycle/dotkernel/dot-maker)
-![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-maker/2.1.0)
+![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-maker/3.0.0)
 
 [![GitHub issues](https://img.shields.io/github/issues/dotkernel/dot-maker)](https://github.com/dotkernel/dot-maker/issues)
 [![GitHub forks](https://img.shields.io/github/forks/dotkernel/dot-maker)](https://github.com/dotkernel/dot-maker/network)
 [![GitHub stars](https://img.shields.io/github/stars/dotkernel/dot-maker)](https://github.com/dotkernel/dot-maker/stargazers)
-[![GitHub license](https://img.shields.io/github/license/dotkernel/dot-maker)](https://github.com/dotkernel/dot-maker/blob/2.0/LICENSE)
+[![GitHub license](https://img.shields.io/github/license/dotkernel/dot-maker)](https://github.com/dotkernel/dot-maker/blob/3.0/LICENSE)
 
-[![Build Static](https://github.com/dotkernel/dot-maker/actions/workflows/continuous-integration.yml/badge.svg?branch=2.0)](https://github.com/dotkernel/dot-maker/actions/workflows/continuous-integration.yml)
+[![Build Static](https://github.com/dotkernel/dot-maker/actions/workflows/continuous-integration.yml/badge.svg?branch=3.0)](https://github.com/dotkernel/dot-maker/actions/workflows/continuous-integration.yml)
 [![codecov](https://codecov.io/gh/dotkernel/dot-maker/graph/badge.svg?token=KT9UA402B4)](https://codecov.io/gh/dotkernel/dot-maker)
-[![PHPStan](https://github.com/dotkernel/dot-maker/actions/workflows/static-analysis.yml/badge.svg?branch=2.0)](https://github.com/dotkernel/dot-maker/actions/workflows/static-analysis.yml)
+[![PHPStan](https://github.com/dotkernel/dot-maker/actions/workflows/static-analysis.yml/badge.svg?branch=3.0)](https://github.com/dotkernel/dot-maker/actions/workflows/static-analysis.yml)
 
 ## Installation
 

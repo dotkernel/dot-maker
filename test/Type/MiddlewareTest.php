@@ -13,11 +13,11 @@ use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\Middleware;
 use Dot\Maker\Type\Module;
+use DotTest\Maker\StreamTrait;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function fwrite;
 use function implode;
 use function rewind;
@@ -28,6 +28,8 @@ use const PHP_EOL;
 
 class MiddlewareTest extends TestCase
 {
+    use StreamTrait;
+
     private Config $config;
     private Context $context;
     private FileSystem $fileSystem;
@@ -59,13 +61,13 @@ class MiddlewareTest extends TestCase
         $this->fileSystem = (new FileSystem($this->context))->setModuleName($this->moduleName);
         $this->module     = new Module($this->fileSystem, $this->context, $this->config);
 
-        $this->outputStream = fopen('php://memory', 'w+');
+        $this->outputStream = $this->openMemoryStream();
         Output::setOutputStream($this->outputStream);
 
-        $this->errorStream = fopen('php://memory', 'w+');
+        $this->errorStream = $this->openMemoryStream();
         Output::setErrorStream($this->errorStream);
 
-        $this->inputStream = fopen('php://memory', 'w+');
+        $this->inputStream = $this->openMemoryStream();
         Input::setStream($this->inputStream);
     }
 
@@ -162,7 +164,7 @@ class MiddlewareTest extends TestCase
         $this->assertFileExists($file->getPath());
         $this->assertTrue($file->exists());
 
-        $this->assertSame($this->dataProviderWithoutService(), $file->read());
+        $this->assertSame($this->expectedWithoutService(), $file->read());
     }
 
     public function testCallToCreateWillSucceedWhenNameIsValidAndServiceDoesNotExist(): void
@@ -187,7 +189,7 @@ class MiddlewareTest extends TestCase
             stream_get_contents($this->outputStream)
         );
 
-        $this->assertSame($this->dataProviderWithoutService(), $file->read());
+        $this->assertSame($this->expectedWithoutService(), $file->read());
     }
 
     public function testCallToInvokeWillSucceedWhenNameIsValidAndServiceDoesExist(): void
@@ -210,7 +212,7 @@ class MiddlewareTest extends TestCase
         $this->assertFileExists($file->getPath());
         $this->assertTrue($file->exists());
 
-        $this->assertSame($this->dataProviderWithService($serviceInterface), $file->read());
+        $this->assertSame($this->expectedWithService($serviceInterface), $file->read());
     }
 
     public function testCallToCreateWillSucceedWhenNameIsValidAndServiceDoesExist(): void
@@ -240,10 +242,10 @@ class MiddlewareTest extends TestCase
             stream_get_contents($this->outputStream)
         );
 
-        $this->assertSame($this->dataProviderWithService($serviceInterface), $file->read());
+        $this->assertSame($this->expectedWithService($serviceInterface), $file->read());
     }
 
-    private function dataProviderWithService(File $serviceInterface): string
+    private function expectedWithService(File $serviceInterface): string
     {
         $uses = [
             sprintf('use %s;', $serviceInterface->getComponent()->getFqcn()),
@@ -287,7 +289,7 @@ class BookStoreMiddleware implements MiddlewareInterface
 BODY;
     }
 
-    private function dataProviderWithoutService(): string
+    private function expectedWithoutService(): string
     {
         $uses = [
             sprintf('use %s;', Import::PSR_HTTP_MESSAGE_RESPONSEINTERFACE),

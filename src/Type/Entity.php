@@ -117,6 +117,9 @@ BODY);
         return $class->render();
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getAbstractEntityFqcn(): string
     {
         $format = Import::ROOT_APP_ENTITY_ABSTRACTENTITY;
@@ -128,6 +131,9 @@ BODY);
         return sprintf($format, $this->context->getRootNamespace());
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getNumericIdentifierTraitFqcn(): string
     {
         $format = Import::ROOT_APP_ENTITY_NUMERICIDENTIFIERTRAIT;
@@ -139,6 +145,9 @@ BODY);
         return sprintf($format, $this->context->getRootNamespace());
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getTimestampsTraitFqcn(): string
     {
         $format = Import::ROOT_APP_ENTITY_TIMESTAMPSTRAIT;
@@ -150,6 +159,9 @@ BODY);
         return sprintf($format, $this->context->getRootNamespace());
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getUuidIdentifierTraitFqcn(): string
     {
         $format = Import::ROOT_APP_ENTITY_UUIDIDENTIFIERTRAIT;

@@ -13,7 +13,7 @@ use const PHP_EOL;
 
 class Declaration
 {
-    /** @var ParameterInterface[] $parameters */
+    /** @var list<ParameterInterface> $parameters */
     private array $parameters  = [];
     private bool $nullable     = false;
     private string $returnType = 'void';
@@ -41,6 +41,9 @@ class Declaration
         return $this->comment;
     }
 
+    /**
+     * @return list<ParameterInterface>
+     */
     public function getParameters(): array
     {
         return $this->parameters;

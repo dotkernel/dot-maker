@@ -113,7 +113,7 @@ COMM;
         $method = (new Method($this->methodName))
             ->setVisibility(VisibilityEnum::Private)
             ->setNullable(false);
-        $this->assertSame($this->dataProviderRenderedMethodWithoutBody(), (string) $method);
+        $this->assertSame($this->expectedRenderedMethodWithoutBody(), (string) $method);
     }
 
     public function testWillRenderMethod(): void
@@ -129,10 +129,10 @@ COMM;
 COMM)
             ->addParameter(new Parameter('param', 'string', true, 'null'))
             ->setBody('        return $this;');
-        $this->assertSame($this->dataProviderRenderedMethod(), (string) $method);
+        $this->assertSame($this->expectedRenderedMethod(), (string) $method);
     }
 
-    private function dataProviderRenderedMethodWithoutBody(): string
+    private function expectedRenderedMethodWithoutBody(): string
     {
         return <<<BODY
 private function someMethod(): void
@@ -141,7 +141,7 @@ private function someMethod(): void
 BODY;
     }
 
-    private function dataProviderRenderedMethod(): string
+    private function expectedRenderedMethod(): string
     {
         return <<<BODY
 /**

@@ -6,65 +6,50 @@ namespace DotTest\Maker\IO;
 
 use Dot\Maker\ColorEnum;
 use Dot\Maker\IO\Output;
+use DotTest\Maker\StreamTrait;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function rewind;
 use function stream_get_contents;
-use function stream_get_meta_data;
 
 use const PHP_EOL;
+use const STDERR;
+use const STDOUT;
 
 class OutputTest extends TestCase
 {
+    use StreamTrait;
+
     public function testWillModifyErrorStream(): void
     {
-        $oldErrorStream = Output::getErrorStream();
-        $this->assertIsResource($oldErrorStream);
-        $oldErrorStreamMetadata = stream_get_meta_data($oldErrorStream);
-        $this->assertSame('STDIO', $oldErrorStreamMetadata['stream_type']);
-        $this->assertSame('php://stderr', $oldErrorStreamMetadata['uri']);
+        $this->resetStreams();
+        $this->assertSame(STDERR, Output::getErrorStream());
 
-        Output::setErrorStream(fopen('php://memory', 'w+'));
+        $stream = $this->openMemoryStream();
+        Output::setErrorStream($stream);
+        $this->assertSame($stream, Output::getErrorStream());
 
-        $newErrorStream = Output::getErrorStream();
-        $this->assertIsResource($newErrorStream);
-        $newErrorStreamMetadata = stream_get_meta_data($newErrorStream);
-        $this->assertSame('MEMORY', $newErrorStreamMetadata['stream_type']);
-        $this->assertSame('php://memory', $newErrorStreamMetadata['uri']);
-
-        $this->assertNotSame($oldErrorStream, $newErrorStream);
-
-        fclose($oldErrorStream);
-        fclose($newErrorStream);
+        fclose($stream);
+        $this->resetStreams();
     }
 
     public function testWillModifyOutputStream(): void
     {
-        $oldOutputStream = Output::getOutputStream();
-        $this->assertIsResource($oldOutputStream);
-        $oldOutputStreamMetadata = stream_get_meta_data($oldOutputStream);
-        $this->assertSame('STDIO', $oldOutputStreamMetadata['stream_type']);
-        $this->assertSame('php://stdout', $oldOutputStreamMetadata['uri']);
+        $this->resetStreams();
+        $this->assertSame(STDOUT, Output::getOutputStream());
 
-        Output::setOutputStream(fopen('php://memory', 'w+'));
+        $stream = $this->openMemoryStream();
+        Output::setOutputStream($stream);
+        $this->assertSame($stream, Output::getOutputStream());
 
-        $newOutputStream = Output::getOutputStream();
-        $this->assertIsResource($newOutputStream);
-        $newOutputStreamMetadata = stream_get_meta_data($newOutputStream);
-        $this->assertSame('MEMORY', $newOutputStreamMetadata['stream_type']);
-        $this->assertSame('php://memory', $newOutputStreamMetadata['uri']);
-
-        $this->assertNotSame($oldOutputStream, $newOutputStream);
-
-        fclose($oldOutputStream);
-        fclose($newOutputStream);
+        fclose($stream);
+        $this->resetStreams();
     }
 
     public function testWillOutputError(): void
     {
-        Output::setErrorStream(fopen('php://memory', 'w+'));
+        Output::setErrorStream($this->openMemoryStream());
 
         $stream = Output::getErrorStream();
         $this->assertIsResource($stream);
@@ -83,7 +68,7 @@ class OutputTest extends TestCase
 
     public function testWillOutputInfo(): void
     {
-        Output::setOutputStream(fopen('php://memory', 'w+'));
+        Output::setOutputStream($this->openMemoryStream());
 
         $stream = Output::getOutputStream();
         $this->assertIsResource($stream);
@@ -102,7 +87,7 @@ class OutputTest extends TestCase
 
     public function testWillOutputSuccess(): void
     {
-        Output::setOutputStream(fopen('php://memory', 'w+'));
+        Output::setOutputStream($this->openMemoryStream());
 
         $stream = Output::getOutputStream();
         $this->assertIsResource($stream);
@@ -121,7 +106,7 @@ class OutputTest extends TestCase
 
     public function testWillOutputWarning(): void
     {
-        Output::setOutputStream(fopen('php://memory', 'w+'));
+        Output::setOutputStream($this->openMemoryStream());
 
         $stream = Output::getOutputStream();
         $this->assertIsResource($stream);
@@ -140,7 +125,7 @@ class OutputTest extends TestCase
 
     public function testWillWrite(): void
     {
-        Output::setOutputStream(fopen('php://memory', 'w+'));
+        Output::setOutputStream($this->openMemoryStream());
 
         $stream = Output::getOutputStream();
         $this->assertIsResource($stream);
@@ -156,7 +141,7 @@ class OutputTest extends TestCase
 
     public function testWillWriteLine(): void
     {
-        Output::setOutputStream(fopen('php://memory', 'w+'));
+        Output::setOutputStream($this->openMemoryStream());
 
         $stream = Output::getOutputStream();
         $this->assertIsResource($stream);
@@ -172,7 +157,7 @@ class OutputTest extends TestCase
 
     public function testWillAlwaysGetErrorStream(): void
     {
-        Output::setErrorStream(fopen('php://memory', 'w+'));
+        Output::setErrorStream($this->openMemoryStream());
 
         $stream = Output::getErrorStream();
         $this->assertIsResource($stream);
@@ -184,7 +169,7 @@ class OutputTest extends TestCase
 
     public function testWillAlwaysGetOutputStream(): void
     {
-        Output::setOutputStream(fopen('php://memory', 'w+'));
+        Output::setOutputStream($this->openMemoryStream());
 
         $stream = Output::getOutputStream();
         $this->assertIsResource($stream);
@@ -192,5 +177,16 @@ class OutputTest extends TestCase
 
         $stream = Output::getOutputStream();
         $this->assertIsResource($stream);
+    }
+
+    public function testWriteFallsBackToDefaultStreamWhenStreamIsClosed(): void
+    {
+        $stream = $this->openMemoryStream();
+        Output::setOutputStream($stream);
+        fclose($stream);
+
+        Output::write();
+
+        $this->assertSame(STDOUT, Output::getOutputStream());
     }
 }

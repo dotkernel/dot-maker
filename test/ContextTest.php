@@ -195,4 +195,36 @@ class ContextTest extends TestCase
         $this->assertTrue($context->isQueue());
         $this->assertSame(Context::NAMESPACE_QUEUE, $context->getProjectType());
     }
+
+    public function testWillNotInstantiateWithScalarComposerJson(): void
+    {
+        $fileSystem = vfsStream::setup('root', 0644, [
+            'composer.json' => '1',
+        ]);
+        $this->expectExceptionMessage(sprintf('%s/composer.json: key "autoload" not found', $fileSystem->url()));
+
+        new Context($fileSystem->url());
+    }
+
+    public function testWillNotInstantiateWhenAutoloadIsNotAnObject(): void
+    {
+        $fileSystem = vfsStream::setup('root', 0644, [
+            'composer.json' => '{"autoload":"x"}',
+        ]);
+        $this->expectExceptionMessage(sprintf('%s/composer.json: key "autoload" not found', $fileSystem->url()));
+
+        new Context($fileSystem->url());
+    }
+
+    public function testWillNotInstantiateWithOnlyCoreNamespaces(): void
+    {
+        $fileSystem = vfsStream::setup('root', 0644, [
+            'composer.json' => '{"autoload":{"psr-4":{"Core\\\\App\\\\":"src/Core/src/App/src/"}}}',
+        ]);
+        $this->expectExceptionMessage(
+            sprintf('%s/composer.json: no application namespace found under "autoload"."psr-4"', $fileSystem->url())
+        );
+
+        new Context($fileSystem->url());
+    }
 }

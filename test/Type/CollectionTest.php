@@ -12,11 +12,11 @@ use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\Collection;
 use Dot\Maker\Type\Module;
+use DotTest\Maker\StreamTrait;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function fwrite;
 use function rewind;
 use function sprintf;
@@ -26,6 +26,8 @@ use const PHP_EOL;
 
 class CollectionTest extends TestCase
 {
+    use StreamTrait;
+
     private Config $config;
     private Context $context;
     private FileSystem $fileSystem;
@@ -59,13 +61,13 @@ class CollectionTest extends TestCase
         $this->import     = new Import($this->context);
         $this->module     = new Module($this->fileSystem, $this->context, $this->config);
 
-        $this->outputStream = fopen('php://memory', 'w+');
+        $this->outputStream = $this->openMemoryStream();
         Output::setOutputStream($this->outputStream);
 
-        $this->errorStream = fopen('php://memory', 'w+');
+        $this->errorStream = $this->openMemoryStream();
         Output::setErrorStream($this->errorStream);
 
-        $this->inputStream = fopen('php://memory', 'w+');
+        $this->inputStream = $this->openMemoryStream();
         Input::setStream($this->inputStream);
     }
 
@@ -192,7 +194,7 @@ class CollectionTest extends TestCase
         $this->assertFileExists($file->getPath());
         $this->assertTrue($file->exists());
 
-        $this->assertSame($this->dataProvider(), $file->read());
+        $this->assertSame($this->expectedContent(), $file->read());
     }
 
     public function testCallToCreateWillSucceedWhenNameIsValid(): void
@@ -217,10 +219,10 @@ class CollectionTest extends TestCase
             stream_get_contents($this->outputStream)
         );
 
-        $this->assertSame($this->dataProvider(), $type->read());
+        $this->assertSame($this->expectedContent(), $type->read());
     }
 
-    private function dataProvider(): string
+    private function expectedContent(): string
     {
         return <<<BODY
 <?php

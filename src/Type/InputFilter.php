@@ -10,7 +10,6 @@ use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Throwable;
 
-use function preg_replace;
 use function sprintf;
 use function ucfirst;
 
@@ -39,7 +38,7 @@ class InputFilter extends AbstractType implements FileInterface
 
     public function create(string $name): File
     {
-        $name = preg_replace('/InputFilter$/', '', $name);
+        $name = Component::stripSuffix($name, 'InputFilter');
 
         $plural = Component::pluralize($name);
         if ($this->context->isApi()) {

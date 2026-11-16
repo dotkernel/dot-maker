@@ -4,13 +4,15 @@ declare(strict_types=1);
 
 namespace Dot\Maker;
 
+use InvalidArgumentException;
+
 use function implode;
 use function in_array;
 use function lcfirst;
 use function preg_match;
-use function preg_replace;
 use function preg_split;
 use function sprintf;
+use function str_ends_with;
 use function str_replace;
 use function strlen;
 use function strtolower;
@@ -20,12 +22,26 @@ use function ucfirst;
 
 class Component
 {
+    /** @var non-empty-string $className */
+    private readonly string $className;
+
+    /**
+     * @throws InvalidArgumentException
+     */
     public function __construct(
         private readonly string $namespace,
-        private readonly string $className,
+        string $className,
     ) {
+        if ($className === '') {
+            throw new InvalidArgumentException('Class name must not be empty.');
+        }
+
+        $this->className = $className;
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getClassName(): string
     {
         return $this->className;
@@ -51,6 +67,9 @@ class Component
         return sprintf('find%s', ucfirst($this->className));
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getFqcn(): string
     {
         return sprintf('%s\\%s', $this->namespace, $this->className);
@@ -83,6 +102,10 @@ class Component
 
     public static function pluralize(string $name): string
     {
+        if ($name === '') {
+            return $name;
+        }
+
         $lastLetter = strtolower($name[strlen($name) - 1]);
 
         if (in_array($lastLetter, ['s', 'x', 'z']) || preg_match('/(sh|ch)$/i', $name)) {
@@ -94,11 +117,23 @@ class Component
         }
     }
 
+    /**
+     * Remove $suffix from the end of $name, unless $name is exactly $suffix.
+     */
+    public static function stripSuffix(string $name, string $suffix): string
+    {
+        if ($name !== $suffix && str_ends_with($name, $suffix)) {
+            return substr($name, 0, -strlen($suffix));
+        }
+
+        return $name;
+    }
+
     public function toCamelCase(bool $noInterface = false): string
     {
         $property = lcfirst($this->className);
         if ($noInterface) {
-            return preg_replace('/Interface$/', '', $property);
+            return self::stripSuffix($property, 'Interface');
         }
 
         return $property;
@@ -106,9 +141,10 @@ class Component
 
     public function toKebabCase(bool $noInterface = true): string
     {
-        $parts = preg_split('/(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/', $this->toCamelCase($noInterface));
+        $camelCase = $this->toCamelCase($noInterface);
+        $parts     = preg_split('/(?<=[a-z])(?=[A-Z])|(?<=[A-Z])(?=[A-Z][a-z])/', $camelCase);
 
-        return strtolower(implode('-', $parts));
+        return strtolower(implode('-', $parts === false ? [$camelCase] : $parts));
     }
 
     public function toPlural(): string

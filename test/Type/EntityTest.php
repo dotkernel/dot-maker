@@ -11,11 +11,12 @@ use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\Entity;
 use Dot\Maker\Type\Module;
+use DotTest\Maker\StreamTrait;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function fwrite;
 use function rewind;
 use function sprintf;
@@ -25,6 +26,8 @@ use const PHP_EOL;
 
 class EntityTest extends TestCase
 {
+    use StreamTrait;
+
     private Config $config;
     private Context $context;
     private FileSystem $fileSystem;
@@ -57,13 +60,13 @@ class EntityTest extends TestCase
         $this->fileSystem = (new FileSystem($this->context))->setModuleName($this->moduleName);
         $this->module     = new Module($this->fileSystem, $this->context, $this->config);
 
-        $this->outputStream = fopen('php://memory', 'w+');
+        $this->outputStream = $this->openMemoryStream();
         Output::setOutputStream($this->outputStream);
 
-        $this->errorStream = fopen('php://memory', 'w+');
+        $this->errorStream = $this->openMemoryStream();
         Output::setErrorStream($this->errorStream);
 
-        $this->inputStream = fopen('php://memory', 'w+');
+        $this->inputStream = $this->openMemoryStream();
         Input::setStream($this->inputStream);
     }
 
@@ -145,9 +148,7 @@ class EntityTest extends TestCase
         $this->assertFileDoesNotExist($file->getPath());
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testCallToInvokeWillSucceedWhenNameIsValid(string $expected): void
     {
         $file = $this->fileSystem->entity($this->resourceName);
@@ -166,9 +167,7 @@ class EntityTest extends TestCase
         $this->assertSame($expected, $file->read());
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testCallToCreateWillSucceedWhenNameIsValid(string $expected): void
     {
         $file = $this->fileSystem->entity($this->resourceName);
@@ -194,6 +193,9 @@ class EntityTest extends TestCase
         $this->assertSame($expected, $type->read());
     }
 
+    /**
+     * @return array<array-key, array{string}>
+     */
     public static function dataProvider(): array
     {
         $entity = <<<BODY
