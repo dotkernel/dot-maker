@@ -8,6 +8,7 @@ use RuntimeException;
 
 use function array_key_exists;
 use function file_exists;
+use function is_array;
 use function sprintf;
 
 class Config
@@ -26,8 +27,8 @@ class Config
         }
 
         $config = require $configPath;
-        if (! array_key_exists(Maker::class, $config)) {
-            throw new RuntimeException(sprintf('%s: key "Maker::class" not found', $configPath));
+        if (! is_array($config) || ! array_key_exists(Maker::class, $config)) {
+            throw new RuntimeException(sprintf('%s: key "%s" not found', $configPath, Maker::class));
         }
     }
 

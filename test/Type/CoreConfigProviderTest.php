@@ -11,11 +11,11 @@ use Dot\Maker\FileSystem;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\CoreConfigProvider;
 use Dot\Maker\Type\Module;
+use DotTest\Maker\StreamTrait;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function rewind;
 use function stream_get_contents;
 
@@ -23,6 +23,8 @@ use const PHP_EOL;
 
 class CoreConfigProviderTest extends TestCase
 {
+    use StreamTrait;
+
     private Config $config;
     private Context $context;
     private FileSystem $fileSystem;
@@ -34,7 +36,7 @@ class CoreConfigProviderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->outputStream = fopen('php://memory', 'w+');
+        $this->outputStream = $this->openMemoryStream();
         Output::setOutputStream($this->outputStream);
     }
 
@@ -128,7 +130,7 @@ class CoreConfigProviderTest extends TestCase
             ) . PHP_EOL,
             stream_get_contents($this->outputStream)
         );
-        $this->assertSame($this->dataProviderWhenProjectTypeIsApi(), $file->read());
+        $this->assertSame($this->expectedWhenProjectTypeIsApi(), $file->read());
     }
 
     public function testWillCreateFileWhenProjectTypeIsNotApi(): void
@@ -166,10 +168,10 @@ class CoreConfigProviderTest extends TestCase
             ) . PHP_EOL,
             stream_get_contents($this->outputStream)
         );
-        $this->assertSame($this->dataProviderWhenProjectTypeIsNotApi(), $file->read());
+        $this->assertSame($this->expectedWhenProjectTypeIsNotApi(), $file->read());
     }
 
-    private function dataProviderWhenProjectTypeIsApi(): string
+    private function expectedWhenProjectTypeIsApi(): string
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
         return <<<BODY
@@ -237,7 +239,7 @@ class ConfigProvider
     {
         return [
             'driver' => [
-                'orm_default' => [
+                'orm_default'        => [
                     'drivers' => [
                         'Core\ModuleName\Entity' => 'ModuleNameEntities',
                     ],
@@ -256,7 +258,7 @@ BODY;
         // phpcs:enable Generic.Files.LineLength.TooLong
     }
 
-    private function dataProviderWhenProjectTypeIsNotApi(): string
+    private function expectedWhenProjectTypeIsNotApi(): string
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
         return <<<BODY
@@ -324,7 +326,7 @@ class ConfigProvider
     {
         return [
             'driver' => [
-                'orm_default' => [
+                'orm_default'        => [
                     'drivers' => [
                         'Core\ModuleName\Entity' => 'ModuleNameEntities',
                     ],

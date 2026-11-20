@@ -4,17 +4,59 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Type;
 
+use Dot\Maker\Component;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Config;
 use Dot\Maker\Context;
+use Dot\Maker\Exception\RuntimeException;
 use Dot\Maker\FileSystem;
 use Dot\Maker\Message;
 
+use function in_array;
+use function is_array;
 use function preg_match;
 use function sprintf;
+use function strtolower;
+use function token_get_all;
+
+use const T_STRING;
 
 abstract class AbstractType implements TypeInterface
 {
+    /**
+     * Type names that tokenize as T_STRING but cannot be used as class names.
+     */
+    private const COMPONENT_SUFFIXES = [
+        'Collection',
+        'Command',
+        'Entity',
+        'Form',
+        'Handler',
+        'Input',
+        'InputFilter',
+        'Interface',
+        'Middleware',
+        'Repository',
+        'Service',
+    ];
+
+    private const RESERVED_TYPE_NAMES = [
+        'bool',
+        'false',
+        'float',
+        'int',
+        'iterable',
+        'mixed',
+        'never',
+        'null',
+        'object',
+        'parent',
+        'self',
+        'string',
+        'true',
+        'void',
+    ];
+
     protected Import $import;
 
     public function __construct(
@@ -26,8 +68,15 @@ abstract class AbstractType implements TypeInterface
         $this->import = new Import($context);
     }
 
+    /**
+     * @throws RuntimeException
+     */
     public function addMessage(Message $message): static
     {
+        if ($this->module === null) {
+            throw new RuntimeException('No module selected.');
+        }
+
         $this->module->addMessage($message);
 
         return $this;
@@ -58,14 +107,22 @@ abstract class AbstractType implements TypeInterface
         return $this->module instanceof ModuleInterface;
     }
 
+    /**
+     * @throws RuntimeException
+     */
     public function component(TypeEnum $typeEnum): FileInterface
     {
-        return new ($typeEnum->value)(
+        $component = new ($typeEnum->value)(
             $this->fileSystem,
             $this->context,
             $this->config,
             $this->module,
         );
+        if (! $component instanceof FileInterface) {
+            throw new RuntimeException(sprintf('%s cannot create files.', $typeEnum->value));
+        }
+
+        return $component;
     }
 
     public function isModule(): bool
@@ -73,9 +130,35 @@ abstract class AbstractType implements TypeInterface
         return false;
     }
 
+    /**
+     * A valid name is a usable PHP class name, both as typed and with any component suffix removed,
+     * because some components (for example Entity) use the name without its suffix as the class name.
+     */
     public function isValid(string $name): bool
     {
-        return (bool) preg_match('/^[a-z0-9]+$/i', $name);
+        foreach (self::COMPONENT_SUFFIXES as $suffix) {
+            if (! self::isClassName(Component::stripSuffix($name, $suffix))) {
+                return false;
+            }
+        }
+
+        return self::isClassName($name);
+    }
+
+    private static function isClassName(string $name): bool
+    {
+        if (preg_match('/^[a-z][a-z0-9]*$/i', $name) !== 1) {
+            return false;
+        }
+
+        if (in_array(strtolower($name), self::RESERVED_TYPE_NAMES, true)) {
+            return false;
+        }
+
+        // Rejects every keyword known to the running PHP version, for example List, Class, Match or Readonly.
+        $tokens = token_get_all('<?php ' . $name);
+
+        return is_array($tokens[1] ?? null) && $tokens[1][0] === T_STRING;
     }
 
     public function setConfig(Config $config): static

@@ -27,7 +27,7 @@ class Output
     {
         $message = ColorEnum::colorize($message, ColorEnum::ForegroundBrightRed);
 
-        fwrite(self::$errorStream, $message . PHP_EOL);
+        fwrite(self::getErrorStream(), $message . PHP_EOL);
         $exit && exit(self::FAILURE);
     }
 
@@ -35,7 +35,7 @@ class Output
     {
         $message = ColorEnum::colorize($message, ColorEnum::ForegroundBrightBlue);
 
-        fwrite(self::$outputStream, $message . PHP_EOL);
+        fwrite(self::getOutputStream(), $message . PHP_EOL);
         $exit && exit(self::SUCCESS);
     }
 
@@ -43,7 +43,7 @@ class Output
     {
         $message = ColorEnum::colorize($message, ColorEnum::ForegroundBrightGreen);
 
-        fwrite(self::$outputStream, $message . PHP_EOL);
+        fwrite(self::getOutputStream(), $message . PHP_EOL);
         $exit && exit(self::SUCCESS);
     }
 
@@ -51,19 +51,19 @@ class Output
     {
         $message = ColorEnum::colorize($message, ColorEnum::ForegroundBrightYellow);
 
-        fwrite(self::$outputStream, $message . PHP_EOL);
+        fwrite(self::getOutputStream(), $message . PHP_EOL);
         $exit && exit(self::SUCCESS);
     }
 
     public static function write(string $message = '', bool $exit = false): void
     {
-        fwrite(self::$outputStream, $message);
+        fwrite(self::getOutputStream(), $message);
         $exit && exit(self::SUCCESS);
     }
 
     public static function writeLine(string $message = '', bool $exit = false): void
     {
-        fwrite(self::$outputStream, $message . PHP_EOL);
+        fwrite(self::getOutputStream(), $message . PHP_EOL);
         $exit && exit(self::SUCCESS);
     }
 

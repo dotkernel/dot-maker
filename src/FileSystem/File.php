@@ -91,6 +91,6 @@ class File
 
     public function write(string $data): bool
     {
-        return (bool) file_put_contents($this->path, $data);
+        return file_put_contents($this->path, $data) !== false;
     }
 }

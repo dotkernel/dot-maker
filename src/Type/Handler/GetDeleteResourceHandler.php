@@ -118,7 +118,7 @@ class GetDeleteResourceHandler extends AbstractType implements FileInterface
         return new HtmlResponse(
             \$this->template->render('{$entity->toKebabCase()}::delete-{$entity->toKebabCase()}-form', [
                 'form' => \$this->{$form->toCamelCase()}->prepare(),
-                '{$entity->toKebabCase()}' => {$entity->getVariable()},
+                '{$entity->toCamelCase()}' => {$entity->getVariable()},
             ])
         );
 BODY);

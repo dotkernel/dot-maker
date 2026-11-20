@@ -11,11 +11,11 @@ use Dot\Maker\FileSystem;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\Module;
 use Dot\Maker\Type\OpenApi;
+use DotTest\Maker\StreamTrait;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function rewind;
 use function sprintf;
 use function stream_get_contents;
@@ -24,6 +24,8 @@ use const PHP_EOL;
 
 class OpenApiTest extends TestCase
 {
+    use StreamTrait;
+
     private Config $config;
     private Context $context;
     private FileSystem $fileSystem;
@@ -35,7 +37,7 @@ class OpenApiTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->outputStream = fopen('php://memory', 'w+');
+        $this->outputStream = $this->openMemoryStream();
         Output::setOutputStream($this->outputStream);
     }
 
@@ -133,7 +135,7 @@ class OpenApiTest extends TestCase
         rewind($this->outputStream);
         $this->assertFileExists($file->getPath());
         $this->assertTrue($file->exists());
-        $this->assertSame($this->dataProviderRenderedOpenApi(), $file->read());
+        $this->assertSame($this->expectedRenderedOpenApi(), $file->read());
         $this->assertSame(
             ColorEnum::colorize(
                 'Created OpenAPI: vfs://root/src/ModuleName/src/OpenAPI.php',
@@ -143,7 +145,7 @@ class OpenApiTest extends TestCase
         );
     }
 
-    private function dataProviderRenderedOpenApi(): string
+    private function expectedRenderedOpenApi(): string
     {
         return <<<BODY
 <?php

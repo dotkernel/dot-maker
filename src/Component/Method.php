@@ -18,9 +18,9 @@ use const PHP_EOL;
 class Method implements MethodInterface
 {
     protected VisibilityEnum $visibility = VisibilityEnum::Public;
-    /** @var ParameterInterface[] $parameters */
+    /** @var list<ParameterInterface> $parameters */
     protected array $parameters = [];
-    /** @var Inject[] $injects */
+    /** @var list<Inject> $injects */
     protected array $injects     = [];
     protected string $body       = '';
     protected string $comment    = '';
@@ -79,6 +79,9 @@ class Method implements MethodInterface
         return $this->comment;
     }
 
+    /**
+     * @return list<Inject>
+     */
     public function getInjects(): array
     {
         return $this->injects;
@@ -94,6 +97,9 @@ class Method implements MethodInterface
         return $this->nullable;
     }
 
+    /**
+     * @return list<ParameterInterface>
+     */
     public function getParameters(): array
     {
         return $this->parameters;

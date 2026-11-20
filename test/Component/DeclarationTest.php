@@ -109,10 +109,10 @@ COMM;
             ->addParameter(
                 new Parameter('param', 'string')
             );
-        $this->assertSame($this->dataProviderRenderedDeclaration(), (string) $declaration);
+        $this->assertSame($this->expectedRenderedDeclaration(), (string) $declaration);
     }
 
-    private function dataProviderRenderedDeclaration(): string
+    private function expectedRenderedDeclaration(): string
     {
         return <<<BODY
 /**

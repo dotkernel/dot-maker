@@ -29,10 +29,10 @@ COMM;
             ->setReadonly(true)
             ->setStatic(true)
             ->setComment($comment);
-        $this->assertSame($this->dataProviderRenderedPromotedProperty(), $promotedProperty->render());
+        $this->assertSame($this->expectedRenderedPromotedProperty(), $promotedProperty->render());
     }
 
-    private function dataProviderRenderedPromotedProperty(): string
+    private function expectedRenderedPromotedProperty(): string
     {
         return <<<BODY
 /**

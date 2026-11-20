@@ -16,5 +16,5 @@ interface FileInterface
      * @throws DuplicateFileException
      * @throws RuntimeException
      */
-    public function create(string $name): ?File;
+    public function create(string $name): File;
 }

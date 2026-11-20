@@ -4,15 +4,20 @@ declare(strict_types=1);
 
 namespace Dot\Maker;
 
+use JsonException;
 use RuntimeException;
 
-use function array_key_exists;
+use function array_keys;
 use function explode;
 use function file_exists;
 use function file_get_contents;
+use function is_array;
+use function is_readable;
 use function json_decode;
 use function sprintf;
 use function str_starts_with;
+
+use const JSON_THROW_ON_ERROR;
 
 class Context
 {
@@ -23,9 +28,9 @@ class Context
     public const NAMESPACE_LIGHT    = 'Light';
     public const NAMESPACE_QUEUE    = 'Queue';
 
-    private bool $hasCore          = false;
-    private ?string $projectType   = null;
-    private ?string $rootNamespace = null;
+    private bool $hasCore = false;
+    private string $projectType;
+    private string $rootNamespace;
 
     /**
      * @throws RuntimeException
@@ -38,29 +43,45 @@ class Context
             throw new RuntimeException(sprintf('%s: not found', $composerPath));
         }
 
-        $composer = json_decode(file_get_contents($composerPath), true);
-        if ($composer === null) {
+        if (! is_readable($composerPath)) {
+            throw new RuntimeException(sprintf('%s: not readable', $composerPath));
+        }
+
+        $contents = (string) file_get_contents($composerPath);
+
+        try {
+            $composer = json_decode($contents, true, 512, JSON_THROW_ON_ERROR);
+        } catch (JsonException) {
             throw new RuntimeException(sprintf('%s: invalid JSON', $composerPath));
         }
-        if (! array_key_exists('autoload', $composer)) {
+        if (! is_array($composer) || ! is_array($composer['autoload'] ?? null)) {
             throw new RuntimeException(sprintf('%s: key "autoload" not found', $composerPath));
         }
-        if (! array_key_exists('psr-4', $composer['autoload'])) {
+        if (! is_array($composer['autoload']['psr-4'] ?? null)) {
             throw new RuntimeException(sprintf('%s: key "autoload"."psr-4" not found', $composerPath));
         }
 
+        $rootNamespace = null;
         $coreNamespace = sprintf('%s\\', self::NAMESPACE_CORE);
-        foreach ($composer['autoload']['psr-4'] as $namespace => $modulePath) {
+        foreach (array_keys($composer['autoload']['psr-4']) as $namespace) {
+            $namespace = (string) $namespace;
             if (str_starts_with($namespace, $coreNamespace)) {
                 $this->hasCore = true;
                 continue;
             }
-            if ($this->rootNamespace === null) {
-                $namespace           = explode('\\', $namespace, 2);
-                $this->rootNamespace = $namespace[0];
-                $this->projectType   = $namespace[0];
+            if ($rootNamespace === null && $namespace !== '') {
+                $rootNamespace = explode('\\', $namespace, 2)[0];
             }
         }
+
+        if ($rootNamespace === null || $rootNamespace === '') {
+            throw new RuntimeException(
+                sprintf('%s: no application namespace found under "autoload"."psr-4"', $composerPath)
+            );
+        }
+
+        $this->rootNamespace = $rootNamespace;
+        $this->projectType   = $rootNamespace;
     }
 
     public function getProjectPath(): string
@@ -68,12 +89,12 @@ class Context
         return $this->projectPath;
     }
 
-    public function getProjectType(): ?string
+    public function getProjectType(): string
     {
         return $this->projectType;
     }
 
-    public function getRootNamespace(): ?string
+    public function getRootNamespace(): string
     {
         return $this->rootNamespace;
     }

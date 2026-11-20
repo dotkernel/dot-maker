@@ -23,7 +23,9 @@ use Dot\Maker\VisibilityEnum;
 use Throwable;
 
 use function sprintf;
-use function str_replace;
+use function str_ends_with;
+use function strlen;
+use function substr;
 use function ucfirst;
 
 class Command extends AbstractType implements FileInterface
@@ -143,8 +145,11 @@ BODY);
 
     public function getDefaultName(Component $command): string
     {
-        $defaultName = sprintf('%s:command', $command->toKebabCase());
+        $kebabCase = $command->toKebabCase();
+        if (str_ends_with($kebabCase, '-command')) {
+            $kebabCase = substr($kebabCase, 0, -strlen('-command'));
+        }
 
-        return str_replace('-command', '', $defaultName);
+        return sprintf('%s:command', $kebabCase);
     }
 }
