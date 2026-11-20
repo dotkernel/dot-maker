@@ -9,7 +9,6 @@ All notable changes to this project are documented in this file, newest first.
 - PHP 8.6 support.
 - "Next steps" are printed after `make command`, `make middleware` and `make entity`, not only after `make module`, and every message is kept when several components are created in one run.
 - `Input::isExhausted()` to detect the end of input.
-- `.gitattributes`, so the Composer package no longer ships tests, docs and tooling files.
 - Upgrade guide in the documentation.
 
 ### Changed
