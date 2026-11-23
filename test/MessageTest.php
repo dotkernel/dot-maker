@@ -47,7 +47,7 @@ class MessageTest extends TestCase
 
         $expected = <<<EXP
 add to \033[97mconfig/autoload/cli.global.php\033[0m under \033[97mdot_cli\033[0m.\033[97mcommands\033[0m:
-\033[93m  App\\Module\\Command\\TestCommand::getDefaultName() => App\\Module\\Command\\TestCommand::class,\033[0m
+\033[93m  App\\Module\\Command\\TestCommand::DEFAULT_NAME => App\\Module\\Command\\TestCommand::class,\033[0m
 EXP;
 
         $this->assertSame($expected, (string) $message);

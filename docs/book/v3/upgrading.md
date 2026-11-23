@@ -16,6 +16,7 @@ composer require --dev dotkernel/dot-maker:^3.0
 | End of input at the module prompt | Piped input that ends before the module name stops with "No module name given before the end of input." and exit code 1 | Provide the module name in the input |
 | Exit codes | Scripts that ignored failures now fail, because `dot-maker` exits with 1 on errors | Check the exit code, or fix the reported error |
 | Command console name | A Command whose name contains `Command` before the end (for example `MyCommandHandler`) gets a different `name:` | Rename the generated name only if you depend on the old one |
+| Generated Commands | New Commands have `public const string DEFAULT_NAME` instead of `protected static $defaultName`, and the "Next steps" message uses `NewCommand::DEFAULT_NAME => NewCommand::class` | Nothing to do for existing Commands. Register new Commands with the constant |
 | Template variable in GET form handlers | Generated `GetEdit...FormHandler` and `GetDelete...FormHandler` pass the entity as `bookStore` instead of `book-store` | Use the camelCase variable in your templates, as the POST handlers already do |
 | Generated array alignment | Generated arrays are aligned to the Laminas Coding Standard | Nothing to do; `composer cs-check` passes on generated files |
 | Forms in API projects | `dot-maker form` in an API project stops before the module prompt, with exit code 1 | Nothing to do; Forms are not created in APIs |
@@ -32,6 +33,7 @@ These only matter if you wrote your own classes on top of `dot-maker`.
 | `Module::getMessages()` returns `array<int, array<string, string>>` | Code that reads the messages gets arrays instead of strings | Iterate the nested arrays (priority, then message) |
 | `Component` rejects an empty class name | `InvalidArgumentException` | Pass a non-empty class name |
 | `FileSystem::getModuleName()` before `setModuleName()` | `RuntimeException('No module selected.')` instead of an engine `Error` | Call `setModuleName()` first |
+| `ClassFile::addConstant()` and `Component\Constant` added | None | Use them to render class constants |
 | `Input::isExhausted()` added | None | Use it to detect the end of input in custom prompts |
 | `Entity::getNumericIdentifierTraitFqcn()` removed (it was never called) | Fatal error "Call to undefined method" | Use `sprintf(Import::ROOT_APP_ENTITY_NUMERICIDENTIFIERTRAIT, $namespace)` |
 | `FileSystem::coreModule()` removed (it was never called) | Fatal error "Call to undefined method" | Create the `Directory` yourself: `new Directory($name, $projectPath . '/src/Core/src')` |

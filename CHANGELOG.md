@@ -10,6 +10,7 @@ All notable changes to this project are documented in this file, newest first.
 - "Next steps" are printed after `make command`, `make middleware` and `make entity`, not only after `make module`, and every message is kept when several components are created in one run.
 - `Input::isExhausted()` to detect the end of input.
 - Upgrade guide in the documentation.
+- `ClassFile::addConstant()` and the `Constant` component to render class constants.
 
 ### Changed
 
@@ -23,6 +24,7 @@ All notable changes to this project are documented in this file, newest first.
 - `Context::getRootNamespace()` and `Context::getProjectType()` return `string`, and `Context` requires a non-Core namespace under `autoload.psr-4`.
 - `FileInterface::create()` returns `File` instead of `?File`.
 - `Module::getMessages()` returns the messages grouped by priority.
+- Generated Commands store the console name in `public const string DEFAULT_NAME` and use it in `#[AsCommand]`. The static `$defaultName` property and the `setName()` call are removed, and the "Next steps" message registers the Command with `::DEFAULT_NAME`.
 
 ### Deprecated
 

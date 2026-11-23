@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DotTest\Maker\Component;
 
 use Dot\Maker\Component\ClassFile;
+use Dot\Maker\Component\Constant;
 use Dot\Maker\Component\Inject;
 use Dot\Maker\Component\Method;
 use Dot\Maker\Component\Parameter;
@@ -234,5 +235,45 @@ BODY;
         $this->expectExceptionMessage('Name must not be empty.');
 
         (new ClassFile('App\Module', 'ClassName'))->addProperty(new Property('', 'string'));
+    }
+
+    public function testAddConstantWithEmptyNameThrows(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Name must not be empty.');
+
+        (new ClassFile('App\Module', 'ClassName'))->addConstant(new Constant('', "'value'"));
+    }
+
+    public function testWillRenderConstantsBeforeProperties(): void
+    {
+        $constant = (new Constant('NAME', "'value'"))->setType('string');
+        $class    = (new ClassFile('App\Module', 'ClassName'))
+            ->addConstant($constant)
+            ->addConstant(new Constant('LIMIT', '10'))
+            ->addProperty(new Property('property', 'string'))
+            ->addMethod(new Method('methodName'));
+
+        $this->assertSame(['NAME' => $constant, 'LIMIT' => $class->getConstants()['LIMIT']], $class->getConstants());
+        $this->assertSame(<<<BODY
+<?php
+
+declare(strict_types=1);
+
+namespace App\Module;
+
+class ClassName
+{
+    public const string NAME = 'value';
+    public const LIMIT = 10;
+
+    protected string \$property;
+
+    public function methodName(): void
+    {
+    }
+}
+
+BODY, $class->render());
     }
 }

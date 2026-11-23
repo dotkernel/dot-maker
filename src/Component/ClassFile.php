@@ -17,6 +17,8 @@ use const PHP_EOL;
 
 class ClassFile
 {
+    /** @var array<non-empty-string, Constant> $constants */
+    private array $constants = [];
     /** @var list<Inject> $injects */
     private array $injects = [];
     /** @var array<non-empty-string, MethodInterface> $methods */
@@ -49,6 +51,13 @@ class ClassFile
     public function __toString(): string
     {
         return $this->render();
+    }
+
+    public function addConstant(Constant $constant): self
+    {
+        $this->constants[self::assertName($constant->name)] = $constant;
+
+        return $this;
     }
 
     public function addInject(Inject $inject): self
@@ -92,6 +101,14 @@ class ClassFile
         $this->traits[$use] = $use;
 
         return $this;
+    }
+
+    /**
+     * @return array<non-empty-string, Constant>
+     */
+    public function getConstants(): array
+    {
+        return $this->constants;
     }
 
     /**
@@ -264,6 +281,12 @@ class ClassFile
             $traits = array_map(static fn (string $trait): string => $trait, $this->traits);
 
             $class .= '    ' . implode(PHP_EOL . '    ', $traits) . PHP_EOL . PHP_EOL;
+        }
+
+        if (count($this->constants) > 0) {
+            $constants = array_map(static fn (Constant $constant): string => $constant->render(4), $this->constants);
+
+            $class .= implode(PHP_EOL, $constants) . PHP_EOL . PHP_EOL;
         }
 
         if (count($this->properties) > 0) {

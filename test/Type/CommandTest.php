@@ -258,22 +258,14 @@ namespace Api\ModuleName\Command;
 
 {$uses}
 
-#[AsCommand(name: 'book-store:command', description: 'Command description.')]
+#[AsCommand(name: BookStoreCommand::DEFAULT_NAME, description: 'Command description.')]
 class BookStoreCommand extends Command
 {
-    /** @var string \$defaultName */
-    protected static \$defaultName = 'book-store:command';
-
-    public function __construct()
-    {
-        parent::__construct(self::\$defaultName);
-    }
+    public const string DEFAULT_NAME = 'book-store:command';
 
     protected function configure(): void
     {
-        \$this
-            ->setName(self::\$defaultName)
-            ->setDescription('Command description.');
+        \$this->setDescription('Command description.');
     }
 
     protected function execute(
@@ -316,11 +308,10 @@ namespace Api\ModuleName\Command;
 
 {$uses}
 
-#[AsCommand(name: 'book-store:command', description: 'Command description.')]
+#[AsCommand(name: BookStoreCommand::DEFAULT_NAME, description: 'Command description.')]
 class BookStoreCommand extends Command
 {
-    /** @var string \$defaultName */
-    protected static \$defaultName = 'book-store:command';
+    public const string DEFAULT_NAME = 'book-store:command';
 
     #[Inject(
         ModuleNameServiceInterface::class,
@@ -328,14 +319,12 @@ class BookStoreCommand extends Command
     public function __construct(
         protected ModuleNameServiceInterface \$moduleNameService,
     ) {
-        parent::__construct(self::\$defaultName);
+        parent::__construct();
     }
 
     protected function configure(): void
     {
-        \$this
-            ->setName(self::\$defaultName)
-            ->setDescription('Command description.');
+        \$this->setDescription('Command description.');
     }
 
     protected function execute(

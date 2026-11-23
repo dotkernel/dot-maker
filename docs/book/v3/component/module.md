@@ -340,7 +340,7 @@ Next steps:
 - add to config/config.php:
   Core\<ModuleName>\ConfigProvider::class,
 - add to config/autoload/cli.global.php under dot_cli.commands:
-  <ProjectType>\<ModuleName>\Command\<ModuleName>Command::getDefaultName() => <ProjectType>\<ModuleName>\Command\<ModuleName>Command::class,
+  <ProjectType>\<ModuleName>\Command\<ModuleName>Command::DEFAULT_NAME => <ProjectType>\<ModuleName>\Command\<ModuleName>Command::class,
 - add to config/pipeline.php:
   $app->pipe(<ProjectType>\<ModuleName>\Middleware\<ModuleName>Middleware::class);
 - add to config/autoload/authorization.global.php (OR config/autoload/authorization-guards.global.php)

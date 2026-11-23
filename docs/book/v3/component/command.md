@@ -77,6 +77,17 @@ The console name of the Command is built from its class name: the class name is 
 | `ImportCommands` | `ImportCommandsCommand` | `import-commands:command` |
 | `MyCommandHandler` | `MyCommandHandlerCommand` | `my-command-handler:command` |
 
+The Command stores the console name in the public constant `DEFAULT_NAME` and passes it to `#[AsCommand]`:
+
+```php
+#[AsCommand(name: BookStoreCommand::DEFAULT_NAME, description: 'Command description.')]
+class BookStoreCommand extends Command
+{
+    public const string DEFAULT_NAME = 'book-store:command';
+```
+
+Use the constant as the key when you register the Command under `dot_cli.commands`.
+
 ## Next steps
 
 Once the Command is created, `dot-maker` will display the tasks that need to be performed manually, for example:
@@ -85,7 +96,7 @@ Once the Command is created, `dot-maker` will display the tasks that need to be 
 Next steps:
 ===========
 - add to config/autoload/cli.global.php under dot_cli.commands:
-  <ProjectType>\ExistingModule\Command\NewCommand::getDefaultName() => <ProjectType>\ExistingModule\Command\NewCommand::class,
+  <ProjectType>\ExistingModule\Command\NewCommand::DEFAULT_NAME => <ProjectType>\ExistingModule\Command\NewCommand::class,
 ```
 
 When you create more than one Command in the same run, each one is listed.
