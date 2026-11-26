@@ -10,6 +10,7 @@ use Dot\Maker\FileSystem\File;
 use org\bovigo\vfs\vfsStream;
 use org\bovigo\vfs\vfsStreamContent;
 use org\bovigo\vfs\vfsStreamDirectory;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
 use function sprintf;
@@ -45,6 +46,7 @@ class FileTest extends TestCase
         $this->assertContainsOnlyInstancesOf(File::class, [$file]);
     }
 
+    #[AllowMockObjectsWithoutExpectations]
     public function testFailingToCreateWillThrowAnError(): void
     {
         $file = $this->getMockBuilder(File::class)

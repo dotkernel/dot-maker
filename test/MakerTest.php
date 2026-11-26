@@ -9,6 +9,7 @@ use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Maker;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\AllowMockObjectsWithoutExpectations;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
@@ -19,6 +20,7 @@ use function stream_get_contents;
 
 use const PHP_EOL;
 
+#[AllowMockObjectsWithoutExpectations]
 class MakerTest extends TestCase
 {
     /** @var resource $outputStream */
