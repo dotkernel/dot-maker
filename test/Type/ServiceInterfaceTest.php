@@ -13,11 +13,11 @@ use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\Module;
 use Dot\Maker\Type\ServiceInterface;
+use DotTest\Maker\StreamTrait;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function fwrite;
 use function implode;
 use function rewind;
@@ -28,6 +28,8 @@ use const PHP_EOL;
 
 class ServiceInterfaceTest extends TestCase
 {
+    use StreamTrait;
+
     private Config $config;
     private Context $context;
     private FileSystem $fileSystem;
@@ -62,13 +64,13 @@ class ServiceInterfaceTest extends TestCase
         $this->import     = new Import($this->context);
         $this->module     = new Module($this->fileSystem, $this->context, $this->config);
 
-        $this->outputStream = fopen('php://memory', 'w+');
+        $this->outputStream = $this->openMemoryStream();
         Output::setOutputStream($this->outputStream);
 
-        $this->errorStream = fopen('php://memory', 'w+');
+        $this->errorStream = $this->openMemoryStream();
         Output::setErrorStream($this->errorStream);
 
-        $this->inputStream = fopen('php://memory', 'w+');
+        $this->inputStream = $this->openMemoryStream();
         Input::setStream($this->inputStream);
     }
 
@@ -178,7 +180,7 @@ class ServiceInterfaceTest extends TestCase
         $this->assertFileExists($file->getPath());
         $this->assertTrue($file->exists());
 
-        $this->assertSame($this->dataProviderNotApi($entity, $repository), $file->read());
+        $this->assertSame($this->expectedNotApi($entity, $repository), $file->read());
     }
 
     public function testCallToCreateWillSucceedWhenNameIsValidAndProjectTypeIsNotApi(): void
@@ -206,7 +208,7 @@ class ServiceInterfaceTest extends TestCase
         $this->assertFileExists($file->getPath());
         $this->assertTrue($file->exists());
 
-        $this->assertSame($this->dataProviderNotApi($entity, $repository), $file->read());
+        $this->assertSame($this->expectedNotApi($entity, $repository), $file->read());
     }
 
     public function testCallToInvokeWillSucceedWhenNameIsValidAndProjectTypeIsApi(): void
@@ -250,7 +252,7 @@ class ServiceInterfaceTest extends TestCase
         $this->assertFileExists($file->getPath());
         $this->assertTrue($file->exists());
 
-        $this->assertSame($this->dataProviderApi($entity, $repository), $file->read());
+        $this->assertSame($this->expectedApi($entity, $repository), $file->read());
     }
 
     public function testCallToCreateWillSucceedWhenNameIsValidAndProjectTypeIsApi(): void
@@ -294,10 +296,10 @@ class ServiceInterfaceTest extends TestCase
         $this->assertFileExists($file->getPath());
         $this->assertTrue($file->exists());
 
-        $this->assertSame($this->dataProviderApi($entity, $repository), $file->read());
+        $this->assertSame($this->expectedApi($entity, $repository), $file->read());
     }
 
-    private function dataProviderNotApi(File $entity, File $repository): string
+    private function expectedNotApi(File $entity, File $repository): string
     {
         $uses = [
             sprintf('use %s;', $this->import->getNotFoundExceptionFqcn()),
@@ -349,7 +351,7 @@ interface BookStoreServiceInterface
 BODY;
     }
 
-    private function dataProviderApi(File $entity, File $repository): string
+    private function expectedApi(File $entity, File $repository): string
     {
         $uses = [
             sprintf('use %s;', $entity->getComponent()->getFqcn()),

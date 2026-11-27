@@ -9,18 +9,19 @@ use Dot\Maker\IO\Output;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function rewind;
 use function stream_get_contents;
 
 class ColorEnumTest extends TestCase
 {
+    use StreamTrait;
+
     /** @var resource $outputStream */
     private $outputStream;
 
     protected function setUp(): void
     {
-        $this->outputStream = fopen('php://memory', 'w+');
+        $this->outputStream = $this->openMemoryStream();
         Output::setOutputStream($this->outputStream);
     }
 

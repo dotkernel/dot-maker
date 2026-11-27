@@ -1,12 +1,8 @@
 includes:
     - vendor/phpstan/phpstan-phpunit/extension.neon
 parameters:
-    level: 5
+    level: 8
     paths:
         - src
         - test
     treatPhpDocTypesAsCertain: false
-    ignoreErrors:
-        -
-            message: '#Call to an undefined method org\\bovigo\\vfs\\vfsStreamContent::getChild\(\).#'
-            path: %currentWorkingDirectory%/test/FileSystem/FileTest.php

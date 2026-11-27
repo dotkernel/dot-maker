@@ -6,12 +6,12 @@ namespace Dot\Maker\Type;
 
 use Dot\Maker\Component;
 use Dot\Maker\Component\ClassFile;
+use Dot\Maker\Component\Constant;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Component\Inject;
 use Dot\Maker\Component\Method;
 use Dot\Maker\Component\Method\Constructor;
 use Dot\Maker\Component\Parameter;
-use Dot\Maker\Component\Property;
 use Dot\Maker\Exception\BadRequestException;
 use Dot\Maker\Exception\DuplicateFileException;
 use Dot\Maker\Exception\RuntimeException;
@@ -23,7 +23,9 @@ use Dot\Maker\VisibilityEnum;
 use Throwable;
 
 use function sprintf;
-use function str_replace;
+use function str_ends_with;
+use function strlen;
+use function substr;
 use function ucfirst;
 
 class Command extends AbstractType implements FileInterface
@@ -87,37 +89,31 @@ class Command extends AbstractType implements FileInterface
             ->useClass(Import::SYMFONY_COMPONENT_CONSOLE_STYLE_SYMFONYSTYLE)
             ->addInject(
                 (new Inject('AsCommand'))
-                    ->addArgument(self::wrap($defaultName), 'name')
+                    ->addArgument(sprintf('%s::DEFAULT_NAME', $command->getClassName()), 'name')
                     ->addArgument('\'Command description.\'', 'description')
             )
-            ->addProperty(
-                (new Property('defaultName', ''))
-                    ->setDefault(self::wrap($defaultName))
-                    ->setComment('/** @var string $defaultName */')
-                    ->setStatic(true)
+            ->addConstant(
+                (new Constant('DEFAULT_NAME', self::wrap($defaultName)))->setType('string')
             );
 
-        $constructor = (new Constructor())
-            ->setBody('        parent::__construct(self::$defaultName);');
         if ($serviceInterface->exists()) {
             $class
                 ->useClass(Import::DOT_DEPENDENCYINJECTION_ATTRIBUTE_INJECT)
-                ->useClass($serviceInterface->getComponent()->getFqcn());
-
-            $constructor
-                ->addInject(
-                    (new Inject())->addArgument($serviceInterface->getComponent()->getClassString())
-                )
-                ->addPromotedPropertyFromComponent($serviceInterface->getComponent());
+                ->useClass($serviceInterface->getComponent()->getFqcn())
+                ->addMethod(
+                    (new Constructor())
+                        ->addInject(
+                            (new Inject())->addArgument($serviceInterface->getComponent()->getClassString())
+                        )
+                        ->addPromotedPropertyFromComponent($serviceInterface->getComponent())
+                        ->setBody('        parent::__construct();')
+                );
         }
-        $class->addMethod($constructor);
 
         $configure = (new Method('configure'))
             ->setVisibility(VisibilityEnum::Protected)
             ->setBody(<<<BODY
-        \$this
-            ->setName(self::\$defaultName)
-            ->setDescription('Command description.');
+        \$this->setDescription('Command description.');
 BODY);
         $class->addMethod($configure);
 
@@ -143,8 +139,11 @@ BODY);
 
     public function getDefaultName(Component $command): string
     {
-        $defaultName = sprintf('%s:command', $command->toKebabCase());
+        $kebabCase = $command->toKebabCase();
+        if (str_ends_with($kebabCase, '-command')) {
+            $kebabCase = substr($kebabCase, 0, -strlen('-command'));
+        }
 
-        return str_replace('-command', '', $defaultName);
+        return sprintf('%s:command', $kebabCase);
     }
 }

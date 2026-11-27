@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace DotTest\Maker;
 
 use Dot\Maker\Component;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class ComponentTest extends TestCase
@@ -279,5 +280,31 @@ class ComponentTest extends TestCase
         $this->assertSame('watches', Component::pluralize('watch'));
         $this->assertSame('candies', Component::pluralize('candy'));
         $this->assertSame('books', Component::pluralize('book'));
+    }
+
+    public function testPluralizeEmptyStringReturnsEmptyString(): void
+    {
+        $this->assertSame('', Component::pluralize(''));
+    }
+
+    public function testStripSuffix(): void
+    {
+        $this->assertSame('Book', Component::stripSuffix('BookEntity', 'Entity'));
+        $this->assertSame('Entity', Component::stripSuffix('Entity', 'Entity'));
+        $this->assertSame('Book', Component::stripSuffix('Book', 'Entity'));
+        $this->assertSame('EntityBook', Component::stripSuffix('EntityBook', 'Entity'));
+    }
+
+    public function testEmptyClassNameIsRejected(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new Component('Api\Book', '');
+    }
+
+    public function testToCamelCaseStripsInterfaceSuffixOnly(): void
+    {
+        $this->assertSame('bookService', (new Component('A', 'BookServiceInterface'))->toCamelCase(true));
+        $this->assertSame('interfaceBook', (new Component('A', 'InterfaceBook'))->toCamelCase(true));
     }
 }

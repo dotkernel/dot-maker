@@ -6,6 +6,7 @@ namespace DotTest\Maker\Component;
 
 use Dot\Maker\Component\Declaration;
 use Dot\Maker\Component\InterfaceFile;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 class InterfaceFileTest extends TestCase
@@ -80,10 +81,10 @@ class InterfaceFileTest extends TestCase
 COMM)
             ->addDeclaration((new Declaration('getResource'))->setReturnType('Resource'));
 
-        $this->assertSame($this->dataProviderRenderedClass(), (string) $actual);
+        $this->assertSame($this->expectedRenderedClass(), (string) $actual);
     }
 
-    private function dataProviderRenderedClass(): string
+    private function expectedRenderedClass(): string
     {
         return <<<BODY
 <?php
@@ -107,5 +108,13 @@ interface ClassName extends OtherInterface
 }
 
 BODY;
+    }
+
+    public function testAddDeclarationWithEmptyNameThrows(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+        $this->expectExceptionMessage('Name must not be empty.');
+
+        (new InterfaceFile('App\Module', 'InterfaceName'))->addDeclaration(new Declaration(''));
     }
 }

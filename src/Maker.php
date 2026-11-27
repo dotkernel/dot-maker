@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Dot\Maker;
 
 use Dot\Maker\IO\Output;
+use Dot\Maker\Type\Form;
 use Dot\Maker\Type\Help;
 use Dot\Maker\Type\Module;
 use Dot\Maker\Type\ModuleInterface;
@@ -29,6 +30,9 @@ class Maker
     ) {
     }
 
+    /**
+     * @param list<string> $arguments
+     */
     public function __invoke(array $arguments): int
     {
         try {
@@ -58,15 +62,24 @@ class Maker
             Output::info(sprintf('Detected project type: %s', $context->getProjectType()));
             Output::info(sprintf('Core architecture: %s', $context->hasCore() ? 'Yes' : 'No'));
 
-            if (! $instance->isModule()) {
-                $instance->setModule((new Module($fileSystem, $context, $config))->initExisting());
-            } else {
+            if ($instance instanceof Form && $context->isApi()) {
+                throw new RuntimeException('Cannot create Forms in an API');
+            }
+
+            if ($instance->isModule()) {
                 assert($instance instanceof ModuleInterface);
                 $instance->setModule($instance);
-            }
-            assert(is_callable($instance));
+                assert(is_callable($instance));
+                $instance();
 
+                return Output::SUCCESS;
+            }
+
+            $module = (new Module($fileSystem, $context, $config))->initExisting();
+            $instance->setModule($module);
+            assert(is_callable($instance));
             $instance();
+            $module->renderMessages();
 
             return Output::SUCCESS;
         } catch (Throwable $exception) {

@@ -4,7 +4,8 @@
 
 | Version | Supported          | PHP Version                                                                                               |
 |---------|--------------------|-----------------------------------------------------------------------------------------------------------|
-| 2.x     | :white_check_mark: | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-maker/2.0.0) |
+| 3.x     | :white_check_mark: | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-maker/3.0.0) |
+| 2.x     | :white_check_mark: | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-maker/2.1.0) |
 | 1.x     | :white_check_mark: | ![PHP from Packagist (specify version)](https://img.shields.io/packagist/php-v/dotkernel/dot-maker/1.1.0) |
 
 ## Reporting Potential Security Issues

@@ -13,11 +13,11 @@ use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\Form;
 use Dot\Maker\Type\Module;
+use DotTest\Maker\StreamTrait;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function fwrite;
 use function implode;
 use function rewind;
@@ -28,6 +28,8 @@ use const PHP_EOL;
 
 class FormTest extends TestCase
 {
+    use StreamTrait;
+
     private Config $config;
     private Context $context;
     private FileSystem $fileSystem;
@@ -61,13 +63,13 @@ class FormTest extends TestCase
         $this->import     = new Import($this->context);
         $this->module     = new Module($this->fileSystem, $this->context, $this->config);
 
-        $this->outputStream = fopen('php://memory', 'w+');
+        $this->outputStream = $this->openMemoryStream();
         Output::setOutputStream($this->outputStream);
 
-        $this->errorStream = fopen('php://memory', 'w+');
+        $this->errorStream = $this->openMemoryStream();
         Output::setErrorStream($this->errorStream);
 
-        $this->inputStream = fopen('php://memory', 'w+');
+        $this->inputStream = $this->openMemoryStream();
         Input::setStream($this->inputStream);
     }
 
@@ -171,7 +173,7 @@ class FormTest extends TestCase
 
         $this->assertFileExists($createResourceForm->getPath());
         $this->assertTrue($createResourceForm->exists());
-        $this->assertSame($this->dataProviderCreateResourceForm(), $createResourceForm->read());
+        $this->assertSame($this->expectedCreateResourceForm(), $createResourceForm->read());
 
         $createResourceInputFilter = $this->fileSystem->createResourceInputFilter($this->resourceName);
         $this->assertFileExists($createResourceInputFilter->getPath());
@@ -223,7 +225,7 @@ class FormTest extends TestCase
 
         $this->assertFileExists($deleteResourceForm->getPath());
         $this->assertTrue($deleteResourceForm->exists());
-        $this->assertSame($this->dataProviderDeleteResourceForm(), $deleteResourceForm->read());
+        $this->assertSame($this->expectedDeleteResourceForm(), $deleteResourceForm->read());
 
         $this->assertFileExists($deleteResourceInputFilter->getPath());
         $this->assertTrue($deleteResourceInputFilter->exists());
@@ -273,7 +275,7 @@ class FormTest extends TestCase
 
         $this->assertFileExists($editResourceForm->getPath());
         $this->assertTrue($editResourceForm->exists());
-        $this->assertSame($this->dataProviderEditResourceForm(), $editResourceForm->read());
+        $this->assertSame($this->expectedEditResourceForm(), $editResourceForm->read());
 
         $this->assertFileExists($editResourceInputFilter->getPath());
         $this->assertTrue($editResourceInputFilter->exists());
@@ -311,7 +313,7 @@ class FormTest extends TestCase
 
         $this->assertFileExists($createResourceForm->getPath());
         $this->assertTrue($createResourceForm->exists());
-        $this->assertSame($this->dataProviderCreateResourceForm(), $createResourceForm->read());
+        $this->assertSame($this->expectedCreateResourceForm(), $createResourceForm->read());
 
         $this->assertFileExists($createResourceInputFilter->getPath());
         $this->assertTrue($createResourceInputFilter->exists());
@@ -362,7 +364,7 @@ class FormTest extends TestCase
 
         $this->assertFileExists($deleteResourceForm->getPath());
         $this->assertTrue($deleteResourceForm->exists());
-        $this->assertSame($this->dataProviderDeleteResourceForm(), $deleteResourceForm->read());
+        $this->assertSame($this->expectedDeleteResourceForm(), $deleteResourceForm->read());
 
         $this->assertFileExists($deleteResourceInputFilter->getPath());
         $this->assertTrue($deleteResourceInputFilter->exists());
@@ -412,7 +414,7 @@ class FormTest extends TestCase
 
         $this->assertFileExists($editResourceForm->getPath());
         $this->assertTrue($editResourceForm->exists());
-        $this->assertSame($this->dataProviderEditResourceForm(), $editResourceForm->read());
+        $this->assertSame($this->expectedEditResourceForm(), $editResourceForm->read());
 
         $this->assertFileExists($editResourceInputFilter->getPath());
         $this->assertTrue($editResourceInputFilter->exists());
@@ -421,7 +423,7 @@ class FormTest extends TestCase
         $this->assertEmpty(stream_get_contents($this->errorStream));
     }
 
-    private function dataProviderCreateResourceForm(): string
+    private function expectedCreateResourceForm(): string
     {
         $uses = [
             sprintf('use %s;', $this->import->getAbstractFormFqcn()),
@@ -493,7 +495,7 @@ class CreateBookStoreForm extends AbstractForm
 BODY;
     }
 
-    private function dataProviderDeleteResourceForm(): string
+    private function expectedDeleteResourceForm(): string
     {
         $uses = [
             sprintf('use %s;', $this->import->getAbstractFormFqcn()),
@@ -575,7 +577,7 @@ class DeleteBookStoreForm extends AbstractForm
 BODY;
     }
 
-    private function dataProviderEditResourceForm(): string
+    private function expectedEditResourceForm(): string
     {
         $uses = [
             sprintf('use %s;', $this->import->getAbstractFormFqcn()),

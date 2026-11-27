@@ -58,10 +58,10 @@ COMM)
             )
             ->setBody('        // do stuff');
 
-        $this->assertSame($this->dataProviderRenderedMethod(), $constructor->render());
+        $this->assertSame($this->expectedRenderedMethod(), $constructor->render());
     }
 
-    private function dataProviderRenderedMethod(): string
+    private function expectedRenderedMethod(): string
     {
         return <<<BODY
 /**

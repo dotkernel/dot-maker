@@ -10,16 +10,18 @@ use Dot\Maker\FileSystem;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\Help;
 use DotTest\Maker\Helper;
+use DotTest\Maker\StreamTrait;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function rewind;
 use function stream_get_contents;
 
 class HelpTest extends TestCase
 {
+    use StreamTrait;
+
     private Config $config;
     private Context $context;
     private FileSystem $fileSystem;
@@ -43,7 +45,7 @@ class HelpTest extends TestCase
 
     public function testWillDisplayHelpMessage(): void
     {
-        $stream = fopen('php://memory', 'w+');
+        $stream = $this->openMemoryStream();
         Output::setOutputStream($stream);
 
         $help = new Help($this->fileSystem, $this->context, $this->config);

@@ -12,11 +12,11 @@ use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\Handler;
 use Dot\Maker\Type\Module;
+use DotTest\Maker\StreamTrait;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function fwrite;
 use function implode;
 use function rewind;
@@ -27,6 +27,8 @@ use const PHP_EOL;
 
 class HandlerTest extends TestCase
 {
+    use StreamTrait;
+
     private Config $config;
     private Context $context;
     private FileSystem $fileSystem;
@@ -60,13 +62,13 @@ class HandlerTest extends TestCase
         $this->import     = new Import($this->context);
         $this->module     = new Module($this->fileSystem, $this->context, $this->config);
 
-        $this->outputStream = fopen('php://memory', 'w+');
+        $this->outputStream = $this->openMemoryStream();
         Output::setOutputStream($this->outputStream);
 
-        $this->errorStream = fopen('php://memory', 'w+');
+        $this->errorStream = $this->openMemoryStream();
         Output::setErrorStream($this->errorStream);
 
-        $this->inputStream = fopen('php://memory', 'w+');
+        $this->inputStream = $this->openMemoryStream();
         Input::setStream($this->inputStream);
     }
 
@@ -161,7 +163,7 @@ class HandlerTest extends TestCase
         $getListResourcesHandler = $this->fileSystem->getListResourcesHandler($this->resourceName);
         $this->assertFileExists($getListResourcesHandler->getPath());
         $this->assertTrue($getListResourcesHandler->exists());
-        $this->assertSame($this->dataProviderGetListResourceHandler(), $getListResourcesHandler->read());
+        $this->assertSame($this->expectedGetListResourceHandler(), $getListResourcesHandler->read());
 
         $getViewResourceHandler = $this->fileSystem->getViewResourceHandler($this->resourceName);
         $this->assertFileDoesNotExist($getViewResourceHandler->getPath());
@@ -257,7 +259,7 @@ class HandlerTest extends TestCase
         $getViewResourceHandler = $this->fileSystem->getViewResourceHandler($this->resourceName);
         $this->assertFileExists($getViewResourceHandler->getPath());
         $this->assertTrue($getViewResourceHandler->exists());
-        $this->assertSame($this->dataProviderGetViewResourceHandler(), $getViewResourceHandler->read());
+        $this->assertSame($this->expectedGetViewResourceHandler(), $getViewResourceHandler->read());
 
         $getCreateResourceHandler = $this->fileSystem->getCreateResourceHandler($this->resourceName);
         $this->assertFileDoesNotExist($getCreateResourceHandler->getPath());
@@ -353,12 +355,12 @@ class HandlerTest extends TestCase
         $getCreateResourceHandler = $this->fileSystem->getCreateResourceHandler($this->resourceName);
         $this->assertFileExists($getCreateResourceHandler->getPath());
         $this->assertTrue($getCreateResourceHandler->exists());
-        $this->assertSame($this->dataProviderGetCreateResourceHandler(), $getCreateResourceHandler->read());
+        $this->assertSame($this->expectedGetCreateResourceHandler(), $getCreateResourceHandler->read());
 
         $postCreateResourceHandler = $this->fileSystem->postCreateResourceHandler($this->resourceName);
         $this->assertFileExists($postCreateResourceHandler->getPath());
         $this->assertTrue($postCreateResourceHandler->exists());
-        $this->assertSame($this->dataProviderPostCreateResourceHandler(), $postCreateResourceHandler->read());
+        $this->assertSame($this->expectedPostCreateResourceHandler(), $postCreateResourceHandler->read());
 
         $getDeleteResourceHandler = $this->fileSystem->getDeleteResourceHandler($this->resourceName);
         $this->assertFileDoesNotExist($getDeleteResourceHandler->getPath());
@@ -457,12 +459,12 @@ class HandlerTest extends TestCase
         $getDeleteResourceHandler = $this->fileSystem->getDeleteResourceHandler($this->resourceName);
         $this->assertFileExists($getDeleteResourceHandler->getPath());
         $this->assertTrue($getDeleteResourceHandler->exists());
-        $this->assertSame($this->dataProviderGetDeleteResourceHandler(), $getDeleteResourceHandler->read());
+        $this->assertSame($this->expectedGetDeleteResourceHandler(), $getDeleteResourceHandler->read());
 
         $postDeleteResourceHandler = $this->fileSystem->postDeleteResourceHandler($this->resourceName);
         $this->assertFileExists($postDeleteResourceHandler->getPath());
         $this->assertTrue($postDeleteResourceHandler->exists());
-        $this->assertSame($this->dataProviderPostDeleteResourceHandler(), $postDeleteResourceHandler->read());
+        $this->assertSame($this->expectedPostDeleteResourceHandler(), $postDeleteResourceHandler->read());
 
         $getEditResourceHandler = $this->fileSystem->getEditResourceHandler($this->resourceName);
         $this->assertFileDoesNotExist($getEditResourceHandler->getPath());
@@ -561,12 +563,12 @@ class HandlerTest extends TestCase
         $getEditResourceHandler = $this->fileSystem->getEditResourceHandler($this->resourceName);
         $this->assertFileExists($getEditResourceHandler->getPath());
         $this->assertTrue($getEditResourceHandler->exists());
-        $this->assertSame($this->dataProviderGetEditResourceHandler(), $getEditResourceHandler->read());
+        $this->assertSame($this->expectedGetEditResourceHandler(), $getEditResourceHandler->read());
 
         $postEditResourceHandler = $this->fileSystem->postEditResourceHandler($this->resourceName);
         $this->assertFileExists($postEditResourceHandler->getPath());
         $this->assertTrue($postEditResourceHandler->exists());
-        $this->assertSame($this->dataProviderPostEditResourceHandler(), $postEditResourceHandler->read());
+        $this->assertSame($this->expectedPostEditResourceHandler(), $postEditResourceHandler->read());
 
         $entity = $this->fileSystem->entity($this->resourceName);
 
@@ -633,7 +635,7 @@ class HandlerTest extends TestCase
         $getListResourcesHandler = $this->fileSystem->getListResourcesHandler($this->resourceName);
         $this->assertFileExists($getListResourcesHandler->getPath());
         $this->assertTrue($getListResourcesHandler->exists());
-        $this->assertSame($this->dataProviderGetListResourceHandler(), $getListResourcesHandler->read());
+        $this->assertSame($this->expectedGetListResourceHandler(), $getListResourcesHandler->read());
 
         $getViewResourceHandler = $this->fileSystem->getViewResourceHandler($this->resourceName);
         $this->assertFileDoesNotExist($getViewResourceHandler->getPath());
@@ -729,7 +731,7 @@ class HandlerTest extends TestCase
         $getViewResourceHandler = $this->fileSystem->getViewResourceHandler($this->resourceName);
         $this->assertFileExists($getViewResourceHandler->getPath());
         $this->assertTrue($getViewResourceHandler->exists());
-        $this->assertSame($this->dataProviderGetViewResourceHandler(), $getViewResourceHandler->read());
+        $this->assertSame($this->expectedGetViewResourceHandler(), $getViewResourceHandler->read());
 
         $getCreateResourceHandler = $this->fileSystem->getCreateResourceHandler($this->resourceName);
         $this->assertFileDoesNotExist($getCreateResourceHandler->getPath());
@@ -825,12 +827,12 @@ class HandlerTest extends TestCase
         $getCreateResourceHandler = $this->fileSystem->getCreateResourceHandler($this->resourceName);
         $this->assertFileExists($getCreateResourceHandler->getPath());
         $this->assertTrue($getCreateResourceHandler->exists());
-        $this->assertSame($this->dataProviderGetCreateResourceHandler(), $getCreateResourceHandler->read());
+        $this->assertSame($this->expectedGetCreateResourceHandler(), $getCreateResourceHandler->read());
 
         $postCreateResourceHandler = $this->fileSystem->postCreateResourceHandler($this->resourceName);
         $this->assertFileExists($postCreateResourceHandler->getPath());
         $this->assertTrue($postCreateResourceHandler->exists());
-        $this->assertSame($this->dataProviderPostCreateResourceHandler(), $postCreateResourceHandler->read());
+        $this->assertSame($this->expectedPostCreateResourceHandler(), $postCreateResourceHandler->read());
 
         $getDeleteResourceHandler = $this->fileSystem->getDeleteResourceHandler($this->resourceName);
         $this->assertFileDoesNotExist($getDeleteResourceHandler->getPath());
@@ -929,12 +931,12 @@ class HandlerTest extends TestCase
         $getDeleteResourceHandler = $this->fileSystem->getDeleteResourceHandler($this->resourceName);
         $this->assertFileExists($getDeleteResourceHandler->getPath());
         $this->assertTrue($getDeleteResourceHandler->exists());
-        $this->assertSame($this->dataProviderGetDeleteResourceHandler(), $getDeleteResourceHandler->read());
+        $this->assertSame($this->expectedGetDeleteResourceHandler(), $getDeleteResourceHandler->read());
 
         $postDeleteResourceHandler = $this->fileSystem->postDeleteResourceHandler($this->resourceName);
         $this->assertFileExists($postDeleteResourceHandler->getPath());
         $this->assertTrue($postDeleteResourceHandler->exists());
-        $this->assertSame($this->dataProviderPostDeleteResourceHandler(), $postDeleteResourceHandler->read());
+        $this->assertSame($this->expectedPostDeleteResourceHandler(), $postDeleteResourceHandler->read());
 
         $getEditResourceHandler = $this->fileSystem->getEditResourceHandler($this->resourceName);
         $this->assertFileDoesNotExist($getEditResourceHandler->getPath());
@@ -1033,12 +1035,12 @@ class HandlerTest extends TestCase
         $getEditResourceHandler = $this->fileSystem->getEditResourceHandler($this->resourceName);
         $this->assertFileExists($getEditResourceHandler->getPath());
         $this->assertTrue($getEditResourceHandler->exists());
-        $this->assertSame($this->dataProviderGetEditResourceHandler(), $getEditResourceHandler->read());
+        $this->assertSame($this->expectedGetEditResourceHandler(), $getEditResourceHandler->read());
 
         $postEditResourceHandler = $this->fileSystem->postEditResourceHandler($this->resourceName);
         $this->assertFileExists($postEditResourceHandler->getPath());
         $this->assertTrue($postEditResourceHandler->exists());
-        $this->assertSame($this->dataProviderPostEditResourceHandler(), $postEditResourceHandler->read());
+        $this->assertSame($this->expectedPostEditResourceHandler(), $postEditResourceHandler->read());
 
         $entity = $this->fileSystem->entity($this->resourceName);
 
@@ -1057,7 +1059,7 @@ class HandlerTest extends TestCase
         $this->assertEmpty(stream_get_contents($this->errorStream));
     }
 
-    private function dataProviderGetListResourceHandler(): string
+    private function expectedGetListResourceHandler(): string
     {
         $serviceInterface = $this->fileSystem->serviceInterface($this->resourceName);
 
@@ -1107,7 +1109,7 @@ class GetListBookStoreHandler implements RequestHandlerInterface
 BODY;
     }
 
-    private function dataProviderGetViewResourceHandler(): string
+    private function expectedGetViewResourceHandler(): string
     {
         $serviceInterface = $this->fileSystem->serviceInterface($this->resourceName);
 
@@ -1171,7 +1173,7 @@ class GetViewBookStoreHandler implements RequestHandlerInterface
 BODY;
     }
 
-    private function dataProviderGetCreateResourceHandler(): string
+    private function expectedGetCreateResourceHandler(): string
     {
         $createResourceForm = $this->fileSystem->createResourceForm($this->resourceName);
 
@@ -1227,7 +1229,7 @@ class GetCreateBookStoreFormHandler implements RequestHandlerInterface
 BODY;
     }
 
-    private function dataProviderPostCreateResourceHandler(): string
+    private function expectedPostCreateResourceHandler(): string
     {
         $createResourceForm = $this->fileSystem->createResourceForm($this->resourceName);
         $serviceInterface   = $this->fileSystem->serviceInterface($this->resourceName);
@@ -1338,7 +1340,7 @@ class PostCreateBookStoreHandler implements RequestHandlerInterface
 BODY;
     }
 
-    private function dataProviderGetDeleteResourceHandler(): string
+    private function expectedGetDeleteResourceHandler(): string
     {
         $deleteResourceForm = $this->fileSystem->deleteResourceForm($this->resourceName);
         $serviceInterface   = $this->fileSystem->serviceInterface($this->resourceName);
@@ -1405,8 +1407,8 @@ class GetDeleteBookStoreFormHandler implements RequestHandlerInterface
 
         return new HtmlResponse(
             \$this->template->render('book-store::delete-book-store-form', [
-                'form' => \$this->deleteBookStoreForm->prepare(),
-                'book-store' => \$bookStore,
+                'form'      => \$this->deleteBookStoreForm->prepare(),
+                'bookStore' => \$bookStore,
             ])
         );
     }
@@ -1415,7 +1417,7 @@ class GetDeleteBookStoreFormHandler implements RequestHandlerInterface
 BODY;
     }
 
-    private function dataProviderPostDeleteResourceHandler(): string
+    private function expectedPostDeleteResourceHandler(): string
     {
         $deleteResourceForm = $this->fileSystem->deleteResourceForm($this->resourceName);
         $serviceInterface   = $this->fileSystem->serviceInterface($this->resourceName);
@@ -1497,7 +1499,7 @@ class PostDeleteBookStoreHandler implements RequestHandlerInterface
 
             return new HtmlResponse(
                 \$this->template->render('book-store::delete-book-store-form', [
-                    'form' => \$this->deleteBookStoreForm->prepare(),
+                    'form'      => \$this->deleteBookStoreForm->prepare(),
                     'bookStore' => \$bookStore,
                 ]),
                 StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY
@@ -1519,7 +1521,7 @@ class PostDeleteBookStoreHandler implements RequestHandlerInterface
 BODY;
     }
 
-    private function dataProviderGetEditResourceHandler(): string
+    private function expectedGetEditResourceHandler(): string
     {
         $editResourceForm = $this->fileSystem->editResourceForm($this->resourceName);
         $serviceInterface = $this->fileSystem->serviceInterface($this->resourceName);
@@ -1589,8 +1591,8 @@ class GetEditBookStoreFormHandler implements RequestHandlerInterface
 
         return new HtmlResponse(
             \$this->template->render('book-store::edit-book-store-form', [
-                'form' => \$this->editBookStoreForm->prepare(),
-                'book-store' => \$bookStore,
+                'form'      => \$this->editBookStoreForm->prepare(),
+                'bookStore' => \$bookStore,
             ])
         );
     }
@@ -1600,7 +1602,7 @@ BODY;
         // phpcs:enable Generic.Files.LineLength.TooLong
     }
 
-    private function dataProviderPostEditResourceHandler(): string
+    private function expectedPostEditResourceHandler(): string
     {
         $editResourceForm = $this->fileSystem->editResourceForm($this->resourceName);
         $serviceInterface = $this->fileSystem->serviceInterface($this->resourceName);
@@ -1687,7 +1689,7 @@ class PostEditBookStoreHandler implements RequestHandlerInterface
 
             return new HtmlResponse(
                 \$this->template->render('book-store::edit-book-store-form', [
-                    'form' => \$this->editBookStoreForm->prepare(),
+                    'form'      => \$this->editBookStoreForm->prepare(),
                     'bookStore' => \$bookStore,
                 ]),
                 StatusCodeInterface::STATUS_UNPROCESSABLE_ENTITY
@@ -1695,9 +1697,9 @@ class PostEditBookStoreHandler implements RequestHandlerInterface
         } catch (BadRequestException | ConflictException | NotFoundException \$exception) {
             return new HtmlResponse(
                 \$this->template->render('book-store::edit-book-store-form', [
-                    'form' => \$this->editBookStoreForm->prepare(),
+                    'form'      => \$this->editBookStoreForm->prepare(),
                     'bookStore' => \$bookStore,
-                    'messages' => [
+                    'messages'  => [
                         'error' => \$exception->getMessage(),
                     ],
                 ]),

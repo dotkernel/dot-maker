@@ -10,11 +10,12 @@ use Dot\Maker\Context;
 use Dot\Maker\FileSystem;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\RoutesDelegator;
+use DotTest\Maker\StreamTrait;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function rewind;
 use function sprintf;
 use function stream_get_contents;
@@ -23,15 +24,15 @@ use const PHP_EOL;
 
 class RoutesDelegatorTest extends TestCase
 {
+    use StreamTrait;
+
     private string $moduleName   = 'ModuleName';
     private string $resourceName = 'BookStore';
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testCallToCreateWhenProjectTypeIsNotApiWillCreateFile(string $expected): void
     {
-        $stream = fopen('php://memory', 'w+');
+        $stream = $this->openMemoryStream();
         Output::setOutputStream($stream);
 
         $root = vfsStream::setup('root', 0644, [
@@ -73,12 +74,10 @@ class RoutesDelegatorTest extends TestCase
         fclose($stream);
     }
 
-    /**
-     * @dataProvider dataProviderApi
-     */
+    #[DataProvider('dataProviderApi')]
     public function testCallToCreateWhenProjectTypeIsApiWillCreateFile(string $expected): void
     {
-        $stream = fopen('php://memory', 'w+');
+        $stream = $this->openMemoryStream();
         Output::setOutputStream($stream);
 
         $root = vfsStream::setup('root', 0644, [
@@ -119,6 +118,9 @@ class RoutesDelegatorTest extends TestCase
         fclose($stream);
     }
 
+    /**
+     * @return array<array-key, array{string}>
+     */
     public static function dataProvider(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
@@ -182,6 +184,9 @@ BODY;
         ];
     }
 
+    /**
+     * @return array<array-key, array{string}>
+     */
     public static function dataProviderApi(): array
     {
         // phpcs:disable Generic.Files.LineLength.TooLong

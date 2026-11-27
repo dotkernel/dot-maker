@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Component;
 
+use InvalidArgumentException;
+
 use function array_key_exists;
 use function array_map;
 use function count;
@@ -15,6 +17,8 @@ use const PHP_EOL;
 
 class ClassFile
 {
+    /** @var array<non-empty-string, Constant> $constants */
+    private array $constants = [];
     /** @var list<Inject> $injects */
     private array $injects = [];
     /** @var array<non-empty-string, MethodInterface> $methods */
@@ -49,6 +53,13 @@ class ClassFile
         return $this->render();
     }
 
+    public function addConstant(Constant $constant): self
+    {
+        $this->constants[self::assertName($constant->name)] = $constant;
+
+        return $this;
+    }
+
     public function addInject(Inject $inject): self
     {
         $this->injects[] = $inject;
@@ -68,14 +79,14 @@ class ClassFile
 
     public function addMethod(MethodInterface $method): self
     {
-        $this->methods[$method->getName()] = $method;
+        $this->methods[self::assertName($method->getName())] = $method;
 
         return $this;
     }
 
     public function addProperty(ParameterInterface $property): self
     {
-        $this->properties[$property->getName()] = $property;
+        $this->properties[self::assertName($property->getName())] = $property;
 
         return $this;
     }
@@ -92,41 +103,73 @@ class ClassFile
         return $this;
     }
 
+    /**
+     * @return array<non-empty-string, Constant>
+     */
+    public function getConstants(): array
+    {
+        return $this->constants;
+    }
+
+    /**
+     * @return list<Inject>
+     */
     public function getInjects(): array
     {
         return $this->injects;
     }
 
+    /**
+     * @return array<non-empty-string, MethodInterface>
+     */
     public function getMethods(): array
     {
         return $this->methods;
     }
 
+    /**
+     * @return array<non-empty-string, ParameterInterface>
+     */
     public function getProperties(): array
     {
         return $this->properties;
     }
 
+    /**
+     * @return array<non-empty-string, non-empty-string>
+     */
     public function getClassUses(): array
     {
         return $this->classUses;
     }
 
+    /**
+     * @return array<non-empty-string, non-empty-string>
+     */
     public function getConstantUses(): array
     {
         return $this->constantUses;
     }
 
+    /**
+     * @return array<non-empty-string, non-empty-string>
+     */
     public function getFunctionUses(): array
     {
         return $this->functionUses;
     }
 
+    /**
+     * @return array<non-empty-string, non-empty-string>
+     */
     public function getInterfaces(): array
     {
         return $this->interfaces;
     }
 
+    /**
+     * @return array<non-empty-string, non-empty-string>
+     */
     public function getTraits(): array
     {
         return $this->traits;
@@ -240,6 +283,12 @@ class ClassFile
             $class .= '    ' . implode(PHP_EOL . '    ', $traits) . PHP_EOL . PHP_EOL;
         }
 
+        if (count($this->constants) > 0) {
+            $constants = array_map(static fn (Constant $constant): string => $constant->render(4), $this->constants);
+
+            $class .= implode(PHP_EOL, $constants) . PHP_EOL . PHP_EOL;
+        }
+
         if (count($this->properties) > 0) {
             $properties = array_map(
                 static fn (ParameterInterface $property): string => $property->render(4),
@@ -257,7 +306,20 @@ class ClassFile
 
         $class .= '}' . PHP_EOL;
 
-        return $class;
+        return ArrayAligner::align($class);
+    }
+
+    /**
+     * @return non-empty-string
+     * @throws InvalidArgumentException
+     */
+    private static function assertName(string $name): string
+    {
+        if ($name === '') {
+            throw new InvalidArgumentException('Name must not be empty.');
+        }
+
+        return $name;
     }
 
     public function setAbstract(bool $abstract): self

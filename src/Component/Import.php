@@ -79,11 +79,17 @@ class Import
     ) {
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getAbstractFormFqcn(): string
     {
         return sprintf(self::ROOT_APP_FORM_ABSTRACTFORM, $this->context->getRootNamespace());
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getAbstractInputFilterFqcn(): string
     {
         $format = self::ROOT_APP_INPUTFILTER_ABSTRACTINPUTFILTER;
@@ -95,11 +101,17 @@ class Import
         return sprintf($format, $this->context->getRootNamespace());
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getAbstractHandlerFqcn(): string
     {
         return sprintf(self::ROOT_APP_HANDLER_ABSTRACTHANDLER, $this->context->getRootNamespace());
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getAbstractRepositoryFqcn(): string
     {
         $format = self::ROOT_APP_REPOSITORY_ABSTRACTREPOSITORY;
@@ -111,6 +123,9 @@ class Import
         return sprintf($format, $this->context->getRootNamespace());
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getAppHelperPaginatorFqcn(): string
     {
         $format = self::ROOT_APP_HELPER_PAGINATOR;
@@ -122,6 +137,9 @@ class Import
         return sprintf($format, $this->context->getRootNamespace());
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getAppMessageFqcn(): string
     {
         $format = self::ROOT_APP_MESSAGE;
@@ -133,11 +151,17 @@ class Import
         return sprintf($format, $this->context->getRootNamespace());
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getBadRequestExceptionFqcn(): string
     {
         return sprintf(self::ROOT_APP_EXCEPTION_BADREQUESTEXCEPTION, $this->context->getRootNamespace());
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getConfigProviderFqcn(bool $core = false): string
     {
         if ($core && $this->context->hasCore()) {
@@ -149,31 +173,49 @@ class Import
         return sprintf(self::ROOT_APP_CONFIGPROVIDER, $rootNamespace);
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getConflictExceptionFqcn(): string
     {
         return sprintf(self::ROOT_APP_EXCEPTION_CONFLICTEXCEPTION, $this->context->getRootNamespace());
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getCsrfInputFqcn(): string
     {
         return sprintf(self::ROOT_APP_INPUTFILTER_INPUT_CSRFINPUT, $this->context->getRootNamespace());
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getHandlerDelegatorFactoryFqcn(): string
     {
         return sprintf(self::ROOT_APP_FACTORY_HANDLERDELEGATORFACTORY, $this->context->getRootNamespace());
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getNotFoundExceptionFqcn(): string
     {
         return sprintf(self::ROOT_APP_EXCEPTION_NOTFOUNDEXCEPTION, $this->context->getRootNamespace());
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getResourceAttributeFqcn(): string
     {
         return sprintf(self::ROOT_APP_ATTRIBUTE_RESOURCE, $this->context->getRootNamespace());
     }
 
+    /**
+     * @return non-empty-string
+     */
     public function getResourceCollectionFqcn(): string
     {
         return sprintf(self::ROOT_APP_COLLECTION_RESOURCECOLLECTION, $this->context->getRootNamespace());

@@ -6,47 +6,41 @@ namespace DotTest\Maker\IO;
 
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
+use DotTest\Maker\StreamTrait;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function fwrite;
 use function rewind;
 use function stream_get_contents;
-use function stream_get_meta_data;
 
 use const PHP_EOL;
+use const STDIN;
 
 class InputTest extends TestCase
 {
+    use StreamTrait;
+
     public function testWillModifyInputStream(): void
     {
-        $oldStream = Input::getStream();
-        $this->assertIsResource($oldStream);
-        $oldMetadata = stream_get_meta_data($oldStream);
-        $this->assertSame('STDIO', $oldMetadata['stream_type']);
-        $this->assertSame('php://stdin', $oldMetadata['uri']);
+        $this->resetStreams();
+        $this->assertSame(STDIN, Input::getStream());
 
-        Input::setStream(fopen('php://memory', 'w+'));
+        $stream = $this->openMemoryStream();
+        Input::setStream($stream);
+        $this->assertSame($stream, Input::getStream());
 
-        $newStream = Input::getStream();
-        $this->assertIsResource($oldStream);
-        $newMetadata = stream_get_meta_data($newStream);
-        $this->assertSame('MEMORY', $newMetadata['stream_type']);
-        $this->assertSame('php://memory', $newMetadata['uri']);
-
-        $this->assertNotSame($oldStream, $newStream);
-
-        fclose($oldStream);
-        fclose($newStream);
+        fclose($stream);
+        $this->resetStreams();
     }
 
     public function testPromptWillOutputMessageAndReadInput(): void
     {
-        $outputStream = fopen('php://memory', 'w+');
+        $outputStream = $this->openMemoryStream();
         Output::setOutputStream($outputStream);
 
-        $inputStream = fopen('php://memory', 'w+');
+        $inputStream = $this->openMemoryStream();
         fwrite($inputStream, 'Test' . PHP_EOL);
         rewind($inputStream);
         Input::setStream($inputStream);
@@ -60,19 +54,17 @@ class InputTest extends TestCase
         fclose($outputStream);
     }
 
-    /**
-     * @testWith [""]
-     *           ["y"]
-     *           ["yes"]
-     *           ["Y"]
-     *           ["Yes"]
-     */
+    #[TestWith([''])]
+    #[TestWith(['y'])]
+    #[TestWith(['yes'])]
+    #[TestWith(['Y'])]
+    #[TestWith(['Yes'])]
     public function testConfirmWillOutputMessageAndReadPositiveAnswer(string $input): void
     {
-        $outputStream = fopen('php://memory', 'w+');
+        $outputStream = $this->openMemoryStream();
         Output::setOutputStream($outputStream);
 
-        $inputStream = fopen('php://memory', 'w+');
+        $inputStream = $this->openMemoryStream();
         fwrite($inputStream, $input . PHP_EOL);
         rewind($inputStream);
         Input::setStream($inputStream);
@@ -86,19 +78,17 @@ class InputTest extends TestCase
         fclose($outputStream);
     }
 
-    /**
-     * @testWith [""]
-     *           ["n"]
-     *           ["no"]
-     *           ["N"]
-     *           ["No"]
-     */
+    #[TestWith([''])]
+    #[TestWith(['n'])]
+    #[TestWith(['no'])]
+    #[TestWith(['N'])]
+    #[TestWith(['No'])]
     public function testConfirmWillOutputMessageAndReadNegativeAnswer(string $input): void
     {
-        $outputStream = fopen('php://memory', 'w+');
+        $outputStream = $this->openMemoryStream();
         Output::setOutputStream($outputStream);
 
-        $inputStream = fopen('php://memory', 'w+');
+        $inputStream = $this->openMemoryStream();
         fwrite($inputStream, $input . PHP_EOL);
         rewind($inputStream);
         Input::setStream($inputStream);
@@ -114,7 +104,7 @@ class InputTest extends TestCase
 
     public function testWillAlwaysGetInputStream(): void
     {
-        Input::setStream(fopen('php://memory', 'w+'));
+        Input::setStream($this->openMemoryStream());
 
         $stream = Input::getStream();
         $this->assertIsResource($stream);
@@ -122,5 +112,26 @@ class InputTest extends TestCase
 
         $stream = Input::getStream();
         $this->assertIsResource($stream);
+    }
+
+    public function testPromptReturnsEmptyStringAtEndOfInput(): void
+    {
+        Output::setOutputStream($this->openMemoryStream());
+        Input::setStream($this->openMemoryStream());
+
+        $this->assertSame('', Input::prompt('Name: '));
+        $this->assertTrue(Input::isExhausted());
+    }
+
+    public function testIsExhaustedIsFalseWhileInputRemains(): void
+    {
+        Output::setOutputStream($this->openMemoryStream());
+        $stream = $this->openMemoryStream();
+        fwrite($stream, 'Book' . PHP_EOL . PHP_EOL);
+        rewind($stream);
+        Input::setStream($stream);
+
+        $this->assertSame('Book', Input::prompt('Name: '));
+        $this->assertFalse(Input::isExhausted());
     }
 }

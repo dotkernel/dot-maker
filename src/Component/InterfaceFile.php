@@ -4,6 +4,8 @@ declare(strict_types=1);
 
 namespace Dot\Maker\Component;
 
+use InvalidArgumentException;
+
 use function array_map;
 use function count;
 use function implode;
@@ -40,11 +42,18 @@ class InterfaceFile
 
     public function addDeclaration(Declaration $declaration): self
     {
+        if ($declaration->name === '') {
+            throw new InvalidArgumentException('Name must not be empty.');
+        }
+
         $this->declarations[$declaration->name] = $declaration;
 
         return $this;
     }
 
+    /**
+     * @param non-empty-string $interface
+     */
     public function addInterface(string $interface): self
     {
         $this->interfaces[$interface] = $interface;
@@ -52,26 +61,41 @@ class InterfaceFile
         return $this;
     }
 
+    /**
+     * @return array<non-empty-string, Declaration>
+     */
     public function getDeclarations(): array
     {
         return $this->declarations;
     }
 
+    /**
+     * @return array<non-empty-string, non-empty-string>
+     */
     public function getClassUses(): array
     {
         return $this->classUses;
     }
 
+    /**
+     * @return array<non-empty-string, non-empty-string>
+     */
     public function getConstantUses(): array
     {
         return $this->constantUses;
     }
 
+    /**
+     * @return array<non-empty-string, non-empty-string>
+     */
     public function getFunctionUses(): array
     {
         return $this->functionUses;
     }
 
+    /**
+     * @return array<non-empty-string, non-empty-string>
+     */
     public function getInterfaces(): array
     {
         return $this->interfaces;

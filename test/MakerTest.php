@@ -12,7 +12,6 @@ use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function fwrite;
 use function rewind;
 use function stream_get_contents;
@@ -21,6 +20,8 @@ use const PHP_EOL;
 
 class MakerTest extends TestCase
 {
+    use StreamTrait;
+
     /** @var resource $outputStream */
     private $outputStream;
     /** @var resource $inputStream */
@@ -30,13 +31,13 @@ class MakerTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->errorStream = fopen('php://memory', 'w+');
+        $this->errorStream = $this->openMemoryStream();
         Output::setErrorStream($this->errorStream);
 
-        $this->inputStream = fopen('php://memory', 'w+');
+        $this->inputStream = $this->openMemoryStream();
         Input::setStream($this->inputStream);
 
-        $this->outputStream = fopen('php://memory', 'w+');
+        $this->outputStream = $this->openMemoryStream();
         Output::setOutputStream($this->outputStream);
     }
 
@@ -60,7 +61,7 @@ class MakerTest extends TestCase
             ->onlyMethods(['isCli'])
             ->setConstructorArgs([''])
             ->getMock();
-        $maker->method('isCli')->willReturn(false);
+        $maker->expects($this->once())->method('isCli')->willReturn(false);
         $maker([]);
 
         rewind($this->errorStream);
@@ -87,7 +88,7 @@ class MakerTest extends TestCase
             ->onlyMethods(['isCli'])
             ->setConstructorArgs([$root->url()])
             ->getMock();
-        $maker->method('isCli')->willReturn(true);
+        $maker->expects($this->once())->method('isCli')->willReturn(true);
         $maker(['', 'invalid-component']);
 
         rewind($this->errorStream);
@@ -116,7 +117,7 @@ class MakerTest extends TestCase
             ->onlyMethods(['isCli'])
             ->setConstructorArgs([$root->url()])
             ->getMock();
-        $maker->method('isCli')->willReturn(true);
+        $maker->expects($this->once())->method('isCli')->willReturn(true);
         $maker(['', '']);
 
         rewind($this->errorStream);
@@ -147,7 +148,7 @@ class MakerTest extends TestCase
             ->onlyMethods(['isCli'])
             ->setConstructorArgs([$root->url()])
             ->getMock();
-        $maker->method('isCli')->willReturn(true);
+        $maker->expects($this->once())->method('isCli')->willReturn(true);
         $maker(['', 'module']);
 
         rewind($this->outputStream);
@@ -187,7 +188,7 @@ BODY,
             ->onlyMethods(['isCli'])
             ->setConstructorArgs([$root->url()])
             ->getMock();
-        $maker->method('isCli')->willReturn(true);
+        $maker->expects($this->once())->method('isCli')->willReturn(true);
         $maker(['', 'command']);
 
         rewind($this->errorStream);

@@ -12,11 +12,11 @@ use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\InputFilter;
 use Dot\Maker\Type\Module;
+use DotTest\Maker\StreamTrait;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function fwrite;
 use function rewind;
 use function stream_get_contents;
@@ -25,6 +25,8 @@ use const PHP_EOL;
 
 class ApiInputFilterTest extends TestCase
 {
+    use StreamTrait;
+
     private Config $config;
     private Context $context;
     private FileSystem $fileSystem;
@@ -59,13 +61,13 @@ class ApiInputFilterTest extends TestCase
         $this->import     = new Import($this->context);
         $this->module     = new Module($this->fileSystem, $this->context, $this->config);
 
-        $this->outputStream = fopen('php://memory', 'w+');
+        $this->outputStream = $this->openMemoryStream();
         Output::setOutputStream($this->outputStream);
 
-        $this->errorStream = fopen('php://memory', 'w+');
+        $this->errorStream = $this->openMemoryStream();
         Output::setErrorStream($this->errorStream);
 
-        $this->inputStream = fopen('php://memory', 'w+');
+        $this->inputStream = $this->openMemoryStream();
         Input::setStream($this->inputStream);
     }
 
@@ -141,7 +143,7 @@ class ApiInputFilterTest extends TestCase
 
         $this->assertFileExists($createResourceInputFilter->getPath());
         $this->assertTrue($createResourceInputFilter->exists());
-        $this->assertSame($this->dataProviderApiCreateResourceInputFilter(), $createResourceInputFilter->read());
+        $this->assertSame($this->expectedApiCreateResourceInputFilter(), $createResourceInputFilter->read());
 
         $this->assertFileDoesNotExist($deleteResourceInputFilter->getPath());
         $this->assertFalse($deleteResourceInputFilter->exists());
@@ -234,7 +236,7 @@ class ApiInputFilterTest extends TestCase
 
         $this->assertFileExists($editResourceInputFilter->getPath());
         $this->assertTrue($editResourceInputFilter->exists());
-        $this->assertSame($this->dataProviderApiEditResourceInputFilter(), $editResourceInputFilter->read());
+        $this->assertSame($this->expectedApiEditResourceInputFilter(), $editResourceInputFilter->read());
 
         $this->assertFileDoesNotExist($replaceResourceInputFilter->getPath());
         $this->assertFalse($replaceResourceInputFilter->exists());
@@ -281,7 +283,7 @@ class ApiInputFilterTest extends TestCase
 
         $this->assertFileExists($replaceResourceInputFilter->getPath());
         $this->assertTrue($replaceResourceInputFilter->exists());
-        $this->assertSame($this->dataProviderApiReplaceResourceInputFilter(), $replaceResourceInputFilter->read());
+        $this->assertSame($this->expectedApiReplaceResourceInputFilter(), $replaceResourceInputFilter->read());
 
         rewind($this->errorStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
@@ -315,7 +317,7 @@ class ApiInputFilterTest extends TestCase
 
         $this->assertFileExists($createResourceInputFilter->getPath());
         $this->assertTrue($createResourceInputFilter->exists());
-        $this->assertSame($this->dataProviderApiCreateResourceInputFilter(), $createResourceInputFilter->read());
+        $this->assertSame($this->expectedApiCreateResourceInputFilter(), $createResourceInputFilter->read());
 
         $this->assertFileDoesNotExist($deleteResourceInputFilter->getPath());
         $this->assertFalse($deleteResourceInputFilter->exists());
@@ -406,7 +408,7 @@ class ApiInputFilterTest extends TestCase
 
         $this->assertFileExists($editResourceInputFilter->getPath());
         $this->assertTrue($editResourceInputFilter->exists());
-        $this->assertSame($this->dataProviderApiEditResourceInputFilter(), $editResourceInputFilter->read());
+        $this->assertSame($this->expectedApiEditResourceInputFilter(), $editResourceInputFilter->read());
 
         $this->assertFileDoesNotExist($replaceResourceInputFilter->getPath());
         $this->assertFalse($replaceResourceInputFilter->exists());
@@ -452,13 +454,13 @@ class ApiInputFilterTest extends TestCase
 
         $this->assertFileExists($replaceResourceInputFilter->getPath());
         $this->assertTrue($replaceResourceInputFilter->exists());
-        $this->assertSame($this->dataProviderApiReplaceResourceInputFilter(), $replaceResourceInputFilter->read());
+        $this->assertSame($this->expectedApiReplaceResourceInputFilter(), $replaceResourceInputFilter->read());
 
         rewind($this->errorStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
     }
 
-    private function dataProviderApiCreateResourceInputFilter(): string
+    private function expectedApiCreateResourceInputFilter(): string
     {
         return <<<BODY
 <?php
@@ -484,7 +486,7 @@ class CreateBookStoreInputFilter extends AbstractInputFilter
 BODY;
     }
 
-    private function dataProviderApiEditResourceInputFilter(): string
+    private function expectedApiEditResourceInputFilter(): string
     {
         return <<<BODY
 <?php
@@ -510,7 +512,7 @@ class EditBookStoreInputFilter extends AbstractInputFilter
 BODY;
     }
 
-    private function dataProviderApiReplaceResourceInputFilter(): string
+    private function expectedApiReplaceResourceInputFilter(): string
     {
         return <<<BODY
 <?php

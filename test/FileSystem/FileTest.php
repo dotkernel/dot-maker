@@ -8,15 +8,11 @@ use Dot\Maker\Component;
 use Dot\Maker\FileSystem\Directory;
 use Dot\Maker\FileSystem\File;
 use org\bovigo\vfs\vfsStream;
-use org\bovigo\vfs\vfsStreamContent;
 use org\bovigo\vfs\vfsStreamDirectory;
 use PHPUnit\Framework\TestCase;
 
 use function sprintf;
 
-/**
- * @method vfsStreamContent getChild(string $name)
- */
 class FileTest extends TestCase
 {
     private vfsStreamDirectory $root;
@@ -50,12 +46,12 @@ class FileTest extends TestCase
         $file = $this->getMockBuilder(File::class)
             ->onlyMethods(['write'])
             ->setConstructorArgs([
-                new Directory('src', $this->root->getChild('src')->getChild('App')->url()),
+                new Directory('src', $this->root->url() . '/src/App'),
                 'Api\\App',
                 'ConfigProvider',
             ])
             ->getMock();
-        $file->method('write')->willReturn(false);
+        $file->expects($this->once())->method('write')->willReturn(false);
 
         $this->assertFileDoesNotExist($file->getPath());
         $this->assertFalse($file->exists());
@@ -69,7 +65,7 @@ class FileTest extends TestCase
     public function testWillCreate(): void
     {
         $file = new File(
-            new Directory('src', $this->root->getChild('src')->getChild('App')->url()),
+            new Directory('src', $this->root->url() . '/src/App'),
             'Api\\App',
             'ConfigProvider'
         );
@@ -98,7 +94,7 @@ class FileTest extends TestCase
     public function testWillDetectExistingFile(): void
     {
         $file = new File(
-            new Directory('src', $this->root->getChild('src')->getChild('App')->url()),
+            new Directory('src', $this->root->url() . '/src/App'),
             'Api\\App',
             'Existing'
         );
@@ -112,7 +108,7 @@ class FileTest extends TestCase
             'Test',
             'Test'
         );
-        $this->assertSame($this->root->getChild('src')->url(), $file->getParentDirectory()->getPath());
+        $this->assertSame($this->root->url() . '/src', $file->getParentDirectory()->getPath());
     }
 
     public function testWillGetComponent(): void
@@ -138,13 +134,23 @@ class FileTest extends TestCase
     public function testWillGetPath(): void
     {
         $file = new File(
-            new Directory('src', $this->root->getChild('src')->getChild('App')->url()),
+            new Directory('src', $this->root->url() . '/src/App'),
             'Api\\App',
             'Existing'
         );
         $this->assertSame(
-            $this->root->getChild('src')->getChild('App')->getChild('src')->getChild('Existing.php')->url(),
+            $this->root->url() . '/src/App/src/Existing.php',
             $file->getPath()
         );
+    }
+
+    public function testCreateWithEmptyContentSucceeds(): void
+    {
+        $file = new File(new Directory('src', $this->root->url() . '/src/App'), 'Api\App', 'Empty');
+
+        $file->create('');
+
+        $this->assertFileExists($file->getPath());
+        $this->assertSame('', $file->read());
     }
 }

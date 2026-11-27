@@ -12,11 +12,11 @@ use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Message;
 use Dot\Maker\Type\Module;
+use DotTest\Maker\StreamTrait;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function fwrite;
 use function rewind;
 use function stream_get_contents;
@@ -25,6 +25,8 @@ use const PHP_EOL;
 
 class ModuleTest extends TestCase
 {
+    use StreamTrait;
+
     private Config $config;
     private Context $context;
     private FileSystem $fileSystem;
@@ -40,13 +42,13 @@ class ModuleTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->outputStream = fopen('php://memory', 'w+');
+        $this->outputStream = $this->openMemoryStream();
         Output::setOutputStream($this->outputStream);
 
-        $this->errorStream = fopen('php://memory', 'w+');
+        $this->errorStream = $this->openMemoryStream();
         Output::setErrorStream($this->errorStream);
 
-        $this->inputStream = fopen('php://memory', 'w+');
+        $this->inputStream = $this->openMemoryStream();
         Input::setStream($this->inputStream);
     }
 
@@ -244,7 +246,11 @@ class ModuleTest extends TestCase
         $this->assertEmpty($module->getMessages());
         $module->addMessage(new Message('test'));
         $this->assertCount(1, $module->getMessages());
-        $this->assertSame('test', $module->getMessages()[0]);
+        $this->assertSame(['test' => 'test'], $module->getMessages()[0]);
+
+        $module->addMessage(new Message('other'));
+        $module->addMessage(new Message('test'));
+        $this->assertSame(['test' => 'test', 'other' => 'other'], $module->getMessages()[0]);
     }
 
     public function testInitExistingWillNotInitWhenInvalidModuleName(): void
@@ -554,7 +560,7 @@ class ModuleTest extends TestCase
         rewind($this->outputStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
         $this->assertSame(
-            $this->dataProviderWhenProjectTypeIsApiAndUsesCore(),
+            $this->expectedWhenProjectTypeIsApiAndUsesCore(),
             stream_get_contents($this->outputStream)
         );
     }
@@ -720,7 +726,7 @@ class ModuleTest extends TestCase
         rewind($this->outputStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
         $this->assertSame(
-            $this->dataProviderWhenProjectTypeIsApiAndDoesNotUseCore(),
+            $this->expectedWhenProjectTypeIsApiAndDoesNotUseCore(),
             stream_get_contents($this->outputStream)
         );
     }
@@ -886,7 +892,7 @@ class ModuleTest extends TestCase
         rewind($this->outputStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
         $this->assertSame(
-            $this->dataProviderWhenProjectTypeIsNotApiAndUsesCore(),
+            $this->expectedWhenProjectTypeIsNotApiAndUsesCore(),
             stream_get_contents($this->outputStream)
         );
     }
@@ -1051,12 +1057,12 @@ class ModuleTest extends TestCase
         rewind($this->outputStream);
         $this->assertEmpty(stream_get_contents($this->errorStream));
         $this->assertSame(
-            $this->dataProviderWhenProjectTypeIsNotApiAndDoesNotUseCore(),
+            $this->expectedWhenProjectTypeIsNotApiAndDoesNotUseCore(),
             stream_get_contents($this->outputStream)
         );
     }
 
-    private function dataProviderWhenProjectTypeIsApiAndUsesCore(): string
+    private function expectedWhenProjectTypeIsApiAndUsesCore(): string
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
         return <<<BODY
@@ -1103,7 +1109,7 @@ Allow replacing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/sr
 - add to \033[97mconfig/config.php\033[0m:
 \033[93m  Core\BookStore\ConfigProvider::class,\033[0m
 - add to \033[97mconfig/autoload/cli.global.php\033[0m under \033[97mdot_cli\033[0m.\033[97mcommands\033[0m:
-\033[93m  Api\BookStore\Command\BookStoreCommand::getDefaultName() => Api\BookStore\Command\BookStoreCommand::class,\033[0m
+\033[93m  Api\BookStore\Command\BookStoreCommand::DEFAULT_NAME => Api\BookStore\Command\BookStoreCommand::class,\033[0m
 - add to \033[97mconfig/pipeline.php\033[0m:
 \033[93m  \$app->pipe(Api\BookStore\Middleware\BookStoreMiddleware::class);\033[0m
 - add to \033[97mconfig/autoload/authorization.global.php\033[0m
@@ -1122,7 +1128,7 @@ BODY;
         // phpcs:enable Generic.Files.LineLength.TooLong
     }
 
-    private function dataProviderWhenProjectTypeIsApiAndDoesNotUseCore(): string
+    private function expectedWhenProjectTypeIsApiAndDoesNotUseCore(): string
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
         return <<<BODY
@@ -1166,7 +1172,7 @@ Allow replacing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/sr
 - add to \033[97mconfig/config.php\033[0m:
 \033[93m  Api\BookStore\ConfigProvider::class,\033[0m
 - add to \033[97mconfig/autoload/cli.global.php\033[0m under \033[97mdot_cli\033[0m.\033[97mcommands\033[0m:
-\033[93m  Api\BookStore\Command\BookStoreCommand::getDefaultName() => Api\BookStore\Command\BookStoreCommand::class,\033[0m
+\033[93m  Api\BookStore\Command\BookStoreCommand::DEFAULT_NAME => Api\BookStore\Command\BookStoreCommand::class,\033[0m
 - add to \033[97mconfig/pipeline.php\033[0m:
 \033[93m  \$app->pipe(Api\BookStore\Middleware\BookStoreMiddleware::class);\033[0m
 - add to \033[97mconfig/autoload/authorization.global.php\033[0m
@@ -1183,7 +1189,7 @@ BODY;
         // phpcs:enable Generic.Files.LineLength.TooLong
     }
 
-    private function dataProviderWhenProjectTypeIsNotApiAndUsesCore(): string
+    private function expectedWhenProjectTypeIsNotApiAndUsesCore(): string
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
         return <<<BODY
@@ -1238,7 +1244,7 @@ Allow editing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/
 - add to \033[97mconfig/config.php\033[0m:
 \033[93m  Core\BookStore\ConfigProvider::class,\033[0m
 - add to \033[97mconfig/autoload/cli.global.php\033[0m under \033[97mdot_cli\033[0m.\033[97mcommands\033[0m:
-\033[93m  Admin\BookStore\Command\BookStoreCommand::getDefaultName() => Admin\BookStore\Command\BookStoreCommand::class,\033[0m
+\033[93m  Admin\BookStore\Command\BookStoreCommand::DEFAULT_NAME => Admin\BookStore\Command\BookStoreCommand::class,\033[0m
 - add to \033[97mconfig/pipeline.php\033[0m:
 \033[93m  \$app->pipe(Admin\BookStore\Middleware\BookStoreMiddleware::class);\033[0m
 - add to \033[97mconfig/autoload/authorization-guards.global.php\033[0m
@@ -1257,7 +1263,7 @@ BODY;
         // phpcs:enable Generic.Files.LineLength.TooLong
     }
 
-    private function dataProviderWhenProjectTypeIsNotApiAndDoesNotUseCore(): string
+    private function expectedWhenProjectTypeIsNotApiAndDoesNotUseCore(): string
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
         return <<<BODY
@@ -1309,7 +1315,7 @@ Allow editing BookStores? [Y(es)/n(o)]: \033[92mCreated Handler: vfs://root/src/
 - add to \033[97mconfig/config.php\033[0m:
 \033[93m  Admin\BookStore\ConfigProvider::class,\033[0m
 - add to \033[97mconfig/autoload/cli.global.php\033[0m under \033[97mdot_cli\033[0m.\033[97mcommands\033[0m:
-\033[93m  Admin\BookStore\Command\BookStoreCommand::getDefaultName() => Admin\BookStore\Command\BookStoreCommand::class,\033[0m
+\033[93m  Admin\BookStore\Command\BookStoreCommand::DEFAULT_NAME => Admin\BookStore\Command\BookStoreCommand::class,\033[0m
 - add to \033[97mconfig/pipeline.php\033[0m:
 \033[93m  \$app->pipe(Admin\BookStore\Middleware\BookStoreMiddleware::class);\033[0m
 - add to \033[97mconfig/autoload/authorization-guards.global.php\033[0m

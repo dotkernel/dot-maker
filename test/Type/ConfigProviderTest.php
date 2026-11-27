@@ -11,11 +11,11 @@ use Dot\Maker\FileSystem;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\ConfigProvider;
 use Dot\Maker\Type\Module;
+use DotTest\Maker\StreamTrait;
 use org\bovigo\vfs\vfsStream;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function rewind;
 use function stream_get_contents;
 
@@ -23,6 +23,8 @@ use const PHP_EOL;
 
 class ConfigProviderTest extends TestCase
 {
+    use StreamTrait;
+
     private Config $config;
     private Context $context;
     private FileSystem $fileSystem;
@@ -34,7 +36,7 @@ class ConfigProviderTest extends TestCase
 
     protected function setUp(): void
     {
-        $this->outputStream = fopen('php://memory', 'w+');
+        $this->outputStream = $this->openMemoryStream();
         Output::setOutputStream($this->outputStream);
     }
 
@@ -78,7 +80,7 @@ class ConfigProviderTest extends TestCase
             ) . PHP_EOL,
             stream_get_contents($this->outputStream)
         );
-        $this->assertSame($this->dataProviderWhenProjectTypeIsApiAndUsesCore(), $file->read());
+        $this->assertSame($this->expectedWhenProjectTypeIsApiAndUsesCore(), $file->read());
     }
 
     public function testWillCreateFileWhenProjectTypeIsNotApiAndUsesCore(): void
@@ -116,7 +118,7 @@ class ConfigProviderTest extends TestCase
             ) . PHP_EOL,
             stream_get_contents($this->outputStream)
         );
-        $this->assertSame($this->dataProviderWhenProjectTypeIsNotApiAndUsesCore(), $file->read());
+        $this->assertSame($this->expectedWhenProjectTypeIsNotApiAndUsesCore(), $file->read());
     }
 
     public function testWillCreateFileWhenProjectTypeIsApiAndDoesNotUseCore(): void
@@ -153,7 +155,7 @@ class ConfigProviderTest extends TestCase
             ) . PHP_EOL,
             stream_get_contents($this->outputStream)
         );
-        $this->assertSame($this->dataProviderWhenProjectTypeIsApiAndDoesNotUseCore(), $file->read());
+        $this->assertSame($this->expectedWhenProjectTypeIsApiAndDoesNotUseCore(), $file->read());
     }
 
     public function testWillCreateFileWhenProjectTypeIsNotApiAndDoesNotUseCore(): void
@@ -190,10 +192,10 @@ class ConfigProviderTest extends TestCase
             ) . PHP_EOL,
             stream_get_contents($this->outputStream)
         );
-        $this->assertSame($this->dataProviderWhenProjectTypeIsNotApiAndDoesNotUseCore(), $file->read());
+        $this->assertSame($this->expectedWhenProjectTypeIsNotApiAndDoesNotUseCore(), $file->read());
     }
 
-    private function dataProviderWhenProjectTypeIsApiAndUsesCore(): string
+    private function expectedWhenProjectTypeIsApiAndUsesCore(): string
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
         return <<<BODY
@@ -258,7 +260,7 @@ BODY;
         // phpcs:enable Generic.Files.LineLength.TooLong
     }
 
-    private function dataProviderWhenProjectTypeIsNotApiAndUsesCore(): string
+    private function expectedWhenProjectTypeIsNotApiAndUsesCore(): string
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
         return <<<BODY
@@ -307,7 +309,7 @@ class ConfigProvider
             'delegators' => [
                 Application::class => [RoutesDelegator::class],
             ],
-            'factories' => [
+            'factories'  => [
             ],
         ];
     }
@@ -329,7 +331,7 @@ BODY;
         // phpcs:enable Generic.Files.LineLength.TooLong
     }
 
-    private function dataProviderWhenProjectTypeIsApiAndDoesNotUseCore(): string
+    private function expectedWhenProjectTypeIsApiAndDoesNotUseCore(): string
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
         return <<<BODY
@@ -394,7 +396,7 @@ BODY;
         // phpcs:enable Generic.Files.LineLength.TooLong
     }
 
-    private function dataProviderWhenProjectTypeIsNotApiAndDoesNotUseCore(): string
+    private function expectedWhenProjectTypeIsNotApiAndDoesNotUseCore(): string
     {
         // phpcs:disable Generic.Files.LineLength.TooLong
         return <<<BODY
@@ -443,7 +445,7 @@ class ConfigProvider
             'delegators' => [
                 Application::class => [RoutesDelegator::class],
             ],
-            'factories' => [
+            'factories'  => [
             ],
         ];
     }

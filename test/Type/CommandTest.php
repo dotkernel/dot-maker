@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace DotTest\Maker\Type;
 
+use Dot\Maker\Component;
 use Dot\Maker\Component\Import;
 use Dot\Maker\Config;
 use Dot\Maker\Context;
@@ -13,11 +14,12 @@ use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\Command;
 use Dot\Maker\Type\Module;
+use DotTest\Maker\StreamTrait;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
-use function fopen;
 use function fwrite;
 use function implode;
 use function rewind;
@@ -28,6 +30,8 @@ use const PHP_EOL;
 
 class CommandTest extends TestCase
 {
+    use StreamTrait;
+
     private Config $config;
     private Context $context;
     private FileSystem $fileSystem;
@@ -59,13 +63,13 @@ class CommandTest extends TestCase
         $this->fileSystem = (new FileSystem($this->context))->setModuleName($this->moduleName);
         $this->module     = new Module($this->fileSystem, $this->context, $this->config);
 
-        $this->outputStream = fopen('php://memory', 'w+');
+        $this->outputStream = $this->openMemoryStream();
         Output::setOutputStream($this->outputStream);
 
-        $this->errorStream = fopen('php://memory', 'w+');
+        $this->errorStream = $this->openMemoryStream();
         Output::setErrorStream($this->errorStream);
 
-        $this->inputStream = fopen('php://memory', 'w+');
+        $this->inputStream = $this->openMemoryStream();
         Input::setStream($this->inputStream);
     }
 
@@ -147,9 +151,7 @@ class CommandTest extends TestCase
         $this->assertFileDoesNotExist($file->getPath());
     }
 
-    /**
-     * @dataProvider dataProviderWithoutService
-     */
+    #[DataProvider('dataProviderWithoutService')]
     public function testCallToInvokeWithoutServiceWillSucceedWhenNameIsValid(string $expected): void
     {
         $file = $this->fileSystem->command($this->resourceName);
@@ -188,12 +190,10 @@ class CommandTest extends TestCase
         $this->assertFileExists($file->getPath());
         $this->assertTrue($file->exists());
 
-        $this->assertSame($this->dataProviderWithService($serviceInterface), $file->read());
+        $this->assertSame($this->expectedWithService($serviceInterface), $file->read());
     }
 
-    /**
-     * @dataProvider dataProviderWithoutService
-     */
+    #[DataProvider('dataProviderWithoutService')]
     public function testCallToCreateWithoutServiceWillSucceedWhenNameIsValid(string $expected): void
     {
         $file = $this->fileSystem->command($this->resourceName);
@@ -232,9 +232,12 @@ class CommandTest extends TestCase
         $this->assertFileExists($file->getPath());
         $this->assertTrue($file->exists());
 
-        $this->assertSame($this->dataProviderWithService($serviceInterface), $file->read());
+        $this->assertSame($this->expectedWithService($serviceInterface), $file->read());
     }
 
+    /**
+     * @return array<array-key, array{string}>
+     */
     public static function dataProviderWithoutService(): array
     {
         $uses = [
@@ -255,22 +258,14 @@ namespace Api\ModuleName\Command;
 
 {$uses}
 
-#[AsCommand(name: 'book-store:command', description: 'Command description.')]
+#[AsCommand(name: BookStoreCommand::DEFAULT_NAME, description: 'Command description.')]
 class BookStoreCommand extends Command
 {
-    /** @var string \$defaultName */
-    protected static \$defaultName = 'book-store:command';
-
-    public function __construct()
-    {
-        parent::__construct(self::\$defaultName);
-    }
+    public const string DEFAULT_NAME = 'book-store:command';
 
     protected function configure(): void
     {
-        \$this
-            ->setName(self::\$defaultName)
-            ->setDescription('Command description.');
+        \$this->setDescription('Command description.');
     }
 
     protected function execute(
@@ -291,7 +286,7 @@ BODY;
         ];
     }
 
-    private function dataProviderWithService(File $serviceInterface): string
+    private function expectedWithService(File $serviceInterface): string
     {
         $uses = [
             sprintf('use %s;', $serviceInterface->getComponent()->getFqcn()),
@@ -313,11 +308,10 @@ namespace Api\ModuleName\Command;
 
 {$uses}
 
-#[AsCommand(name: 'book-store:command', description: 'Command description.')]
+#[AsCommand(name: BookStoreCommand::DEFAULT_NAME, description: 'Command description.')]
 class BookStoreCommand extends Command
 {
-    /** @var string \$defaultName */
-    protected static \$defaultName = 'book-store:command';
+    public const string DEFAULT_NAME = 'book-store:command';
 
     #[Inject(
         ModuleNameServiceInterface::class,
@@ -325,14 +319,12 @@ class BookStoreCommand extends Command
     public function __construct(
         protected ModuleNameServiceInterface \$moduleNameService,
     ) {
-        parent::__construct(self::\$defaultName);
+        parent::__construct();
     }
 
     protected function configure(): void
     {
-        \$this
-            ->setName(self::\$defaultName)
-            ->setDescription('Command description.');
+        \$this->setDescription('Command description.');
     }
 
     protected function execute(
@@ -347,5 +339,26 @@ class BookStoreCommand extends Command
 }
 
 BODY;
+    }
+
+    #[DataProvider('defaultNameProvider')]
+    public function testGetDefaultNameStripsOnlyTheClassSuffix(string $className, string $expected): void
+    {
+        $command = new Command($this->fileSystem, $this->context, $this->config, $this->module);
+
+        $this->assertSame($expected, $command->getDefaultName(new Component('Api\App\Command', $className)));
+    }
+
+    /**
+     * @return array<string, array{string, string}>
+     */
+    public static function defaultNameProvider(): array
+    {
+        return [
+            'simple'                => ['BookStoreCommand', 'book-store:command'],
+            'plural inside'         => ['ImportCommandsCommand', 'import-commands:command'],
+            'command in the middle' => ['MyCommandHandlerCommand', 'my-command-handler:command'],
+            'command first'         => ['CommandCenterCommand', 'command-center:command'],
+        ];
     }
 }

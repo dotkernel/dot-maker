@@ -63,7 +63,7 @@ class Message
             ->append(':')
             ->appendLine(
                 ColorEnum::colorize(
-                    sprintf('  %s::getDefaultName() => %s::class,', $fqcn, $fqcn),
+                    sprintf('  %s::DEFAULT_NAME => %s::class,', $fqcn, $fqcn),
                     ColorEnum::ForegroundBrightYellow
                 )
             );
