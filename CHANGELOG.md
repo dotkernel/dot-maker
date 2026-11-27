@@ -2,7 +2,7 @@
 
 All notable changes to this project are documented in this file, newest first.
 
-## 3.0.0 - TBD
+## 3.0.0 - 2026-11-27
 
 ### Added
 
