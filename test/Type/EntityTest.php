@@ -12,6 +12,7 @@ use Dot\Maker\IO\Output;
 use Dot\Maker\Type\Entity;
 use Dot\Maker\Type\Module;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
@@ -145,9 +146,7 @@ class EntityTest extends TestCase
         $this->assertFileDoesNotExist($file->getPath());
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testCallToInvokeWillSucceedWhenNameIsValid(string $expected): void
     {
         $file = $this->fileSystem->entity($this->resourceName);
@@ -166,9 +165,7 @@ class EntityTest extends TestCase
         $this->assertSame($expected, $file->read());
     }
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testCallToCreateWillSucceedWhenNameIsValid(string $expected): void
     {
         $file = $this->fileSystem->entity($this->resourceName);

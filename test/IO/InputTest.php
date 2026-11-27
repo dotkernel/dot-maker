@@ -6,6 +6,7 @@ namespace DotTest\Maker\IO;
 
 use Dot\Maker\IO\Input;
 use Dot\Maker\IO\Output;
+use PHPUnit\Framework\Attributes\TestWith;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
@@ -60,13 +61,11 @@ class InputTest extends TestCase
         fclose($outputStream);
     }
 
-    /**
-     * @testWith [""]
-     *           ["y"]
-     *           ["yes"]
-     *           ["Y"]
-     *           ["Yes"]
-     */
+    #[TestWith([''])]
+    #[TestWith(['y'])]
+    #[TestWith(['yes'])]
+    #[TestWith(['Y'])]
+    #[TestWith(['Yes'])]
     public function testConfirmWillOutputMessageAndReadPositiveAnswer(string $input): void
     {
         $outputStream = fopen('php://memory', 'w+');
@@ -86,13 +85,11 @@ class InputTest extends TestCase
         fclose($outputStream);
     }
 
-    /**
-     * @testWith [""]
-     *           ["n"]
-     *           ["no"]
-     *           ["N"]
-     *           ["No"]
-     */
+    #[TestWith([''])]
+    #[TestWith(['n'])]
+    #[TestWith(['no'])]
+    #[TestWith(['N'])]
+    #[TestWith(['No'])]
     public function testConfirmWillOutputMessageAndReadNegativeAnswer(string $input): void
     {
         $outputStream = fopen('php://memory', 'w+');

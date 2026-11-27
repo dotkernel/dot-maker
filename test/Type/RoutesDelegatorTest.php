@@ -11,6 +11,7 @@ use Dot\Maker\FileSystem;
 use Dot\Maker\IO\Output;
 use Dot\Maker\Type\RoutesDelegator;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
@@ -26,9 +27,7 @@ class RoutesDelegatorTest extends TestCase
     private string $moduleName   = 'ModuleName';
     private string $resourceName = 'BookStore';
 
-    /**
-     * @dataProvider dataProvider
-     */
+    #[DataProvider('dataProvider')]
     public function testCallToCreateWhenProjectTypeIsNotApiWillCreateFile(string $expected): void
     {
         $stream = fopen('php://memory', 'w+');
@@ -73,9 +72,7 @@ class RoutesDelegatorTest extends TestCase
         fclose($stream);
     }
 
-    /**
-     * @dataProvider dataProviderApi
-     */
+    #[DataProvider('dataProviderApi')]
     public function testCallToCreateWhenProjectTypeIsApiWillCreateFile(string $expected): void
     {
         $stream = fopen('php://memory', 'w+');

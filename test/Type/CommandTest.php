@@ -14,6 +14,7 @@ use Dot\Maker\IO\Output;
 use Dot\Maker\Type\Command;
 use Dot\Maker\Type\Module;
 use org\bovigo\vfs\vfsStream;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 use function fclose;
@@ -147,9 +148,7 @@ class CommandTest extends TestCase
         $this->assertFileDoesNotExist($file->getPath());
     }
 
-    /**
-     * @dataProvider dataProviderWithoutService
-     */
+    #[DataProvider('dataProviderWithoutService')]
     public function testCallToInvokeWithoutServiceWillSucceedWhenNameIsValid(string $expected): void
     {
         $file = $this->fileSystem->command($this->resourceName);
@@ -191,9 +190,7 @@ class CommandTest extends TestCase
         $this->assertSame($this->dataProviderWithService($serviceInterface), $file->read());
     }
 
-    /**
-     * @dataProvider dataProviderWithoutService
-     */
+    #[DataProvider('dataProviderWithoutService')]
     public function testCallToCreateWithoutServiceWillSucceedWhenNameIsValid(string $expected): void
     {
         $file = $this->fileSystem->command($this->resourceName);
